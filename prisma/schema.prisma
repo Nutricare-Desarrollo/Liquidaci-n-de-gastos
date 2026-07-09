@@ -1,0 +1,252 @@
+// =====================================================================
+//  Esquema de datos (Postgres) — reemplaza a Dataverse.
+//  Cuatro entidades nucleo + catalogos (traspaso seccion 3).
+// =====================================================================
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Empresa {
+  ntc
+  feh
+}
+
+enum Moneda {
+  CRC
+  USD
+  Otra
+}
+
+enum SituacionFiscal {
+  IVA
+  EXENTO
+  NO_SUJETO
+  SIN_DEFINIR
+}
+
+enum Proposito {
+  CAJA_CHICA
+  FONDOS_PERSONALES
+  TARJETA_CORPORATIVA
+}
+
+enum TipoComprobante {
+  FACTURA_ELECTRONICA
+  REGIMEN_SIMPLIFICADO
+}
+
+enum TipoGasolina {
+  GASOLINA // 1
+  DIESEL // 2
+  GAS_LP // 3
+}
+
+enum EstadoLiquidacion {
+  BORRADOR
+  ENVIADA
+  EN_REVISION_CONTA
+  APROBADA
+  POSTEADA
+  DEVUELTA
+  ERROR_POSTEO
+}
+
+enum EstadoCaptura {
+  PENDIENTE_OCR
+  PENDIENTE_CRUCE
+  CRUZADA
+}
+
+enum EstadoFactura {
+  SIN_CAPTURA
+  CRUZADA
+}
+
+// ---------------------------------------------------------------------
+//  Usuarios (reemplaza systemuser de Dataverse; identidad via AuthPort).
+// ---------------------------------------------------------------------
+model Usuario {
+  id             String        @id @default(cuid())
+  email          String        @unique
+  nombre         String?
+  personnelNumber String?      @unique // NTC-xxxx (para FO)
+  capturas       Captura[]
+  liquidaciones  Liquidacion[] @relation("empleado")
+  aprobaciones   Liquidacion[] @relation("aprobador")
+  createdAt      DateTime      @default(now())
+}
+
+// ---------------------------------------------------------------------
+//  Captura (foto). Solo identidad + llave de cruce. Nunca montos.
+// ---------------------------------------------------------------------
+model Captura {
+  id            String        @id @default(cuid())
+  name          String        @unique // CAP-xxxxx
+  imagenUrl     String?
+  contenidoOcr  String? // texto OCR crudo (donde se busca la clave)
+  clave         String? // se llena al cruzar
+  confianza     Float?
+  correoEmpleado String
+  empleado      Usuario?      @relation(fields: [empleadoId], references: [id])
+  empleadoId    String?
+  categoria     Categoria?    @relation(fields: [categoriaId], references: [id])
+  categoriaId   String?
+  liquidacion   Liquidacion?  @relation(fields: [liquidacionId], references: [id])
+  liquidacionId String?
+  estado        EstadoCaptura @default(PENDIENTE_OCR)
+  factura       Factura?      @relation(fields: [facturaId], references: [id])
+  facturaId     String?
+  createdAt     DateTime      @default(now())
+}
+
+// ---------------------------------------------------------------------
+//  Factura (XML de Hacienda). Fuente de verdad financiera.
+// ---------------------------------------------------------------------
+model Factura {
+  id                     String          @id @default(cuid())
+  clave                  String          @unique // 50 dig — clave alterna unica (dedup/upsert)
+  consecutivo            String?
+  fechaEmision           DateTime?
+  emisorNombre           String? // = comerciante
+  emisorIdentificacion   String?
+  receptorIdentificacion String?
+  esDeLaEmpresa          Boolean         @default(false) // receptor == cedula Nutricare
+  totalComprobante       Decimal         @db.Decimal(18, 5)
+  totalImpuesto          Decimal         @default(0) @db.Decimal(18, 5)
+  totalGravado           Decimal         @default(0) @db.Decimal(18, 5)
+  totalExento            Decimal         @default(0) @db.Decimal(18, 5)
+  totalNoSujeto          Decimal         @default(0) @db.Decimal(18, 5)
+  moneda                 Moneda          @default(CRC)
+  situacionFiscal        SituacionFiscal @default(SIN_DEFINIR)
+  cantidad               Decimal?        @db.Decimal(18, 5) // = litros en combustible
+  detalle                String?
+  urlPdf                 String?
+  estado                 EstadoFactura   @default(SIN_CAPTURA)
+  capturas               Captura[]
+  gastos                 Gasto[]
+  createdAt              DateTime        @default(now())
+}
+
+// ---------------------------------------------------------------------
+//  Liquidacion (informe) — encabezado. Un informe = una sola moneda.
+// ---------------------------------------------------------------------
+model Liquidacion {
+  id             String            @id @default(cuid())
+  name           String            @unique // LIQ-xxxx
+  empleado       Usuario           @relation("empleado", fields: [empleadoId], references: [id])
+  empleadoId     String
+  correoEmpleado String
+  empresa        Empresa
+  proposito      Proposito
+  moneda         Moneda // una sola por informe (regla de negocio)
+  centroCosto    CentroCosto?      @relation(fields: [centroCostoId], references: [id])
+  centroCostoId  String?
+  aprobador      Usuario?          @relation("aprobador", fields: [aprobadorId], references: [id])
+  aprobadorId    String?
+  estado         EstadoLiquidacion @default(BORRADOR)
+  montoInforme   Decimal           @default(0) @db.Decimal(18, 5)
+  numeroReporteFO String? // se llena al postear — clave anti-duplicado
+  comentarioAprobacion String?
+  comentarioConta      String?
+  capturas       Captura[]
+  gastos         Gasto[]
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+}
+
+// ---------------------------------------------------------------------
+//  Gasto — linea del informe.
+// ---------------------------------------------------------------------
+model Gasto {
+  id              String          @id @default(cuid())
+  name            String          @unique // GAS-xxxxx
+  liquidacion     Liquidacion     @relation(fields: [liquidacionId], references: [id])
+  liquidacionId   String
+  factura         Factura?         @relation(fields: [facturaId], references: [id])
+  facturaId       String?
+  capturaId       String?
+  montoTotal      Decimal         @db.Decimal(18, 5)
+  moneda          Moneda
+  fecha           DateTime
+  categoria       Categoria       @relation(fields: [categoriaId], references: [id])
+  categoriaId     String
+  comerciante     String? // heredado de factura
+  centroCosto     CentroCosto?    @relation(fields: [centroCostoId], references: [id])
+  centroCostoId   String?
+  metodoPago      String // calculado
+  situacionFiscal SituacionFiscal
+  grupoImpuesto   String // grupo de articulos, ej. "IVA 13%"
+  tipoComprobante TipoComprobante @default(FACTURA_ELECTRONICA)
+  litros          Decimal?        @db.Decimal(18, 5)
+  tipoGasolina    TipoGasolina?
+  excedeLimite    Boolean         @default(false)
+  informacionAdicional String?
+  alerta          String?
+  urlPdf          String?
+  adjuntos        Json? // [{ nombre, url, tipo }] - imagenes/PDF adjuntos
+  // Division de gastos (pendiente del traspaso): un gasto puede derivar de otro.
+  gastoOrigen     Gasto?          @relation("division", fields: [gastoOrigenId], references: [id])
+  gastoOrigenId   String?
+  divisiones      Gasto[]         @relation("division")
+  createdAt       DateTime        @default(now())
+}
+
+// ---------------------------------------------------------------------
+//  Catalogos (mantenidos por conta).
+// ---------------------------------------------------------------------
+model Categoria {
+  id           String    @id @default(cuid())
+  codigo       String // ExpenseCategory de FO, ej. "COMBUSTIBLES"
+  nombre       String
+  taxItemGroup String // ej. "IVA 13%" (default del grupo de articulos)
+  expenseType  String // Meals/Transport/Hotel/CarRental/Expense
+  cuentaContable String?
+  empresa      Empresa
+  activo       Boolean   @default(true)
+  capturas     Captura[]
+  gastos       Gasto[]
+
+  @@unique([codigo, empresa])
+}
+
+model CentroCosto {
+  id                  String        @id @default(cuid())
+  operatingUnitNumber String        @unique // codigo (OMCostCenter de FO)
+  name                String
+  liquidaciones       Liquidacion[]
+  gastos              Gasto[]
+}
+
+model GrupoImpuesto {
+  id   String @id @default(cuid())
+  name String @unique // valor EXACTO de FO: "IVA 13%", "IVA 4%", "EXENTO", "NO SUJETO"
+}
+
+model ReglaMonto {
+  id              String  @id @default(cuid())
+  categoriaCodigo String  @unique // codigo de categoria (ej. ALMUERZO)
+  montoMaxCRC     Decimal @db.Decimal(18, 5)
+  montoMaxUSD     Decimal @db.Decimal(18, 5)
+  activo          Boolean @default(true)
+}
+
+// ---------------------------------------------------------------------
+//  Auditoria (en Dataverse era nativa; afuera hay que construirla).
+// ---------------------------------------------------------------------
+model Auditoria {
+  id        String   @id @default(cuid())
+  entidad   String
+  entidadId String
+  accion    String
+  actorEmail String?
+  antes     Json?
+  despues   Json?
+  createdAt DateTime @default(now())
+
+  @@index([entidad, entidadId])
+}

@@ -1,0 +1,144 @@
+// =====================================================================
+//  Servicio de liquidaciones: flujo de estados y edicion de gastos.
+//  Aprobacion en DOS etapas con orden forzado (aprobador, luego conta).
+// =====================================================================
+import type { Db } from "../db/client.js";
+import type { FinancePort } from "../ports/index.js";
+import { validarEnvioInforme, validarGasto } from "../domain/validaciones.js";
+import { postearInforme } from "./posteoFO.js";
+import { cargarInforme, marcarPosteado } from "../db/posteoRepo.js";
+import { crearGastoDesdeFactura } from "./procesarCruce.js";
+import type { TipoGasolina } from "../domain/types.js";
+
+type Rec = Record<string, unknown>;
+const CEDULA = "3101179050";
+
+// Divisiones y regimen simplificado no exigen datos de combustible.
+function omitirComb(g: Rec): boolean {
+  return !!g["gastoOrigenId"] || g["tipoComprobante"] === "REGIMEN_SIMPLIFICADO";
+}
+
+async function recalcularMonto(db: Db, liquidacionId: string): Promise<void> {
+  const gastos = (await db.gasto.findMany({ where: { liquidacionId } })) as Rec[];
+  const total = gastos.reduce((s, g) => s + Number(g["montoTotal"] ?? 0), 0);
+  await db.liquidacion.update({ where: { id: liquidacionId }, data: { montoInforme: total } });
+}
+
+export async function crearLiquidacion(db: Db, data: {
+  empleadoId: string; correoEmpleado: string; empresa: string; proposito: string;
+  moneda: string; centroCostoId?: string | null; aprobadorId?: string | null;
+}): Promise<Rec> {
+  const n = (await db.liquidacion.count()) + 1;
+  return db.liquidacion.create({
+    data: {
+      name: `LIQ-${String(n).padStart(4, "0")}`,
+      empleadoId: data.empleadoId, correoEmpleado: data.correoEmpleado,
+      empresa: data.empresa, proposito: data.proposito, moneda: data.moneda,
+      centroCostoId: data.centroCostoId ?? null, aprobadorId: data.aprobadorId ?? null, estado: "BORRADOR",
+    },
+  });
+}
+
+export async function listarLiquidaciones(db: Db, estado?: string): Promise<Rec[]> {
+  return db.liquidacion.findMany(estado ? { where: { estado } } : undefined) as Promise<Rec[]>;
+}
+
+export async function obtenerConGastos(db: Db, id: string): Promise<Rec | null> {
+  const liq = (await db.liquidacion.findUnique({ where: { id } })) as Rec | null;
+  if (!liq) return null;
+  const gastos = (await db.gasto.findMany({ where: { liquidacionId: id }, include: { categoria: true } })) as Rec[];
+  return { ...liq, gastos };
+}
+
+export async function actualizarGasto(db: Db, id: string, patch: {
+  centroCostoId?: string | null; grupoImpuesto?: string; informacionAdicional?: string;
+  litros?: number; tipoGasolina?: TipoGasolina | null;
+}): Promise<{ gasto: Rec; errores: string[] }> {
+  const gasto = (await db.gasto.update({ where: { id }, data: patch as Rec })) as Rec;
+  const errores = validarGasto({
+    categoriaCodigo: String((gasto["categoria"] as Rec | undefined)?.["codigo"] ?? gasto["categoriaCodigo"] ?? ""),
+    litros: gasto["litros"] as number | null, tipoGasolina: gasto["tipoGasolina"] as TipoGasolina | null,
+    excedeLimite: Boolean(gasto["excedeLimite"]), informacionAdicional: gasto["informacionAdicional"] as string | null,
+    omitirCombustible: omitirComb(gasto),
+  });
+  return { gasto, errores };
+}
+
+export async function crearGastoManual(db: Db, liquidacionId: string, facturaId: string, categoriaId: string):
+  Promise<{ ok: boolean; error?: string }> {
+  const factura = (await db.factura.findUnique({ where: { id: facturaId } })) as Rec | null;
+  if (!factura) return { ok: false, error: "La factura no existe." };
+  if (factura["estado"] === "CRUZADA") return { ok: false, error: "Esa factura ya fue cruzada." };
+  if (factura["receptorIdentificacion"] !== CEDULA) return { ok: false, error: "La factura no es a nombre de Nutricare." };
+  const ok = await crearGastoDesdeFactura(db, { liquidacionId, factura, categoriaId });
+  return ok ? { ok: true } : { ok: false, error: "Faltan datos (liquidación o categoría)." };
+}
+
+export async function enviarInforme(db: Db, id: string): Promise<{ ok: boolean; errores: string[] }> {
+  const liq = (await db.liquidacion.findUnique({ where: { id } })) as Rec | null;
+  if (!liq) return { ok: false, errores: ["No existe la liquidacion."] };
+  if (!["BORRADOR", "DEVUELTA"].includes(String(liq["estado"])))
+    return { ok: false, errores: [`No se puede enviar desde el estado ${liq["estado"]}.`] };
+  const errores = validarEnvioInforme({ aprobadorId: liq["aprobadorId"] as string | null });
+  const gastos = (await db.gasto.findMany({ where: { liquidacionId: id }, include: { categoria: true } })) as Rec[];
+  if (gastos.length === 0) errores.push("El informe no tiene gastos.");
+  for (const g of gastos) {
+    errores.push(...validarGasto({
+      categoriaCodigo: String((g["categoria"] as Rec | undefined)?.["codigo"] ?? ""),
+      litros: g["litros"] as number | null, tipoGasolina: g["tipoGasolina"] as TipoGasolina | null,
+      excedeLimite: Boolean(g["excedeLimite"]), informacionAdicional: g["informacionAdicional"] as string | null,
+      omitirCombustible: omitirComb(g),
+    }));
+  }
+  if (errores.length) return { ok: false, errores };
+  await recalcularMonto(db, id);
+  await db.liquidacion.update({ where: { id }, data: { estado: "ENVIADA" } });
+  return { ok: true, errores: [] };
+}
+
+export async function aprobarAprobador(db: Db, id: string, comentario?: string): Promise<{ ok: boolean; error?: string }> {
+  const liq = (await db.liquidacion.findUnique({ where: { id } })) as Rec | null;
+  if (!liq) return { ok: false, error: "No existe la liquidacion." };
+  if (liq["estado"] !== "ENVIADA")
+    return { ok: false, error: `El aprobador solo puede aprobar informes ENVIADOS (estado actual: ${liq["estado"]}).` };
+  await db.liquidacion.update({ where: { id }, data: { estado: "EN_REVISION_CONTA", comentarioAprobacion: comentario ?? null } });
+  return { ok: true };
+}
+
+export async function devolver(db: Db, id: string, comentario: string): Promise<{ ok: boolean; error?: string }> {
+  const liq = (await db.liquidacion.findUnique({ where: { id } })) as Rec | null;
+  if (!liq) return { ok: false, error: "No existe la liquidacion." };
+  if (!["ENVIADA", "EN_REVISION_CONTA"].includes(String(liq["estado"])))
+    return { ok: false, error: `No se puede devolver desde el estado ${liq["estado"]}.` };
+  await db.liquidacion.update({ where: { id }, data: { estado: "DEVUELTA", comentarioConta: comentario } });
+  return { ok: true };
+}
+
+export async function aprobarConta(db: Db, id: string, finance: FinancePort):
+  Promise<{ ok: boolean; mensaje: string; numeroReporteFO?: string }> {
+  const liq = (await db.liquidacion.findUnique({ where: { id } })) as Rec | null;
+  if (!liq) return { ok: false, mensaje: "No existe la liquidacion." };
+  if (liq["estado"] !== "EN_REVISION_CONTA")
+    return { ok: false, mensaje: `Conta solo aprueba informes EN REVISION (estado actual: ${liq["estado"]}). Falta la aprobacion del aprobador.` };
+  await db.liquidacion.update({ where: { id }, data: { estado: "APROBADA" } });
+  const informe = await cargarInforme(db, id);
+  if (!informe) return { ok: false, mensaje: "No existe la liquidacion." };
+  const r = await postearInforme(informe, finance);
+  if (r.posteado && r.numeroReporteFO) {
+    await marcarPosteado(db, id, r.numeroReporteFO);
+    return { ok: true, mensaje: r.mensaje, numeroReporteFO: r.numeroReporteFO };
+  }
+  if (r.yaEstaba) return { ok: true, mensaje: r.mensaje, numeroReporteFO: r.numeroReporteFO };
+  await db.liquidacion.update({ where: { id }, data: { estado: "ERROR_POSTEO" } });
+  return { ok: false, mensaje: r.mensaje };
+}
+
+export async function colas(db: Db): Promise<{ facturasSinCaptura: Rec[]; capturasSinFactura: Rec[] }> {
+  const facturasSinCaptura = (await db.factura.findMany({ where: { estado: "SIN_CAPTURA", esDeLaEmpresa: true } })) as Rec[];
+  const capturasSinFactura = (await db.captura.findMany({ where: { estado: "PENDIENTE_CRUCE", facturaId: null } })) as Rec[];
+  return { facturasSinCaptura, capturasSinFactura };
+}
+
+export async function facturasSinCruzar(db: Db): Promise<Rec[]> {
+  return db.factura.findMany({ where: { estado: "SIN_CAPTURA", esDeLaEmpresa: true } }) as Promise<Rec[]>;
+}

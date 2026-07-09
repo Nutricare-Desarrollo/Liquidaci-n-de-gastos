@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FacturaElectronica xsi:schemaLocation="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronica https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronica" xmlns="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronica" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+  <Clave>50630062600310274467400100001010000183211178712353</Clave>
+  <ProveedorSistemas>3101912274</ProveedorSistemas>
+  <CodigoActividadEmisor>4730.0</CodigoActividadEmisor>
+  <CodigoActividadReceptor>4659.0</CodigoActividadReceptor>
+  <NumeroConsecutivo>00100001010000183211</NumeroConsecutivo>
+  <FechaEmision>2026-06-30T13:33:05-06:00</FechaEmision>
+  <Emisor>
+    <Nombre>SERVICENTRO TOLEDO LIMITADA</Nombre>
+    <Identificacion>
+      <Tipo>02</Tipo>
+      <Numero>3102744674</Numero>
+    </Identificacion>
+    <NombreComercial>Reina Del Campo</NombreComercial>
+    <Ubicacion>
+      <Provincia>5</Provincia>
+      <Canton>07</Canton>
+      <Distrito>04</Distrito>
+      <OtrasSenas>San Joaquin, Colorado, Guanacaste</OtrasSenas>
+    </Ubicacion>
+    <Telefono>
+      <CodigoPais>506</CodigoPais>
+      <NumTelefono>26686400</NumTelefono>
+    </Telefono>
+    <CorreoElectronico>facturaciontoledolimitada@gmail.com</CorreoElectronico>
+  </Emisor>
+  <Receptor>
+    <Nombre>NUTRICARE SOCIEDAD ANONIMA</Nombre>
+    <Identificacion>
+      <Tipo>02</Tipo>
+      <Numero>3101179050</Numero>
+    </Identificacion>
+    <NombreComercial>NUTRICARE SOCIEDAD ANONIMA</NombreComercial>
+    <Ubicacion>
+      <Provincia>1</Provincia>
+      <Canton>01</Canton>
+      <Distrito>01</Distrito>
+      <OtrasSenas>_____</OtrasSenas>
+    </Ubicacion>
+    <Telefono>
+      <CodigoPais>506</CodigoPais>
+      <NumTelefono>87626555</NumTelefono>
+    </Telefono>
+    <CorreoElectronico>facturacion@nutricare.co.cr</CorreoElectronico>
+  </Receptor>
+  <CondicionVenta>01</CondicionVenta>
+  <DetalleServicio>
+    <LineaDetalle>
+      <NumeroLinea>1</NumeroLinea>
+      <CodigoCABYS>3336001000200</CodigoCABYS>
+      <CodigoComercial>
+        <Tipo>01</Tipo>
+        <Codigo>3</Codigo>
+      </CodigoComercial>
+      <Cantidad>83.819</Cantidad>
+      <UnidadMedida>Unid</UnidadMedida>
+      <TipoTransaccion>01</TipoTransaccion>
+      <Detalle>Diesel - 815595</Detalle>
+      <PrecioUnitario>670.00</PrecioUnitario>
+      <MontoTotal>56159.00</MontoTotal>
+      <SubTotal>56159.00</SubTotal>
+      <BaseImponible>56159.00</BaseImponible>
+      <Impuesto>
+        <Codigo>01</Codigo>
+        <CodigoTarifaIVA>01</CodigoTarifaIVA>
+        <Tarifa>0.00</Tarifa>
+        <Monto>0.00</Monto>
+      </Impuesto>
+      <ImpuestoAsumidoEmisorFabrica>0.00</ImpuestoAsumidoEmisorFabrica>
+      <ImpuestoNeto>0.00</ImpuestoNeto>
+      <MontoTotalLinea>56159.00</MontoTotalLinea>
+    </LineaDetalle>
+  </DetalleServicio>
+  <ResumenFactura>
+    <CodigoTipoMoneda>
+      <CodigoMoneda>CRC</CodigoMoneda>
+      <TipoCambio>1.00</TipoCambio>
+    </CodigoTipoMoneda>
+    <TotalServGravados>0.00</TotalServGravados>
+    <TotalServExentos>0.00</TotalServExentos>
+    <TotalServExonerado>0.00</TotalServExonerado>
+    <TotalServNoSujeto>0.00</TotalServNoSujeto>
+    <TotalMercanciasGravadas>0.00</TotalMercanciasGravadas>
+    <TotalMercanciasExentas>0.00</TotalMercanciasExentas>
+    <TotalMercExonerada>0.00</TotalMercExonerada>
+    <TotalMercNoSujeta>56159.00</TotalMercNoSujeta>
+    <TotalGravado>0.00</TotalGravado>
+    <TotalExento>0.00</TotalExento>
+    <TotalExonerado>0.00</TotalExonerado>
+    <TotalNoSujeto>56159.00</TotalNoSujeto>
+    <TotalVenta>56159.00</TotalVenta>
+    <TotalDescuentos>0.00</TotalDescuentos>
+    <TotalVentaNeta>56159.00</TotalVentaNeta>
+    <TotalDesgloseImpuesto>
+      <Codigo>01</Codigo>
+      <CodigoTarifaIVA>01</CodigoTarifaIVA>
+      <TotalMontoImpuesto>0.00</TotalMontoImpuesto>
+    </TotalDesgloseImpuesto>
+    <TotalImpuesto>0.00</TotalImpuesto>
+    <TotalImpAsumEmisorFabrica>0.00</TotalImpAsumEmisorFabrica>
+    <MedioPago>
+      <TipoMedioPago>01</TipoMedioPago>
+      <TotalMedioPago>56159.00</TotalMedioPago>
+    </MedioPago>
+    <TotalComprobante>56159.00</TotalComprobante>
+  </ResumenFactura>
+  <InformacionReferencia>
+    <TipoDocIR>08</TipoDocIR>
+    <Numero>_</Numero>
+    <FechaEmisionIR>2026-06-30T19:33:39-06:00</FechaEmisionIR>
+    <Codigo>05</Codigo>
+    <Razon>Número Pedido Compra</Razon>
+  </InformacionReferencia>
+  <Otros>
+    <OtroTexto>Actividad Economica: 4659.0
+
+
+Servicentro Toledo Limitada
+
+Tel: 2668-6400
+San Joaquin de Abangares
+
+Factura Contado:733444
+
+ID Despacho:815595
+Fecha:30/6/2026 01:32:09 p. m.
+Posicion:5
+Pistero: Kevin Antonio Ramirez Morales  
+
+Cliente: NUTRICARE SOCIEDAD ANONIMA 
+Placa: NTC311
+Chofer:
+Odometro:32,784
+
+Comentario:PLACA CL361368
+
+Combustible:Diesel
+Monto:¢56,159
+Volumen:83.819L
+Precio por Litro:¢</OtroTexto>
+  </Otros>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signature-336df9b7-5d3f-495b-95c8-c8d37ef86415"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" /><ds:Reference Id="Reference-e7fcafa0-0a53-48ee-b05b-69db7c09b2fa" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><ds:DigestValue>TkJnE0JFFEjWh3FcmBUiYDhmWX8pRKHpbWCruFMIZ8Q=</ds:DigestValue></ds:Reference><ds:Reference Id="ReferenceKeyInfo" URI="#KeyInfoId-Signature-336df9b7-5d3f-495b-95c8-c8d37ef86415"><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><ds:DigestValue>FKUzUXQgbOHbtJ6grZHcUc/aA4Htp0YJdRJQuG7cW9A=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-Signature-336df9b7-5d3f-495b-95c8-c8d37ef86415"><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><ds:DigestValue>dKf6Ylsj/EvHV2JjokIexVzfUidIQPgwznyv4pt0Zu0=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="SignatureValue-336df9b7-5d3f-495b-95c8-c8d37ef86415">JC/XRL61dHQRaW3a8iZGr7AdNtCH6e3MqpLs7Gg5A74vqRM2MsXSU+vOcJlEqwjhjqmnU4O46X6Jw6HGSGHEsUZs3xQqDVYPKxOceu5gOxo8mSHqUUgMG7kangYeUNdRW5p27dmif5cW88ujYfIHtJkumuYFYomyTuIOzhxhP6tPFQscJBruB8UPZI3oBuPBFgaNm7I625LhHHQKpIx+5zc25Up2faqe4Dpw3cEQXt2fyuohZ02qwqyn5uWbDZEvImIGjF8N46M0BUQJ1orJWk3uaYjFzMhzdQW+MlL8JJulHWjqZmkRwk6P7jCz81XYPJHrjMFfpM7KhbpXInfiMw==</ds:SignatureValue><ds:KeyInfo Id="KeyInfoId-Signature-336df9b7-5d3f-495b-95c8-c8d37ef86415"><ds:X509Data><ds:X509Certificate>MIIFHDCCAwSgAwIBAgIGAZgbJLQIMA0GCSqGSIb3DQEBCwUAMFoxCzAJBgNVBAYTAkNSMR8wHQYDVQQKDBZNSU5JU1RFUklPIERFIEhBQ0lFTkRBMQwwCgYDVQQLDANER1QxHDAaBgNVBAMME0NBIFBFUlNPTkEgSlVSSURJQ0EwHhcNMjUwNzE4MDEyNzI2WhcNMjkwNzE3MDEyNzI2WjB3MRkwFwYDVQQFExBDUEotMy0xMDItNzQ0Njc0MQswCQYDVQQGEwJDUjEZMBcGA1UECgwQUEVSU09OQSBKVVJJRElDQTEMMAoGA1UECwwDQ1BKMSQwIgYDVQQDDBtTRVJWSUNFTlRSTyBUT0xFRE8gTElNSVRBREEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCMrGdMGFei5p7oxDx5wPuGUDGyTTtOmSt4VB/J+T4/chChwwdS1Cr+uQ+kq/DGIl9dhohGqCXE3CDDGYCP9SgWVXz0/9O9rVStZlN/SwFu3TJ/sUr+a5MFiuXIqq3YzwL1xIg77sggzkYo5iGIkIFTxdXfEDTOjEpoE4n0k0K1kHlqccgYWojndnzkXu45NcWXsj276XC4cX8A9EfdpLEwEQNEYTjk7atY/qou61octf4clx8WEUp6JNVtzCcxulvd/fvq/CMG5KG8qHkYcvbJYeEmChTfCgnpT3cVfKUnAcd5umPmg529q24t+PNt1Q/aR0ZCV11YvpgLKeUhpkYBAgMBAAGjgcowgccwHwYDVR0jBBgwFoAUO21X9dZ86Z4QAiBB470azM+zTpUwHQYDVR0OBBYEFG+YZ0DDvmHeXuJt7Jt6BQoqLjD5MAsGA1UdDwQEAwIGwDATBgNVHSUEDDAKBggrBgEFBQcDBDBjBggrBgEFBQcBAQRXMFUwUwYIKwYBBQUHMAKGR2h0dHBzOi8vcGtpLmNvbXByb2JhbnRlc2VsZWN0cm9uaWNvcy5nby5jci9wcm9kL2ludGVybWVkaWF0ZS1wai1wZW0uY3J0MA0GCSqGSIb3DQEBCwUAA4ICAQBSkCRxKt6Jk5m9abvPdzvmNXgz/Rrb5Hi1T+u9DihE9I5IXzxMl1DROywANJ3nR9T0+Hu4xdlIPHPwVdg0C3sPHrIihMCzDI3UMmeP8tTIC/RQPa7AHN0lrprONCzMroX6SDjfm18Ms/G9cINO0rmJ09TokvjWoElmBdEIrbOVImDr+soTv1S3rMyKT7i2zaTW45ON6yE2BDZ+4Gxo7WkcheWyh6Y9maFhb46FAT4KjURJ4ozYFLyCqzodneS3eHUAmVf1leqZHPFR9Rl1gKaaHcjzyTfERLuv2UH+nYEek9CT6q4bdP4iRD6o3xZ+787cdofyfkGQ/k4MImr/Xx84OJoJBN+MBYZ+/VQ3VRzn8Xk5+Me0d+iJYo2LB7v+b10TLhIpX8JQqjVdrEBes84HT5zSkK7tscrRIo4lxsaMIMhWiqjLd7P/tUO2VMLIPMyeRvTGxvOWqQWWgxQ8TiJ57SujYRwi11tBDa3QdLU48c7eds6XxPGx7QeTw9Mwz8pib76V6zfSMw68u5LfM+oRrN/GhjPx0jK9Mfg3Bh1QtJHO8rNj3+mQm/58r7ijOAbp5pfMDQQLNK6JudbIbpk60RP6p5LI/z9Xw0NGQFpl6tg6dFHBVpngOKRo/FsgWBXDvXUJLNLSToZZpe19YrhQxCXooS2lU0TM0g1x6uCzhw==</ds:X509Certificate></ds:X509Data><ds:KeyValue><ds:RSAKeyValue><ds:Modulus>jKxnTBhXouae6MQ8ecD7hlAxsk07TpkreFQfyfk+P3IQocMHUtQq/rkPpKvwxiJfXYaIRqglxNwgwxmAj/UoFlV89P/Tva1UrWZTf0sBbt0yf7FK/muTBYrlyKqt2M8C9cSIO+7IIM5GKOYhiJCBU8XV3xA0zoxKaBOJ9JNCtZB5anHIGFqI53Z85F7uOTXFl7I9u+lwuHF/APRH3aSxMBEDRGE45O2rWP6qLutaHLX+HJcfFhFKeiTVbcwnMbpb3f376vwjBuShvKh5GHL2yWHhJgoU3woJ6U93FXylJwHHebpj5oOdvatuLfjzbdUP2kdGQlddWL6YCynlIaZGAQ==</ds:Modulus><ds:Exponent>AQAB</ds:Exponent></ds:RSAKeyValue></ds:KeyValue></ds:KeyInfo><ds:Object Id="XadesObjectId-0cd25d97-9f73-4c5f-af77-d0098cc92b83"><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Id="QualifyingProperties-bd116c11-9643-466e-b58e-0b654fdecf0f" Target="#Signature-336df9b7-5d3f-495b-95c8-c8d37ef86415"><xades:SignedProperties Id="SignedProperties-Signature-336df9b7-5d3f-495b-95c8-c8d37ef86415"><xades:SignedSignatureProperties><xades:SigningTime>2026-06-30T19:33:40+00:00</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><ds:DigestValue>92QeNEGG676HRzsp+QeAe6xJKfNG8zkRnfh0VmV8dDk=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=CA PERSONA JURIDICA, OU=DGT, O=MINISTERIO DE HACIENDA, C=CR</ds:X509IssuerName><ds:X509SerialNumber>1752802046984</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate><xades:SignaturePolicyIdentifier><xades:SignaturePolicyId><xades:SigPolicyId><xades:Identifier>https://tribunet.hacienda.go.cr/docs/esquemas/2016/v4.1/Resolucion_Comprobantes_Electronicos_DGT-R-48-2016.pdf</xades:Identifier><xades:Description /></xades:SigPolicyId><xades:SigPolicyHash><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><ds:DigestValue>Ohixl6upD6av8N7pEvDABhEL6hM=</ds:DigestValue></xades:SigPolicyHash></xades:SignaturePolicyId></xades:SignaturePolicyIdentifier><xades:SignerRole><xades:ClaimedRoles><xades:ClaimedRole>Obligado Tributario</xades:ClaimedRole></xades:ClaimedRoles></xades:SignerRole></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#Reference-e7fcafa0-0a53-48ee-b05b-69db7c09b2fa"><xades:MimeType>text/xml</xades:MimeType><xades:Encoding>UTF-8</xades:Encoding></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></FacturaElectronica>

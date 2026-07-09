@@ -1,0 +1,44 @@
+# Nutricare — Liquidación de gastos (reconstrucción fuera de Power Platform)
+
+Backend Node/TypeScript (hexagonal) + frontend React. El corazón de negocio portado y testeado, puertos para los servicios externos, adapters de Azure/M365, API HTTP, esquema Postgres y una interfaz web (captura + contabilidad). El sistema corre completo en **modo demo** sin Azure ni Dynamics; la conexión real con FO se cablea al final.
+
+Arranca por [`ARQUITECTURA.md`](./ARQUITECTURA.md).
+
+## Correr en modo demo (sin Azure ni Dynamics)
+
+Backend (almacén en memoria + adapters falsos, catálogos ya sembrados):
+
+```bash
+npm install
+npm run demo            # levanta el API en :8080 (DEMO_MODE=1, vía tsx)
+npm test                # 37 tests, validados contra 4 XML reales
+npm run verify:demo     # corre el flujo completo por HTTP (arranca el server aparte en :8090)
+```
+
+Frontend:
+
+```bash
+cd frontend
+npm install
+npm run dev             # Vite en :5173, apunta al API en :8080
+```
+
+En la interfaz: en **Captura** creás la liquidación, pegás el XML de una factura, "subís la foto" (en demo se simula con la clave que el XML dejó cargada) y ejecutás el cruce; en **Contabilidad** ves la bandeja por estado, editás los gastos, y hacés enviar → aprobar → aprobar conta (que postea a FO; en demo genera `EXP-DEMO-####`).
+
+## Pasar a producción
+
+Backend real (Azure/M365 + Postgres): completá `.env` (ver `.env.example`), corré `npm run prisma:generate` y `npm start` (sin `DEMO_MODE`). Eso activa OCR (Document Intelligence), storage (Blob), correo entrante (Graph), auth (Entra) y el posteo real a FO. La única pieza fuera de este repo: exponer el servicio X++ `NTCExpenseReportService` como custom service/OData y crear la cuenta de servicio en Entra.
+
+## Estructura
+
+- `src/domain/` — lógica pura y testeada: parser XML, situación fiscal, cruce, método de pago, combustible, reglas de monto, grupo de impuesto, clave de 50 dígitos, validaciones y `construirGasto`.
+- `src/ports/` — interfaces: OCR, correo entrante, storage, auth, notificación, finance (FO).
+- `src/adapters/azure/` — Blob, Document Intelligence, Graph, Entra (REST + `fetch`).
+- `src/adapters/memory/` + `src/adapters/fakes.ts` — modo demo (Db en memoria, OCR/storage/FO falsos).
+- `src/adapters/finance/` — `FoHttpClient`: llama al servicio X++ por API.
+- `src/services/` — ingesta de correo, cruce, posteo a FO (N líneas + anti-duplicado), flujo de liquidaciones.
+- `src/api/server.ts` — Fastify: salud, jobs, catálogos, capturas, liquidaciones, gastos, colas.
+- `prisma/schema.prisma` — modelo de datos que reemplaza a Dataverse.
+- `frontend/` — Vite + React: vistas de Captura y Contabilidad.
+
+## Qué falta 

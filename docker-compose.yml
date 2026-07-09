@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:16
+    container_name: nutricare-db
+    environment:
+      POSTGRES_USER: nutricare
+      POSTGRES_PASSWORD: nutricare
+      POSTGRES_DB: nutricare
+    ports:
+      - "5432:5432"
+    volumes:
+      - nutricare_pgdata:/var/lib/postgresql/data
+volumes:
+  nutricare_pgdata:

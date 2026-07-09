@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FacturaElectronica xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronica">
+  <Clave>50628062600310188852001300001010000995288101305288</Clave>
+  <ProveedorSistemas>3101750500</ProveedorSistemas>
+  <CodigoActividadEmisor>4730.0</CodigoActividadEmisor>
+  <NumeroConsecutivo>01300001010000995288</NumeroConsecutivo>
+  <FechaEmision>2026-06-28T12:29:59</FechaEmision>
+  <Emisor>
+    <Nombre>DISCOM COSTA RICA CORP SOCIEDAD ANONIMA</Nombre>
+    <Identificacion>
+      <Tipo>02</Tipo>
+      <Numero>3101888520</Numero>
+    </Identificacion>
+    <Ubicacion>
+      <Provincia>2</Provincia>
+      <Canton>10</Canton>
+      <Distrito>06</Distrito>
+      <OtrasSenas>ALAJUELA, SAN CARLOS, PITAL, CIENTO VEINTICINCO METROS NORTE DEL BANCO DE COSTA RICA, OFICINA A MANO DERECHA COLOR GRIS.</OtrasSenas>
+    </Ubicacion>
+    <CorreoElectronico>facturacionelectronica@discom.cr</CorreoElectronico>
+  </Emisor>
+  <Receptor>
+    <Nombre>NUTRICARE</Nombre>
+    <Identificacion>
+      <Tipo>02</Tipo>
+      <Numero>3101179050</Numero>
+    </Identificacion>
+    <CorreoElectronico>facturacion@nutricare.co.cr</CorreoElectronico>
+  </Receptor>
+  <CondicionVenta>01</CondicionVenta>
+  <PlazoCredito>0</PlazoCredito>
+  <DetalleServicio>
+    <LineaDetalle>
+      <NumeroLinea>1</NumeroLinea>
+      <CodigoCABYS>3331100010000</CodigoCABYS>
+      <Cantidad>46.672</Cantidad>
+      <UnidadMedida>L</UnidadMedida>
+      <Detalle>GASOLINA SUPER</Detalle>
+      <PrecioUnitario>753.00000</PrecioUnitario>
+      <MontoTotal>35144.00000</MontoTotal>
+      <SubTotal>35144.00000</SubTotal>
+      <BaseImponible>35144.00000</BaseImponible>
+      <Impuesto>
+        <Codigo>01</Codigo>
+        <CodigoTarifaIVA>10</CodigoTarifaIVA>
+        <Tarifa>0.00</Tarifa>
+        <Monto>0.00000</Monto>
+      </Impuesto>
+      <ImpuestoAsumidoEmisorFabrica>0</ImpuestoAsumidoEmisorFabrica>
+      <ImpuestoNeto>0.00000</ImpuestoNeto>
+      <MontoTotalLinea>35144.00000</MontoTotalLinea>
+    </LineaDetalle>
+  </DetalleServicio>
+  <ResumenFactura>
+    <CodigoTipoMoneda>
+      <CodigoMoneda>CRC</CodigoMoneda>
+      <TipoCambio>1</TipoCambio>
+    </CodigoTipoMoneda>
+    <TotalServGravados>0</TotalServGravados>
+    <TotalServExentos>0</TotalServExentos>
+    <TotalServNoSujeto>0</TotalServNoSujeto>
+    <TotalMercanciasGravadas>0</TotalMercanciasGravadas>
+    <TotalMercanciasExentas>35144.00000</TotalMercanciasExentas>
+    <TotalMercNoSujeta>0</TotalMercNoSujeta>
+    <TotalGravado>0</TotalGravado>
+    <TotalExento>35144.00000</TotalExento>
+    <TotalNoSujeto>0</TotalNoSujeto>
+    <TotalVenta>35144.00000</TotalVenta>
+    <TotalDescuentos>0</TotalDescuentos>
+    <TotalVentaNeta>35144.00000</TotalVentaNeta>
+    <TotalDesgloseImpuesto>
+      <Codigo>01</Codigo>
+      <CodigoTarifaIVA>10</CodigoTarifaIVA>
+      <TotalMontoImpuesto>0.00000</TotalMontoImpuesto>
+    </TotalDesgloseImpuesto>
+    <TotalImpuesto>0.00000</TotalImpuesto>
+    <TotalImpAsumEmisorFabrica>0</TotalImpAsumEmisorFabrica>
+    <TotalOtrosCargos>0</TotalOtrosCargos>
+    <MedioPago>
+      <TipoMedioPago>01</TipoMedioPago>
+      <TotalMedioPago>35144.00000</TotalMedioPago>
+    </MedioPago>
+    <TotalComprobante>35144.00000</TotalComprobante>
+  </ResumenFactura>
+  <Otros>
+    <OtroTexto codigo="Observaciones">,  Email FE: facturacion@nutricare.co.cr</OtroTexto>
+    <OtroTexto codigo="numeroorden">
+    </OtroTexto>
+    <OtroTexto codigo="EstacionServicio">Eds Discom Santa Lucia</OtroTexto>
+    <OtroTexto codigo="DireccionSucursal">50 mts norte del Automercado Carretera Barva</OtroTexto>
+    <OtroTexto codigo="TelefonoSucursal">22378235</OtroTexto>
+    <OtroTexto codigo="TipoMedioPago">01</OtroTexto>
+    <OtroTexto codigo="TotalMedioPago">35144.00000</OtroTexto>
+    <OtroTexto codigo="DireccionReceptor">EDS Cañas</OtroTexto>
+    <OtroTexto codigo="Resumen">Generado automaticamente</OtroTexto>
+  </Otros>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signature-46dceb3c-5bec-46e8-bccb-ad79c83e3b79"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" /><ds:Reference Id="Reference-74e8018b-ab23-42b0-a36a-9c0157137f35" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><ds:DigestValue>NqCiXekYWGkYv2r3yWXnLfhEcEirn2QEXpG0G10X0oQ=</ds:DigestValue></ds:Reference><ds:Reference Id="ReferenceKeyInfo" URI="#KeyInfoId-Signature-46dceb3c-5bec-46e8-bccb-ad79c83e3b79"><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><ds:DigestValue>3DJTIi+Vr4Npjao22g4VPrJKBTvomrXNnrPJfXCFbAY=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-Signature-46dceb3c-5bec-46e8-bccb-ad79c83e3b79"><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><ds:DigestValue>1MNzjGArZHqZPFg99zF/1ba1VDOAkhVileBpHZec7AI=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="SignatureValue-46dceb3c-5bec-46e8-bccb-ad79c83e3b79">4IGBvTX5FRN2qCkLH7H7M7P9E2o7tlLvTDn49QwkPRJ8pQD7QVYiLP1xIWqxwQQdBSu38c5xB4Izp7Ar4SI/AZoFXyiLckKC/wC3b3Pys8KxpHXx+28j/fc4VTvcQNh+EnNpiPTRp4/AODcs/E20JUOevKTbummtonghTNQjcTQ9IarUFzRt/XLNo6Ov1VpLMMe4jhmlGjXFDAl74bKl0mZRIUNZyuyRAjD+AtpIr4yMgLQCxgWEdXV9ff01B7YDHKKaH2sPvRu0G9faAnW6BnwNBI3DKqdUDinZ8lmcLu44v6WndhBL0F+lIyXTLBVcL5QTtBwOXjrxv2r92ob6KQ==</ds:SignatureValue><ds:KeyInfo Id="KeyInfoId-Signature-46dceb3c-5bec-46e8-bccb-ad79c83e3b79"><ds:X509Data><ds:X509Certificate>MIIFKjCCAxKgAwIBAgIGAY0eAnLXMA0GCSqGSIb3DQEBCwUAMFoxCzAJBgNVBAYTAkNSMR8wHQYDVQQKDBZNSU5JU1RFUklPIERFIEhBQ0lFTkRBMQwwCgYDVQQLDANER1QxHDAaBgNVBAMME0NBIFBFUlNPTkEgSlVSSURJQ0EwHhcNMjQwMTE4MTkxODEzWhcNMjgwMTE3MTkxODEzWjCBhDEZMBcGA1UEBRMQQ1BKLTMtMTAxLTg4ODUyMDELMAkGA1UEBhMCQ1IxGTAXBgNVBAoMEFBFUlNPTkEgSlVSSURJQ0ExDDAKBgNVBAsMA0NQSjExMC8GA1UEAwwoRElTQ09NIENPU1RBIFJJQ0EgQ09SUCAgU09DSUVEQUQgQU5PTklNQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOgkh26OL26aas5vWqa7yKB1acJmmTdpNhMzQwAkPqfK4sHhC0KFb9Mxw0Gkl91HxGyhCYEgtXmQ6FQ428JRHw1ca0cQBurxsCWPSrcVlmupZWb/X43C6fChsncEryFXqKTBbFWJ4EFn+KnnK0Rv0DHWW3qP+jKczktlM4ZxoZtw8OIqJL0bZ0IxU58QTpo2d+jtYyUkxfHL5d50E66XXZYRo2qchbQ80qofPmsog0wtriq3dJCrLpJV/IPMOXC98XRZbMtw/yBzYEqEDusSGd+lttTaaTfzUEee3E78+PdBt/NM0lImZ+ohnKfW73U0lWdkoYSlFquA8TFiJa1ZpNUCAwEAAaOByjCBxzAfBgNVHSMEGDAWgBQ7bVf11nzpnhACIEHjvRrMz7NOlTAdBgNVHQ4EFgQUfMr17bysAjNCPqQfFSau9QXEG9UwCwYDVR0PBAQDAgbAMBMGA1UdJQQMMAoGCCsGAQUFBwMEMGMGCCsGAQUFBwEBBFcwVTBTBggrBgEFBQcwAoZHaHR0cHM6Ly9wa2kuY29tcHJvYmFudGVzZWxlY3Ryb25pY29zLmdvLmNyL3Byb2QvaW50ZXJtZWRpYXRlLXBqLXBlbS5jcnQwDQYJKoZIhvcNAQELBQADggIBAJ39pLUXzclpQEUMWSBGbN6MiMe3+aHwrgwclPVUjFYy1gtzx3mn0tlqZrIebwl1i34a4jshDXZJav0eDEXK37BoDg1mHxiNlF/ad7VEIs8+CMx7fb/OtH5jACkAnNaskIqj6Vc3VADB+l0xY+MhGd7xJSLogF69z6W7x/JILG4RcVQZPufhOjyWpCwfQMYmRzRkpmFsGXuSNoSRLUw8oaiY3RPAdW5ed/FPiI0t851J8OFITOHp1jNG11UnlkbXhWdcoqsfKLlQ1XUQYRxjCCSXTLtN4BKbDa/LUO1fL/rUIpjvjEjs+mIkOyRHqYjqWSPo+gMwEZ689CFWOfCUo+IoRgAAXvbCzbV4zxMptFetLquxvu4gCftJPMtDUf5TCa6P7g5CDfTkosv+YF8J0eza9Jd73w6nZsXF0UyqQj94GQXwxTM8TsWbZVeEa6aK3UVMISUQYHuDejhHOaOTSmXBJ2BMLS2SvgbaOdZaBX9fJJ0XuZ2KVLfi7z9Fv3LDguYgSxDoc6fD6WHNQtDkul1eD3ObmCk6Xv2m3gw2IeMTy0nCxmDT0KNmzvaHoMjyDXuitXHV5OvYIFPrTou9fOtNSJ0bUCqm9P/0eR7rqUlWqsPoLKXU0V//K4mzeXjTJrMQYHvkHqng0kUf6hc1fsvRUxStCmPhklinv/G9zeaI</ds:X509Certificate></ds:X509Data><ds:KeyValue><ds:RSAKeyValue><ds:Modulus>6CSHbo4vbppqzm9aprvIoHVpwmaZN2k2EzNDACQ+p8riweELQoVv0zHDQaSX3UfEbKEJgSC1eZDoVDjbwlEfDVxrRxAG6vGwJY9KtxWWa6llZv9fjcLp8KGydwSvIVeopMFsVYngQWf4qecrRG/QMdZbeo/6MpzOS2UzhnGhm3Dw4iokvRtnQjFTnxBOmjZ36O1jJSTF8cvl3nQTrpddlhGjapyFtDzSqh8+ayiDTC2uKrd0kKsuklX8g8w5cL3xdFlsy3D/IHNgSoQO6xIZ36W21NppN/NQR57cTvz490G380zSUiZn6iGcp9bvdTSVZ2ShhKUWq4DxMWIlrVmk1Q==</ds:Modulus><ds:Exponent>AQAB</ds:Exponent></ds:RSAKeyValue></ds:KeyValue></ds:KeyInfo><ds:Object Id="XadesObjectId-71386f9a-c8c4-4b44-a4c3-029be805590a"><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Id="QualifyingProperties-340acaf6-ffde-4ff3-ac6c-f7251be60323" Target="#Signature-46dceb3c-5bec-46e8-bccb-ad79c83e3b79"><xades:SignedProperties Id="SignedProperties-Signature-46dceb3c-5bec-46e8-bccb-ad79c83e3b79"><xades:SignedSignatureProperties><xades:SigningTime>2026-06-28T12:35:04-06:00</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><ds:DigestValue>Rtty+yvZxqVvYXeMsPtQoI5M8VvOBRBM/BMFMjK7jKM=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=CA PERSONA JURIDICA, OU=DGT, O=MINISTERIO DE HACIENDA, C=CR</ds:X509IssuerName><ds:X509SerialNumber>1705605493463</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate><xades:SignaturePolicyIdentifier><xades:SignaturePolicyId><xades:SigPolicyId><xades:Identifier>https://tribunet.hacienda.go.cr/docs/esquemas/2016/v4.1/Resolucion_Comprobantes_Electronicos_DGT-R-48-2016.pdf</xades:Identifier><xades:Description /></xades:SigPolicyId><xades:SigPolicyHash><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><ds:DigestValue>V8lVVNGDCPen6VELRD1Ja8HARFk=</ds:DigestValue></xades:SigPolicyHash></xades:SignaturePolicyId></xades:SignaturePolicyIdentifier></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#Reference-74e8018b-ab23-42b0-a36a-9c0157137f35"><xades:MimeType>text/xml</xades:MimeType><xades:Encoding>UTF-8</xades:Encoding></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></FacturaElectronica>

@@ -1,0 +1,20 @@
+# dependencias
+node_modules/
+# builds
+dist/
+dist_*/
+distb_*/
+distc_*/
+diste_*/
+distf_*/
+distg_*/
+# entorno / secretos
+.env
+.env.*
+!.env.example
+!.env.local.example
+# logs y temporales
+*.log
+*.timestamp-*.mjs
+run*.log
+srv.log

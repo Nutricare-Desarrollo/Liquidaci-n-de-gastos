@@ -1,0 +1,41 @@
+{
+  "name": "nutricare-liquidacion",
+  "version": "0.1.0",
+  "description": "Sistema de liquidacion de gastos de tarjeta corporativa (reconstruccion fuera de Power Platform)",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "node --env-file=.env dist/src/index.js",
+    "dev": "cross-env DEMO_MODE=1 tsx watch src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev --name init",
+    "demo": "cross-env DEMO_MODE=1 tsx src/index.ts",
+    "verify:demo": "node scripts/verify-demo.mjs",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "prisma:seed": "prisma db seed",
+    "real": "tsx --env-file=.env src/index.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.19.0",
+    "fast-xml-parser": "^4.5.0",
+    "fastify": "^4.28.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "prisma": "^5.19.0",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5",
+    "cross-env": "^7.0.3",
+    "tsx": "^4.19.0"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  }
+}
