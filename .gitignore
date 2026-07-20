@@ -18,3 +18,8 @@ distg_*/
 *.timestamp-*.mjs
 run*.log
 srv.log
+
+# despliegue / credenciales
+publish-profile.xml
+*.publishsettings
+azure-setup.log
