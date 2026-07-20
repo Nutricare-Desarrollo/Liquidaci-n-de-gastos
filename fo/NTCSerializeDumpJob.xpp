@@ -1,0 +1,34 @@
+// =====================================================================
+//  Imprime el JSON que FO espera para el request (formato FormJsonSerializer),
+//  para alinear el body que manda el backend por HTTP. Mira la coleccion "Lines".
+// =====================================================================
+class NTCSerializeDumpJob
+{
+    public static void main(Args _args)
+    {
+        NTCExpenseReportRequestContract  req = new NTCExpenseReportRequestContract();
+        NTCExpenseReportLineContract     l1  = new NTCExpenseReportLineContract();
+        NTCExpenseReportLineContract     l2  = new NTCExpenseReportLineContract();
+        List                             lines = new List(Types::Class);
+
+        req.parmCompany('NTC');
+        req.parmPersonnelNumber('NTC-0377');
+        req.parmPurpose('TARJETA CORPORATIVA');
+        req.parmDescription('dump');
+        req.parmExternalId('DUMP-1');
+
+        l1.parmCostType('COMBUSTIBLE'); l1.parmAmount(6160); l1.parmCurrency('CRC');
+        l1.parmPayMethod('TARJET_COR'); l1.parmTransDate(str2Date('18/06/2026', 123));
+        l1.parmDescription('d1'); l1.parmTaxGroup('EXENTO'); l1.parmTaxItemGroup('EXENTO');
+        lines.addEnd(l1);
+
+        l2.parmCostType('ALMUERZO_CENA'); l2.parmAmount(12000); l2.parmCurrency('CRC');
+        l2.parmPayMethod('TARJET_COR'); l2.parmTransDate(str2Date('19/06/2026', 123));
+        l2.parmDescription('d2'); l2.parmTaxGroup('IVA'); l2.parmTaxItemGroup('IVA 13%');
+        lines.addEnd(l2);
+
+        req.parmLines(lines);
+
+        info(FormJsonSerializer::serializeClass(req));
+    }
+}

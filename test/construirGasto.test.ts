@@ -41,7 +41,7 @@ describe("construirGasto (cruce + herencia + calculos)", () => {
     const factura = parseFactura(fx("f1_jsm_nosujeto.xml")); // total 38019
     const g = construirGasto({
       factura,
-      liquidacion: { proposito: "CAJA CHICA", moneda: "CRC", centroCostoId: null },
+      liquidacion: { proposito: "CAJA CHICA - TESORERÍA", moneda: "CRC", centroCostoId: null },
       categoria: {
         codigo: "ALMUERZO",
         nombre: "Almuerzo",
@@ -55,7 +55,7 @@ describe("construirGasto (cruce + herencia + calculos)", () => {
     });
     expect(g.excedeLimite).toBe(true);
     expect(g.alerta).toContain("Excede");
-    expect(g.metodoPago).toBe("CAJA CHICA");
+    expect(g.metodoPago).toBe("CAJA_TESOR");
     expect(g.errores.some((e) => e.includes("informacion adicional"))).toBe(true);
   });
 });

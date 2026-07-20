@@ -1,14 +1,20 @@
 import type { MetodoPago, Moneda, Proposito } from "./types.js";
 
-// Metodo de pago calculado (traspaso 4.4): proposito del informe + moneda.
-// Un informe = una sola moneda (regla de negocio), lo que simplifica esto.
+// Metodo de pago segun el PROPOSITO del informe (y moneda para tarjeta).
+// Un informe = una sola moneda (regla de negocio).
 export function metodoPago(proposito: Proposito, moneda: Moneda): MetodoPago {
   switch (proposito) {
-    case "CAJA CHICA":
-      return "CAJA CHICA";
-    case "PAGO CON FONDOS PERSONALES":
-      return "FONDOS_PERS";
     case "TARJETA CORPORATIVA":
       return moneda === "USD" ? "TARJET_DOL" : "TARJET_COR";
+    case "PAGO CON FONDOS PERSONALES":
+    case "ANTICIPOS":
+    case "KILOMETRAJE":
+      return "FONDO_PERS";
+    case "CAJA CHICA - TESORERÍA":
+      return "CAJA_TESOR";
+    case "CAJA CHICA - ALMACÉN":
+      return "CAJA_ALMAC";
+    case "LIQUIDACIÓN ANTICIPOS":
+      return "DEV-ANTICI";
   }
 }

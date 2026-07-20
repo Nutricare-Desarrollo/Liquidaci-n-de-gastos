@@ -1,0 +1,56 @@
+// =====================================================================
+//  Job de LECTURA (DEV): verifica el reporte creado sin abrir el modulo
+//  de Gestion de gastos. Lee TrvExpTable + TrvExpTrans directo e imprime
+//  en el Infolog los campos de esta ronda (tipo de cambio, zona, km, etc).
+//
+//  Ajusta el NTCExternalId al que usaste en el TestJob.
+// =====================================================================
+class NTCExpenseReportReadJob
+{
+    public static void main(Args _args)
+    {
+        TrvExpTable trvExpTable;
+        TrvExpTrans trvExpTrans;
+        int         n;
+
+        changecompany('NTC')
+        {
+            select firstonly trvExpTable
+                where trvExpTable.NTCExternalId == 'LIQ-TEST-EXCH-001';   // <-- mismo id del TestJob
+
+            if (!trvExpTable.RecId)
+            {
+                info("No se encontro el reporte (revisa el NTCExternalId).");
+                return;
+            }
+
+            info(strFmt("Cabecera: %1 | ApprovalStatus: %2 | LegalEntity: [%3] | Worker: %4 | Purpose: %5",
+                        trvExpTable.ExpNumber,
+                        enum2Str(trvExpTable.ApprovalStatus),
+                        CompanyInfo::find(trvExpTable.LegalEntity).DataArea,
+                        HcmWorker::find(trvExpTable.CreatingWorker).PersonnelNumber,
+                        trvExpTable.Txt2));
+
+            while select trvExpTrans
+                where trvExpTrans.TrvExpTable == trvExpTable.RecId
+            {
+                n++;
+                info(strFmt("  Linea %1: %2 | %3 %4 -> MST=%5 | ExchRate=%6 | Pago=%7 | Aprob=%8",
+                            n,
+                            trvExpTrans.CostType,
+                            trvExpTrans.AmountCurr,
+                            trvExpTrans.ExchangeCode,
+                            trvExpTrans.AmountMST,
+                            trvExpTrans.ExchangeRate,
+                            trvExpTrans.PayMethod,
+                            enum2Str(trvExpTrans.ApprovalStatus)));
+                info(strFmt("           Factura=%1 | Comerciante=%2 | Zona=%3 | KM=%4",
+                            trvExpTrans.ReceiptNumber,
+                            trvExpTrans.MerchantId,
+                            trvExpTrans.ZoneCode,
+                            trvExpTrans.KMOwnCar));
+            }
+            info(strFmt("Total lineas: %1", n));
+        }
+    }
+}

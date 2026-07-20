@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "EstadoCaptura" ADD VALUE 'PENDIENTE_REGIMEN';

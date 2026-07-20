@@ -1,0 +1,217 @@
+{
+  "@odata.context":"https://ntc-produccion.operations.dynamics.com/data/$metadata#ExpenseCategories(dataAreaId,ExpenseCategory,Description,TaxItemGroup,ExpenseType,DefaultPaymentMethod)","value":[
+    {
+      "@odata.etag":"W/\"Jzg2NzI0MjY2OCw1NjM3MTQ0NTc2Jw==\"","dataAreaId":"ntc","ExpenseCategory":"CAPACITACION","Description":"Capacitaciones para el personal","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE1MjYwNzQ3NzAsNTYzNzE0NDU3Nyc=\"","dataAreaId":"ntc","ExpenseCategory":"KILOMETRAJE","Description":"Gasto Kilometraje","TaxItemGroup":"","ExpenseType":"Transport","DefaultPaymentMethod":"FONDO_PERS"
+    },{
+      "@odata.etag":"W/\"JzExNjExODEwMzEsNTYzNzE0NDU3OCc=\"","dataAreaId":"ntc","ExpenseCategory":"BOLETOS_AEREOS","Description":"Boletos aereos","TaxItemGroup":"IVA 4%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzgzOTg1NDAxNiw1NjM3MTQ0NTc5Jw==\"","dataAreaId":"ntc","ExpenseCategory":"PARQUEOS","Description":"Parqueos","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzQxMDczNTQ1Niw1NjM3MTQ0NTgwJw==\"","dataAreaId":"ntc","ExpenseCategory":"PEAJES","Description":"Peajes","TaxItemGroup":"EXENTO","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzI4MzY0NDY3MCw1NjM3MTQ0NTgxJw==\"","dataAreaId":"ntc","ExpenseCategory":"UBER_TAXI","Description":"Transporte para el personal","TaxItemGroup":"EXENTO","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzIwNDMyNTI3NCw1NjM3MTQ0NTgyJw==\"","dataAreaId":"ntc","ExpenseCategory":"ALMUERZO_CENA","Description":"","TaxItemGroup":"IVA 13%","ExpenseType":"Meals","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzIxMTQ2NjQ4MjgsNTYzNzE0NDU4Myc=\"","dataAreaId":"ntc","ExpenseCategory":"DESAYUNO","Description":"Desayuno","TaxItemGroup":"IVA 13%","ExpenseType":"Meals","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzU5NzA5Mjk5Myw1NjM3MTQ0NTg0Jw==\"","dataAreaId":"ntc","ExpenseCategory":"HOSPEDAJE","Description":"Hospedajes para el personal","TaxItemGroup":"IVA 13%","ExpenseType":"Hotel","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE1NDUwNDI3ODEsNTYzNzE0NDU4NSc=\"","dataAreaId":"ntc","ExpenseCategory":"SERVICIO_SALUD","Description":"Gastos m\u00e9dicos para el personal","TaxItemGroup":"IVA 4%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE2NTEzNjIxMzYsNTYzNzE0NDU4Nic=\"","dataAreaId":"ntc","ExpenseCategory":"GASTOS_EMPLEADOS","Description":"Otros Gastos de empleados","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzYyNzUwMDY5Nyw1NjM3MTQ0NTg3Jw==\"","dataAreaId":"ntc","ExpenseCategory":"UTILES_OFICINA","Description":"Papeler\u00eda y \u00fatiles de oficina","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzI3NTM1NTQ5OCw1NjM3MTQ0NTg4Jw==\"","dataAreaId":"ntc","ExpenseCategory":"EQUIPO_MENOR","Description":"Equipos Menores","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzgyMjgwMTgzNiw1NjM3MTQ0NTg5Jw==\"","dataAreaId":"ntc","ExpenseCategory":"GASTOS_LIMPIEZA","Description":"Aseo y limpieza","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE2OTY2NzAwNDAsNTYzNzE0NDU5MCc=\"","dataAreaId":"ntc","ExpenseCategory":"SUMINISTRO_COCINA","Description":"Suministros Cocina","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"Jzc2NDE0OTAzMyw1NjM3MTQ0NTkxJw==\"","dataAreaId":"ntc","ExpenseCategory":"SEGURIDAD","Description":"Seguridad","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE4MjIxNDE1MDYsNTYzNzE0NDU5Mic=\"","dataAreaId":"ntc","ExpenseCategory":"SUSCRIPCION_ANUAL","Description":"Pago de Suscripci\u00f3n anual","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzQ3MjkyMTUwLDU2MzcxNDQ1OTMn\"","dataAreaId":"ntc","ExpenseCategory":"SUSCRIPCION_MENSUAL","Description":"Pago de Suscripci\u00f3n mensual","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzY0NDI1NjAxNiw1NjM3MTQ0NTk0Jw==\"","dataAreaId":"ntc","ExpenseCategory":"MENSAJERIA","Description":"Correos, courier y mensajer\u00eda","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzY0MzIyMjAzLDU2MzcxNDQ1OTUn\"","dataAreaId":"ntc","ExpenseCategory":"GPS","Description":"Servicio Satelital GPS","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzIwODg4ODQ2NjQsNTYzNzE0NDU5Nic=\"","dataAreaId":"ntc","ExpenseCategory":"SOFTWARE","Description":"Softwares","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzIwODA0NDUwMDQsNTYzNzE0NDU5Nyc=\"","dataAreaId":"ntc","ExpenseCategory":"REGISTRO_SANITARIO","Description":"Registros Sanitarios","TaxItemGroup":"EXENTO","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"Jzk0MTczMzQ2NCw1NjM3MTQ0NTk4Jw==\"","dataAreaId":"ntc","ExpenseCategory":"COMBUSTIBLE","Description":"No usar","TaxItemGroup":"EXENTO","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzEyODY2Mjg5MTMsNTYzNzE0NDU5OSc=\"","dataAreaId":"ntc","ExpenseCategory":"MANTENIMIEN_INMUEBLE","Description":"Mantenimiento de inmuebles","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"Jzc3NTc3MjI4LDU2MzcxNDQ2MDAn\"","dataAreaId":"ntc","ExpenseCategory":"MANTENIMIEN_EQUIPO","Description":"Mantenimiento de Equipos","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzEzNTc4MTg5NDksNTYzNzE0NDYwMSc=\"","dataAreaId":"ntc","ExpenseCategory":"MANTENIMIEN_VEHICULO","Description":"Mantenimiento de Veh\u00edculos","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzQ2MjI1MTU0Nyw1NjM3MTQ0NjAyJw==\"","dataAreaId":"ntc","ExpenseCategory":"ESPECIES_FISCALES","Description":"Especies fiscales","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE5Mjk4OTU1MzEsNTYzNzE0NDYwMyc=\"","dataAreaId":"ntc","ExpenseCategory":"SERVICIO_PROFESIONAL","Description":"Servicios Profesionales","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE4NDA2NTM4MjgsNTYzNzE0NDYwNCc=\"","dataAreaId":"ntc","ExpenseCategory":"ALQUILER","Description":"Alquileres","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE4MzIwNDA5MTQsNTYzNzE0NDYwNSc=\"","dataAreaId":"ntc","ExpenseCategory":"FLETE","Description":"Fletes","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE3NTQ3ODAzODksNTYzNzE0NDYwNic=\"","dataAreaId":"ntc","ExpenseCategory":"DESALMACENAJE","Description":"Gastos de desalmacenaje","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE1ODQ0MDc1MDYsNTYzNzE0NDYwNyc=\"","dataAreaId":"ntc","ExpenseCategory":"EMPAQUE_ETIQUETA","Description":"Materiales de empaque y etiquetas","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE4MjgyOTg0NjQsNTYzNzE0NDYwOCc=\"","dataAreaId":"ntc","ExpenseCategory":"PUBLICIDAD_MERCADEO","Description":"Mercadeo Tradicional y digital","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzM0OTI0OTM0NCw1NjM3MTQ0NjA5Jw==\"","dataAreaId":"ntc","ExpenseCategory":"EVENTOS","Description":"","TaxItemGroup":"IVA 13%","ExpenseType":"Conference","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzQzMzM3NDY3Miw1NjM3MTQ0NjEwJw==\"","dataAreaId":"ntc","ExpenseCategory":"ATENCION_CLIENTE","Description":"Atenci\u00f3n a clientes","TaxItemGroup":"IVA 13%","ExpenseType":"Meals","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzMwMjA0MDk1NSw1NjM3MTQ0NjExJw==\"","dataAreaId":"ntc","ExpenseCategory":"OTROS_GASTOS","Description":"Otros gastos operativos","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE3Nzc4MzI4MzgsNTYzNzE0NDYxMic=\"","dataAreaId":"ntc","ExpenseCategory":"GARANTIA_CUMPLIMIEN","Description":"Comisiones Garant\u00edas de Cumplimiento","TaxItemGroup":"","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"Jzg0MjQwMDQ3OSw1NjM3MTQ0NjEzJw==\"","dataAreaId":"ntc","ExpenseCategory":"COMISION_TARJETA","Description":"Comisiones Sobre Tarjetas","TaxItemGroup":"","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzY1MzkxODA1NSw1NjM3MTQ0NjE0Jw==\"","dataAreaId":"ntc","ExpenseCategory":"DONACION","Description":"Donaciones","TaxItemGroup":"","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzM0NTg3MjE4MSw1NjM3MTQ0NjE1Jw==\"","dataAreaId":"ntc","ExpenseCategory":"MULTA_SANCION","Description":"Multas y sanciones","TaxItemGroup":"","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE1Mzc5MDQwNiw1NjM3MTQ0NjE2Jw==\"","dataAreaId":"ntc","ExpenseCategory":"GASTO_NO_DEDUCI","Description":"Otros gastos No Deducibles","TaxItemGroup":"","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE4ODM4MzcwMCw1NjM3MTQ0NjE3Jw==\"","dataAreaId":"ntc","ExpenseCategory":"FARMACIA","Description":"Compras y pagos de Farmacia","TaxItemGroup":"","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzEyMjQ5OTcwMzEsNTYzNzE0NDYxOCc=\"","dataAreaId":"ntc","ExpenseCategory":"ACTIVO_FIJO","Description":"Compra de Activo Fijo","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzEwNTcwMTg4NzAsNTYzNzE0NTMyNic=\"","dataAreaId":"feh","ExpenseCategory":"ACTIVO_FIJO","Description":"Compra de Activo Fijo","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzIzMzEzODEyMiw1NjM3MTQ1MzI3Jw==\"","dataAreaId":"feh","ExpenseCategory":"ALMUERZO_CENA","Description":"Almuerzo y Cena","TaxItemGroup":"IVA 13%","ExpenseType":"Meals","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzQ1ODIxNzMxNCw1NjM3MTQ1MzI4Jw==\"","dataAreaId":"feh","ExpenseCategory":"ALQUILER","Description":"Alquileres","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzExNzExNjQ0MzksNTYzNzE0NTMyOSc=\"","dataAreaId":"feh","ExpenseCategory":"ATENCION_CLIENTE","Description":"Atenci\u00f3n a clientes","TaxItemGroup":"IVA 13%","ExpenseType":"Meals","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE3OTgzNzY1OTIsNTYzNzE0NTMzMCc=\"","dataAreaId":"feh","ExpenseCategory":"BOLETOS_AEREOS","Description":"Boletos aereos","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzYwMzYxMTk0MCw1NjM3MTQ1MzMxJw==\"","dataAreaId":"feh","ExpenseCategory":"CAPACITACION","Description":"Capacitaciones para el personal","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzEzNzM0MDY0ODMsNTYzNzE0NTMzMic=\"","dataAreaId":"feh","ExpenseCategory":"COMBUSTIBLE","Description":"Combustibles","TaxItemGroup":"EXENTO","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE1NzU5NjM4MTIsNTYzNzE0NTMzMyc=\"","dataAreaId":"feh","ExpenseCategory":"COMISION_TARJETA","Description":"Comisiones Sobre Tarjetas","TaxItemGroup":"","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE3MzA5MDMwODMsNTYzNzE0NTMzNCc=\"","dataAreaId":"feh","ExpenseCategory":"DESALMACENAJE","Description":"Gastos de desalmacenaje","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE5NjEyNzgxOTMsNTYzNzE0NTMzNSc=\"","dataAreaId":"feh","ExpenseCategory":"DESAYUNO","Description":"Desayuno","TaxItemGroup":"IVA 13%","ExpenseType":"Meals","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE0NDgwNjA5MjQsNTYzNzE0NTMzNyc=\"","dataAreaId":"feh","ExpenseCategory":"DONACION","Description":"Donaciones","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzYyMjk2NjY0OCw1NjM3MTQ1MzM4Jw==\"","dataAreaId":"feh","ExpenseCategory":"EMPAQUE_ETIQUETA","Description":"Materiales de empaque y etiquetas","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzMzNTU2NzU5Nyw1NjM3MTQ1MzM5Jw==\"","dataAreaId":"feh","ExpenseCategory":"EQUIPO_MENOR","Description":"Equipos Menores","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzEzNzA0MTAxMTAsNTYzNzE0NTM0MCc=\"","dataAreaId":"feh","ExpenseCategory":"ESPECIES_FISCALES","Description":"Especies fiscales","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzIxNDUzMzI0OTMsNTYzNzE0NTM0MSc=\"","dataAreaId":"feh","ExpenseCategory":"EVENTOS","Description":"Eventos y promociones","TaxItemGroup":"IVA 13%","ExpenseType":"Conference","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzEwOTQ1NDU2ODksNTYzNzE0NTM0Mic=\"","dataAreaId":"feh","ExpenseCategory":"FARMACIA","Description":"Compras y pagos de Farmacia","TaxItemGroup":"","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzQxOTUyMjY4Miw1NjM3MTQ1MzQzJw==\"","dataAreaId":"feh","ExpenseCategory":"FLETE","Description":"Fletes","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzM0ODc3MjE3LDU2MzcxNDUzNDQn\"","dataAreaId":"feh","ExpenseCategory":"GARANTIA_CUMPLIMIEN","Description":"Comisiones Garant\u00edas de Cumplimiento","TaxItemGroup":"","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzgyODgyNTUxMiw1NjM3MTQ1MzQ1Jw==\"","dataAreaId":"feh","ExpenseCategory":"GASTO_NO_DEDUCI","Description":"Otros gastos No Deducibles","TaxItemGroup":"","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE4OTQxMTgyMSw1NjM3MTQ1MzQ2Jw==\"","dataAreaId":"feh","ExpenseCategory":"GASTOS_EMPLEADOS","Description":"Otros Gastos de empleados","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE5Njc0NDc3NzAsNTYzNzE0NTM0Nyc=\"","dataAreaId":"feh","ExpenseCategory":"GASTOS_LIMPIEZA","Description":"Aseo y limpieza","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzEyMDA2ODU1NzAsNTYzNzE0NTM0OCc=\"","dataAreaId":"feh","ExpenseCategory":"GPS","Description":"Servicio Satelital GPS","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE1MjUzODQxMTMsNTYzNzE0NTM0OSc=\"","dataAreaId":"feh","ExpenseCategory":"HOSPEDAJE","Description":"Hospedajes para el personal","TaxItemGroup":"IVA 13%","ExpenseType":"Hotel","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzEwNDE4ODk2MTgsNTYzNzE0NTM1MCc=\"","dataAreaId":"feh","ExpenseCategory":"KILOMETRAJE","Description":"Gasto Kilometraje","TaxItemGroup":"","ExpenseType":"Transport","DefaultPaymentMethod":"FONDO_PERS"
+    },{
+      "@odata.etag":"W/\"JzczNTAwNTUwNSw1NjM3MTQ1MzUxJw==\"","dataAreaId":"feh","ExpenseCategory":"MANTENIMIEN_EQUIPO","Description":"Mantenimiento de Equipos","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzI1NzAxNzYzNiw1NjM3MTQ1MzUyJw==\"","dataAreaId":"feh","ExpenseCategory":"MANTENIMIEN_INMUEBLE","Description":"Mantenimiento de inmuebles","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzEzNDYxMTYxMjMsNTYzNzE0NTM1Myc=\"","dataAreaId":"feh","ExpenseCategory":"MANTENIMIEN_VEHICULO","Description":"Mantenimiento de Veh\u00edculos","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzgwMDA4MzY2Miw1NjM3MTQ1MzU0Jw==\"","dataAreaId":"feh","ExpenseCategory":"MENSAJERIA","Description":"Correos, courier y mensajer\u00eda","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzUyMjE5MDkxMCw1NjM3MTQ1MzU1Jw==\"","dataAreaId":"feh","ExpenseCategory":"MULTA_SANCION","Description":"Multas y sanciones","TaxItemGroup":"","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzExMDQ1Njk1ODMsNTYzNzE0NTM1Nic=\"","dataAreaId":"feh","ExpenseCategory":"OTROS_GASTOS","Description":"Otros gastos operativos","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE5NzYzNTI0NTksNTYzNzE0NTM1Nyc=\"","dataAreaId":"feh","ExpenseCategory":"PARQUEOS","Description":"Parqueos","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE1OTU5MDE2ODQsNTYzNzE0NTM1OCc=\"","dataAreaId":"feh","ExpenseCategory":"PEAJES","Description":"Peajes","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE3NjczNjk0NjgsNTYzNzE0NTM1OSc=\"","dataAreaId":"feh","ExpenseCategory":"PUBLICIDAD_MERCADEO","Description":"Mercadeo y publicidad","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzY0NTEyNzAxMyw1NjM3MTQ1MzYwJw==\"","dataAreaId":"feh","ExpenseCategory":"REGISTRO_SANITARIO","Description":"Registros Sanitarios","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"Jzc2MzY0MTQ1Myw1NjM3MTQ1MzYxJw==\"","dataAreaId":"feh","ExpenseCategory":"SEGURIDAD","Description":"Seguridad","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzIwMDUwNTkwNDQsNTYzNzE0NTM2Mic=\"","dataAreaId":"feh","ExpenseCategory":"SERVICIO_PROFESIONAL","Description":"Servicios Profesionales","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"Jzc1NTA0NzA0OSw1NjM3MTQ1MzYzJw==\"","dataAreaId":"feh","ExpenseCategory":"SERVICIO_SALUD","Description":"Gastos m\u00e9dicos para el personal","TaxItemGroup":"IVA 4%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"Jzg3Njc2NzE4Myw1NjM3MTQ1MzY0Jw==\"","dataAreaId":"feh","ExpenseCategory":"SOFTWARE","Description":"Softwares","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzM3NTkwNTc4NSw1NjM3MTQ1MzY1Jw==\"","dataAreaId":"feh","ExpenseCategory":"SUMINISTRO_COCINA","Description":"Suministros Cocina","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzM5MjAwMDE3Niw1NjM3MTQ1MzY2Jw==\"","dataAreaId":"feh","ExpenseCategory":"SUSCRIPCION_ANUAL","Description":"Pago de Suscripci\u00f3n anual","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE3NTAwMDQ1OTIsNTYzNzE0NTM2Nyc=\"","dataAreaId":"feh","ExpenseCategory":"SUSCRIPCION_MENSUAL","Description":"Pago de Suscripci\u00f3n mensual","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzEzMTk4NTk5Niw1NjM3MTQ1MzY4Jw==\"","dataAreaId":"feh","ExpenseCategory":"UBER_TAXI","Description":"Transporte para el personal","TaxItemGroup":"EXENTO","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE5Njk3MTE1NDIsNTYzNzE0NTM2OSc=\"","dataAreaId":"feh","ExpenseCategory":"UTILES_OFICINA","Description":"Papeler\u00eda y \u00fatiles de oficina","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzEyMjc4OTQwNTcsNTYzNzE0NjA3Nic=\"","dataAreaId":"ntc","ExpenseCategory":"DEV_ANTICI","Description":"Devoluciones de anticipo","TaxItemGroup":"","ExpenseType":"Advance","DefaultPaymentMethod":"DEV-ANTICI"
+    },{
+      "@odata.etag":"W/\"JzEsNTYzNzE0NjA3Nyc=\"","dataAreaId":"feh","ExpenseCategory":"DEV_ANTICI","Description":"Devoluciones de anticipo","TaxItemGroup":"","ExpenseType":"Advance","DefaultPaymentMethod":"DEV-ANTICI"
+    },{
+      "@odata.etag":"W/\"JzkyOTY0ODA4Miw1NjM3MTQ2ODI2Jw==\"","dataAreaId":"ntc","ExpenseCategory":"ENCOMIENDAS","Description":"Encomiendas","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE4MDU2NjA1MTYsNTYzNzE0NjgyNyc=\"","dataAreaId":"ntc","ExpenseCategory":"EXCEDE","Description":"","TaxItemGroup":"","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE5OTI0MjgxNjQsNTYzNzE0NzU3Nic=\"","dataAreaId":"feh","ExpenseCategory":"EXCEDE","Description":"Excede","TaxItemGroup":"","ExpenseType":"Expense","DefaultPaymentMethod":"TARJET_COR"
+    },{
+      "@odata.etag":"W/\"JzcxMzczNjg4NSw1NjM3MTQ4MzI2Jw==\"","dataAreaId":"ntc","ExpenseCategory":"INVENTARIO","Description":"Compras de Inventario","TaxItemGroup":"","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzEsNTYzNzE0OTA3Nic=\"","dataAreaId":"ntc","ExpenseCategory":"TELEFONO","Description":"Tel\u00e9fonos corporativos","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzEsNTYzNzE0OTgyNic=\"","dataAreaId":"ntc","ExpenseCategory":"OTROS-KIL","Description":"Otros Kilometrajes","TaxItemGroup":"","ExpenseType":"Expense","DefaultPaymentMethod":"FONDO_PERS"
+    },{
+      "@odata.etag":"W/\"JzE4MjgxMjAyMTIsNTYzNzE1MDU3Nic=\"","dataAreaId":"ntc","ExpenseCategory":"CERTIFICADO","Description":"Certificaciones, requisitos, cumplimientos y otros","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE5MTE2MTA4MDAsNTYzNzE1MDU3Nyc=\"","dataAreaId":"ntc","ExpenseCategory":"CXC_VARIAS","Description":"Cuentas por Cobrar Varias","TaxItemGroup":"","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE4NzMzOTAxNTQsNTYzNzE1MTMyNic=\"","dataAreaId":"ntc","ExpenseCategory":"SUSCRIPCION_WEB","Description":"Software no diferible, licencias, suscripci\u00f3n Web,","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzkzOTQyNzQ2OSw1NjM3MTUyMDc2Jw==\"","dataAreaId":"ntc","ExpenseCategory":"TAC","Description":"Gastos asociados a Pacientes (Otros Gastos Operativos)","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"Jzk0MTAxMTQ3MSw1NjM3MTUyODI2Jw==\"","dataAreaId":"ntc","ExpenseCategory":"MARCHAMO","Description":"Marchamo","TaxItemGroup":"","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzE2NjQyNDc5MTAsNTYzNzE1MzU3Nic=\"","dataAreaId":"ntc","ExpenseCategory":"CABLE_INTERNET","Description":"Cable e internet","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzEsNTYzNzE1NDMyNic=\"","dataAreaId":"ntc","ExpenseCategory":"MAT_PUBL","Description":"Material publicitario","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzEsNTYzNzE1NTA3Nic=\"","dataAreaId":"ntc","ExpenseCategory":"OBRAS_PROCESO","Description":"Obras en Proceso","TaxItemGroup":"EXENTO","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzEwMzk3NDQxODYsNTYzNzE1NTgyNic=\"","dataAreaId":"ntc","ExpenseCategory":"UNIFORMES","Description":"Uniformes","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzEsNTYzNzE1NjU3Nic=\"","dataAreaId":"ntc","ExpenseCategory":"COMBUSTIBLES","Description":"Combustible","TaxItemGroup":"EXENTO","ExpenseType":"CarRental","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzEsNTYzNzE1NzMyNic=\"","dataAreaId":"ntc","ExpenseCategory":"ALMUERZO_GIRA","Description":"Almuerzo y Cena Gira","TaxItemGroup":"IVA 13%","ExpenseType":"Meals","DefaultPaymentMethod":"IMPORTAR"
+    },{
+      "@odata.etag":"W/\"JzExMDE4ODMwNTYsNTYzNzE1ODA3Nic=\"","dataAreaId":"feh","ExpenseCategory":"UNIFORMES","Description":"Uniformes","TaxItemGroup":"IVA 13%","ExpenseType":"Expense","DefaultPaymentMethod":"IMPORTAR"
+    }
+  ]
+}

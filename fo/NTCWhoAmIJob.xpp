@@ -1,0 +1,20 @@
+// =====================================================================
+//  Compara el worker del usuario ACTUAL con el worker NTC-0377,
+//  para saber si el reporte creado (bajo NTC-0377) es "tuyo".
+//  Ejecutar logueado con el usuario jbadilla.
+// =====================================================================
+class NTCWhoAmIJob
+{
+    public static void main(Args _args)
+    {
+        HcmWorker miWorker = HcmWorker::find(HcmWorker::userId2Worker(curUserId()));
+        HcmWorker w377     = HcmWorker::findByPersonnelNumber('NTC-0377');
+
+        info(strFmt("Usuario actual: %1", curUserId()));
+        info(strFmt("Mi worker  -> RecId=%1 | PersonnelNumber=%2 | Nombre=%3",
+                    miWorker.RecId, miWorker.PersonnelNumber, HcmWorker::worker2Name(miWorker.RecId)));
+        info(strFmt("NTC-0377   -> RecId=%1 | Nombre=%2",
+                    w377.RecId, HcmWorker::worker2Name(w377.RecId)));
+        info(strFmt("Coinciden? -> %1", miWorker.RecId == w377.RecId ? "SI" : "NO"));
+    }
+}

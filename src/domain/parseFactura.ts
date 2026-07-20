@@ -18,6 +18,8 @@ const parser = new XMLParser({
   },
   parseTagValue: false, // conservar texto crudo; forzamos a numero con toNum
   trimValues: true,
+  processEntities: true, // decodifica &amp; &lt; etc.
+  htmlEntities: true,    // decodifica entidades numericas: &#xED; -> í
 });
 
 /** Busca la primera aparicion de una tag (por nombre local) en un objeto anidado. */
@@ -75,7 +77,8 @@ export function parseFactura(xml: string): FacturaParseada {
 
   // Moneda del XML (ResumenFactura/CodigoTipoMoneda/CodigoMoneda).
   const monedaRaw = text(root, "CodigoMoneda").toUpperCase();
-  const moneda: Moneda = monedaRaw === "CRC" || monedaRaw === "USD" ? monedaRaw : "Otra";
+  // Si el comprobante no trae CodigoMoneda (comun en tiquetes), Hacienda asume CRC.
+  const moneda: Moneda = monedaRaw === "USD" ? "USD" : monedaRaw === "" || monedaRaw === "CRC" ? "CRC" : "Otra";
 
   // Primera linea de detalle SIEMPRE (regla: combustible = 1 sola linea).
   const detalleServicio = findFirst(root, "DetalleServicio");

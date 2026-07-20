@@ -1,0 +1,28 @@
+// =====================================================================
+//  Lista SOLO los reportes creados desde la app (con NTCExternalId),
+//  en NTC y FEH, con su nombre (Txt1) para ubicarlos facil.
+// =====================================================================
+class NTCFindReportJob
+{
+    public static void main(Args _args)
+    {
+        TrvExpTable t;
+        Container   empresas = ["NTC", "FEH"];
+        int         i, n;
+
+        for (i = 1; i <= conLen(empresas); i++)
+        {
+            changecompany(conPeek(empresas, i))
+            {
+                while select t
+                    where t.NTCExternalId != ""
+                {
+                    n++;
+                    info(strFmt("%1 | Empresa=%2 | ExpNumber=%3 | Nombre(Txt1)=%4 | ExternalId=%5",
+                                n, conPeek(empresas, i), t.ExpNumber, t.Txt1, t.NTCExternalId));
+                }
+            }
+        }
+        info(strFmt("Total reportes con ExternalId: %1", n));
+    }
+}

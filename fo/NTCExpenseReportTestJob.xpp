@@ -1,0 +1,84 @@
+// =====================================================================
+//  Job de prueba (dentro de FO / DEV): crea 1 cabecera + N lineas via el
+//  servicio, SIN HTTP/Postman. Ejecutar: boton derecho -> Set as Startup
+//  Object -> Ctrl+F5 (o Run).
+//
+//  Cubre lo nuevo de esta ronda:
+//   - Linea USD  -> verificar ExchangeRate lleno y AmountMST COLONIZADO.
+//   - Linea KILOMETRAJE -> ZoneCode (GAM/GIRAS) y KMOwnCar (decimal).
+//   - ReceiptNumber (numero de factura) y MerchantId (comerciante).
+//   - ApprovalStatus = Approved en cabecera y lineas.
+//
+//  Tras correrlo, revisar en SysTableBrowser (TrvExpTrans) las columnas:
+//   ExchangeCode, ExchangeRate, AmountCurr, AmountMST, ZoneCode, KMOwnCar,
+//   ReceiptNumber, MerchantId, ApprovalStatus.
+// =====================================================================
+class NTCExpenseReportTestJob
+{
+    public static void main(Args _args)
+    {
+        NTCExpenseReportRequestContract  request  = new NTCExpenseReportRequestContract();
+        NTCExpenseReportLineContract     l1       = new NTCExpenseReportLineContract();
+        NTCExpenseReportLineContract     l2       = new NTCExpenseReportLineContract();
+        NTCExpenseReportLineContract     l3       = new NTCExpenseReportLineContract();
+        NTCExpenseReportResponseContract response;
+        NTCExpenseReportService          service  = new NTCExpenseReportService();
+        List                             lines    = new List(Types::Class);
+
+        // ----- Cabecera -----
+        request.parmCompany('NTC');
+        request.parmPersonnelNumber('NTC-0377');            // worker real de ntc
+        request.parmPurpose('TARJETA CORPORATIVA');
+        request.parmDescription('Prueba tipo de cambio + kilometraje');
+        request.parmExternalId('LIQ-TEST-EXCH-001');        // cambia el sufijo para re-probar limpio
+
+        // ----- Linea 1: CRC (control) -----
+        l1.parmCostType('ALMUERZO_CENA');
+        l1.parmAmount(12000.00);
+        l1.parmCurrency('CRC');
+        l1.parmPayMethod('TARJET_COR');
+        l1.parmTransDate(str2Date('19/06/2026', 123));      // dia/mes/anio
+        l1.parmDescription('Almuerzo');
+        l1.parmTaxGroup('IVA');
+        l1.parmTaxItemGroup('IVA 13%');
+        l1.parmReceiptNumber('00100001010000000123');
+        l1.parmMerchant('Soda Central');
+        lines.addEnd(l1);
+
+        // ----- Linea 2: USD -> verificar colonizacion (AmountMST != AmountCurr) -----
+        l2.parmCostType('ALMUERZO_CENA');
+        l2.parmAmount(100.00);                              // 100 USD
+        l2.parmCurrency('USD');
+        l2.parmPayMethod('TARJET_DOL');
+        l2.parmTransDate(str2Date('19/06/2026', 123));
+        l2.parmDescription('Cena en gira (USD)');
+        l2.parmTaxGroup('EXENTO');
+        l2.parmTaxItemGroup('EXENTO');
+        l2.parmReceiptNumber('INV-USD-777');
+        l2.parmMerchant('Hotel Aeropuerto');
+        lines.addEnd(l2);
+
+        // ----- Linea 3: KILOMETRAJE -> ZoneCode + KMOwnCar -----
+        l3.parmCostType('COMBUSTIBLE');                     // o 'KILOMETRAJE' si existe en DEV
+        l3.parmAmount(15000.00);
+        l3.parmCurrency('CRC');
+        l3.parmPayMethod('FONDO_PERS');
+        l3.parmTransDate(str2Date('20/06/2026', 123));
+        l3.parmDescription('Gira zona GAM');
+        l3.parmTaxGroup('EXENTO');
+        l3.parmTaxItemGroup('EXENTO');
+        l3.parmZoneCode('GAM');
+        l3.parmKMOwnCar(120.5);                             // decimal
+        lines.addEnd(l3);
+
+        request.parmLines(lines);
+
+        // ----- Llamada -----
+        response = service.createExpenseReport(FormJsonSerializer::serializeClass(request));
+        info(strFmt("Success: %1", response.parmSuccess()));
+        info(strFmt("Mensaje: %1", response.parmMessage()));
+        info(strFmt("Reporte: %1", response.parmExpenseReportNumber()));
+        info(strFmt("HeaderRecId: %1", response.parmHeaderRecId()));
+        info(strFmt("Lineas: %1  |  YaExistia: %2", response.parmLineCount(), response.parmAlreadyExisted()));
+    }
+}

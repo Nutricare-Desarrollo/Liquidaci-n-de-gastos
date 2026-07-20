@@ -55,7 +55,7 @@ describe("situacion fiscal (prioridad)", () => {
 });
 
 describe("metodo de pago", () => {
-  it("caja chica", () => expect(metodoPago("CAJA CHICA", "CRC")).toBe("CAJA CHICA"));
+  it("caja chica", () => expect(metodoPago("CAJA CHICA - TESORERÍA", "CRC")).toBe("CAJA_TESOR"));
   it("fondos personales", () =>
     expect(metodoPago("PAGO CON FONDOS PERSONALES", "USD")).toBe("FONDOS_PERS"));
   it("tarjeta corporativa colones", () =>

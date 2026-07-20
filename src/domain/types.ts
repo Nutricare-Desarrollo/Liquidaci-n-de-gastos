@@ -17,12 +17,21 @@ export type SituacionFiscal = "IVA" | "EXENTO" | "NO SUJETO" | "";
 
 /** Proposito del informe. Controla el metodo de pago. */
 export type Proposito =
-  | "CAJA CHICA"
+  | "TARJETA CORPORATIVA"
   | "PAGO CON FONDOS PERSONALES"
-  | "TARJETA CORPORATIVA";
+  | "CAJA CHICA - TESORERÍA"
+  | "CAJA CHICA - ALMACÉN"
+  | "LIQUIDACIÓN ANTICIPOS"
+  | "ANTICIPOS"
+  | "KILOMETRAJE";
 
 /** Metodo de pago calculado (valores exactos que espera FO). */
-export type MetodoPago = "CAJA CHICA" | "FONDOS_PERS" | "TARJET_COR" | "TARJET_DOL";
+export type MetodoPago =
+  | "TARJET_COR" | "TARJET_DOL"
+  | "FONDO_PERS" | "CAJA_TESOR" | "CAJA_ALMAC" | "DEV-ANTICI";
+
+/** Zona para informes de KILOMETRAJE -> TrvExpTrans.ZoneCode. */
+export type Zona = "GAM" | "GIRAS";
 
 /** Tipo de gasolina (choice de FO). */
 export enum TipoGasolina {

@@ -28,15 +28,16 @@ export interface StoragePort {
 }
 
 /** Identidad: hoy Entra/M365. Afuera: Auth0/Clerk/Supabase Auth. */
+export interface UsuarioAutenticado { id: string; email: string; nombre?: string; roles: string[]; }
 export interface AuthPort {
-  usuarioActual(token: string): Promise<{ id: string; email: string } | null>;
+  usuarioActual(token: string): Promise<UsuarioAutenticado | null>;
 }
 
 /** Notificaciones (aprobaciones/devoluciones): hoy Teams. Afuera: email/otro canal. */
 export interface NotificacionPort {
   notificar(params: { paraEmail: string; titulo: string; cuerpo: string }): Promise<void>;
   /** Solicita aprobacion al aprobador seleccionado (hoy: Teams Approval al enviar). */
-  solicitarAprobacion(params: { aprobadorEmail: string; aprobadorNombre?: string; titulo: string; liquidacionId: string; liquidacionName?: string }): Promise<void>;
+  solicitarAprobacion(params: { aprobadorEmail: string; aprobadorNombre?: string; titulo: string; liquidacionId: string; liquidacionName?: string; enlace?: string }): Promise<void>;
 }
 
 /** Directorio de usuarios/aprobadores. Hoy: Entra (Graph). Demo: sembrados. */
@@ -58,6 +59,10 @@ export interface LineaReporteFO {
   description: string;
   taxGroup: SituacionFiscal; // grupo de venta (IVA/EXENTO/NO SUJETO)
   taxItemGroup: string; // grupo de articulos, ej. "IVA 13%"
+  receiptNumber?: string; // numero de factura/comprobante -> TrvExpTrans.ReceiptNumber
+  merchant?: string; // comerciante -> TrvExpTrans.MerchantId
+  zone?: string; // KILOMETRAJE: GAM/GIRAS -> TrvExpTrans.ZoneCode
+  km?: number; // KILOMETRAJE: kilometros -> TrvExpTrans.KMOwnCar
 }
 
 export interface ReporteGastoFO {
@@ -65,7 +70,8 @@ export interface ReporteGastoFO {
   personnelNumber: string; // NTC-xxxx
   purpose: string; // Txt2
   description: string; // Txt1
-  lineas: LineaReporteFO[]; // pendiente del traspaso: soportar N lineas
+  externalId: string; // id de la liquidacion (idempotencia / anti-duplicado en FO)
+  lineas: LineaReporteFO[];
 }
 
 export interface RespuestaFO {

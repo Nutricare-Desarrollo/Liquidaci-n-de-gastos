@@ -1,0 +1,282 @@
+// =====================================================================
+//  Servicio personalizado FO: crear Reporte de Gastos
+//  1 CABECERA (TrvExpTable) + N LINEAS (TrvExpTrans) en una sola llamada
+//  atomica, con control ANTI-DUPLICADO por ExternalId (id de liquidacion).
+//
+//  Requiere: campo de extension TrvExpTable.NTCExternalId (ver README_FO.md).
+//  Exponer via Service Group "NTCExpenseGroup" (ver README_FO.md).
+// =====================================================================
+
+// ---------------------------------------------------------------------
+//  1) Contrato de LINEA
+// ---------------------------------------------------------------------
+[DataContractAttribute]
+public final class NTCExpenseReportLineContract
+{
+    str     costType;
+    real    amount;
+    str     currency;
+    str     payMethod;
+    date    transDate;
+    str     description;
+    str     taxGroup;
+    str     taxItemGroup;
+    str     receiptNumber;
+    str     merchant;
+    str     zoneCode;
+    real    kmOwnCar;
+
+    [DataMemberAttribute('CostType')]
+    public str parmCostType(str _v = costType) { costType = _v; return costType; }
+
+    [DataMemberAttribute('Amount')]
+    public real parmAmount(real _v = amount) { amount = _v; return amount; }
+
+    [DataMemberAttribute('Currency')]
+    public str parmCurrency(str _v = currency) { currency = _v; return currency; }
+
+    [DataMemberAttribute('PayMethod')]
+    public str parmPayMethod(str _v = payMethod) { payMethod = _v; return payMethod; }
+
+    [DataMemberAttribute('TransDate')]
+    public date parmTransDate(date _v = transDate) { transDate = _v; return transDate; }
+
+    [DataMemberAttribute('Description')]
+    public str parmDescription(str _v = description) { description = _v; return description; }
+
+    [DataMemberAttribute('TaxGroup')]
+    public str parmTaxGroup(str _v = taxGroup) { taxGroup = _v; return taxGroup; }
+
+    [DataMemberAttribute('TaxItemGroup')]
+    public str parmTaxItemGroup(str _v = taxItemGroup) { taxItemGroup = _v; return taxItemGroup; }
+
+    [DataMemberAttribute('ReceiptNumber')]
+    public str parmReceiptNumber(str _v = receiptNumber) { receiptNumber = _v; return receiptNumber; }
+
+    [DataMemberAttribute('MerchantId')]
+    public str parmMerchant(str _v = merchant) { merchant = _v; return merchant; }
+
+    [DataMemberAttribute('ZoneCode')]
+    public str parmZoneCode(str _v = zoneCode) { zoneCode = _v; return zoneCode; }
+
+    [DataMemberAttribute('KMOwnCar')]
+    public real parmKMOwnCar(real _v = kmOwnCar) { kmOwnCar = _v; return kmOwnCar; }
+}
+
+// ---------------------------------------------------------------------
+//  2) Contrato de ENTRADA (cabecera + lista de lineas)
+// ---------------------------------------------------------------------
+[DataContractAttribute]
+public final class NTCExpenseReportRequestContract
+{
+    str     company;          // ntc / feh
+    str     personnelNumber;  // NTC-xxxx
+    str     purpose;          // "TARJETA CORPORATIVA"
+    str     description;      // texto libre (cabecera)
+    str     externalId;       // id de la liquidacion (idempotencia)
+    List    lines;            // List<NTCExpenseReportLineContract>
+
+    public void new()
+    {
+        lines = new List(Types::Class);
+    }
+
+    [DataMemberAttribute('Company')]
+    public str parmCompany(str _v = company) { company = _v; return company; }
+
+    [DataMemberAttribute('PersonnelNumber')]
+    public str parmPersonnelNumber(str _v = personnelNumber) { personnelNumber = _v; return personnelNumber; }
+
+    [DataMemberAttribute('Purpose')]
+    public str parmPurpose(str _v = purpose) { purpose = _v; return purpose; }
+
+    [DataMemberAttribute('Description')]
+    public str parmDescription(str _v = description) { description = _v; return description; }
+
+    [DataMemberAttribute('ExternalId')]
+    public str parmExternalId(str _v = externalId) { externalId = _v; return externalId; }
+
+    [DataMemberAttribute('Lines'),
+     DataCollectionAttribute(Types::Class, classStr(NTCExpenseReportLineContract))]
+    public List parmLines(List _v = lines) { lines = _v; return lines; }
+}
+
+// ---------------------------------------------------------------------
+//  3) Contrato de SALIDA
+// ---------------------------------------------------------------------
+[DataContractAttribute]
+public final class NTCExpenseReportResponseContract
+{
+    boolean success;
+    str     message;
+    str     expenseReportNumber;
+    int64   headerRecId;
+    int     lineCount;
+    boolean alreadyExisted;
+
+    [DataMemberAttribute('Success')]
+    public boolean parmSuccess(boolean _v = success) { success = _v; return success; }
+
+    [DataMemberAttribute('Message')]
+    public str parmMessage(str _v = message) { message = _v; return message; }
+
+    [DataMemberAttribute('ExpenseReportNumber')]
+    public str parmExpenseReportNumber(str _v = expenseReportNumber) { expenseReportNumber = _v; return expenseReportNumber; }
+
+    [DataMemberAttribute('HeaderRecId')]
+    public int64 parmHeaderRecId(int64 _v = headerRecId) { headerRecId = _v; return headerRecId; }
+
+    [DataMemberAttribute('LineCount')]
+    public int parmLineCount(int _v = lineCount) { lineCount = _v; return lineCount; }
+
+    [DataMemberAttribute('AlreadyExisted')]
+    public boolean parmAlreadyExisted(boolean _v = alreadyExisted) { alreadyExisted = _v; return alreadyExisted; }
+}
+
+// ---------------------------------------------------------------------
+//  4) Servicio
+// ---------------------------------------------------------------------
+public final class NTCExpenseReportService
+{
+    public NTCExpenseReportResponseContract createExpenseReport(str _requestJson)
+    {
+        NTCExpenseReportResponseContract    response = new NTCExpenseReportResponseContract();
+        NTCExpenseReportRequestContract     _request;
+        HcmWorker                           hcmWorker;
+        TrvExpTable                         trvExpTable, existing;
+        TrvExpTrans                         trvExpTrans;
+        NTCExpenseReportLineContract        line;
+        ListEnumerator                      le;
+        str                                 expNumber;
+        str                                 company;
+        int                                 numLineas;
+        CurrencyExchangeHelper              curExHelper;
+
+        try
+        {
+            // El endpoint JSON no deserializa bien List<class>; lo hacemos nosotros.
+            _request = FormJsonSerializer::deserializeObject(
+                classNum(NTCExpenseReportRequestContract), _requestJson) as NTCExpenseReportRequestContract;
+            if (!_request)
+            {
+                response.parmSuccess(false);
+                response.parmMessage("Request JSON invalido o vacio.");
+                return response;
+            }
+
+            hcmWorker = HcmWorker::findByPersonnelNumber(_request.parmPersonnelNumber());
+            if (!hcmWorker.RecId)
+            {
+                response.parmSuccess(false);
+                response.parmMessage(strFmt("No se encontro el empleado %1.", _request.parmPersonnelNumber()));
+                return response;
+            }
+
+            if (_request.parmLines() == null || !_request.parmLines().elements())
+            {
+                response.parmSuccess(false);
+                response.parmMessage("El reporte no trae lineas.");
+                return response;
+            }
+
+            company = strUpr(_request.parmCompany());
+            changecompany(company)
+            {
+                // ---------- ANTI-DUPLICADO por ExternalId ----------
+                if (_request.parmExternalId())
+                {
+                    select firstonly existing
+                        where existing.NTCExternalId == _request.parmExternalId();
+                    if (existing.RecId)
+                    {
+                        response.parmSuccess(true);
+                        response.parmAlreadyExisted(true);
+                        response.parmExpenseReportNumber(existing.ExpNumber);
+                        response.parmHeaderRecId(existing.RecId);
+                        response.parmMessage(strFmt("El reporte para la liquidacion %1 ya existia (%2).",
+                                                    _request.parmExternalId(), existing.ExpNumber));
+                        return response;
+                    }
+                }
+
+                ttsbegin;
+
+                // ---------- CABECERA ----------
+                expNumber = NumberSeq::newGetNum(TrvParameters::numRefExpNumber()).num();
+
+                trvExpTable.clear();
+                trvExpTable.ExpNumber      = expNumber;
+                trvExpTable.CreatingWorker = hcmWorker.RecId;
+                trvExpTable.Txt2           = _request.parmPurpose();
+                trvExpTable.Txt1           = _request.parmDescription();
+                trvExpTable.LegalEntity    = CompanyInfo::findDataArea(_request.parmCompany()).RecId; // visible en el workspace
+                trvExpTable.InterCompanyLE = company;
+                trvExpTable.NTCExternalId  = _request.parmExternalId();   // idempotencia
+                trvExpTable.ApprovalStatus = TrvAppStatus::Approved;      // se crea APROBADO (habilita Registrar en conta)
+                trvExpTable.setDefaultDimension();
+                trvExpTable.insert();
+
+                // ---------- LINEAS (N) ----------
+                le = _request.parmLines().getEnumerator();
+                while (le.moveNext())
+                {
+                    line = le.current();
+
+                    trvExpTrans.clear();
+                    trvExpTrans.TrvExpTable    = trvExpTable.RecId;
+                    trvExpTrans.ExpNumber      = trvExpTable.ExpNumber;   // clave: el detalle filtra por ExpNumber
+                    trvExpTrans.CreatingWorker = hcmWorker.RecId;
+                    trvExpTrans.ApprovalStatus = TrvAppStatus::Approved;
+                    trvExpTrans.LegalEntity    = CompanyInfo::findDataArea(_request.parmCompany()).RecId; // fix RecId 0
+                    trvExpTrans.InterCompanyLE = _request.parmCompany();
+                    trvExpTrans.CostType       = line.parmCostType();
+                    trvExpTrans.AmountCurr    = line.parmAmount();
+                    trvExpTrans.ExchangeCode  = line.parmCurrency();
+
+                    // --- Tipo de cambio: FO lo autocalcula en el FORM al elegir la moneda,
+                    //     pero NO en el insert por servicio. Lo calculamos por fecha de la
+                    //     transaccion para que el AmountMST quede COLONIZADO (CRC 1:1, USD tasa del dia).
+                    curExHelper = CurrencyExchangeHelper::newExchangeDate(
+                        Ledger::primaryLedger(CompanyInfo::findDataArea(_request.parmCompany()).RecId),
+                        line.parmTransDate());
+                    // Monto contable (moneda de la compania) desde el monto en la moneda de la transaccion.
+                    trvExpTrans.AmountMST     = curExHelper.calculateTransactionToAccounting(
+                        line.parmCurrency(), line.parmAmount(), true);
+                    // ExchangeRate en la misma escala que muestra FO (factor 100):
+                    //   tasa por 1 unidad de la moneda * 100  (CRC=100, USD~=46117).
+                    trvExpTrans.ExchangeRate  = curExHelper.calculateTransactionToAccounting(
+                        line.parmCurrency(), 1, false) * 100;
+
+                    trvExpTrans.PayMethod     = line.parmPayMethod();
+                    trvExpTrans.TransDate     = line.parmTransDate();
+                    trvExpTrans.Description   = line.parmDescription();
+                    trvExpTrans.TaxGroup      = line.parmTaxGroup();
+                    trvExpTrans.TaxItemGroup  = line.parmTaxItemGroup();
+                    trvExpTrans.ReceiptNumber = line.parmReceiptNumber();
+                    trvExpTrans.MerchantId    = line.parmMerchant();
+                    trvExpTrans.ZoneCode      = line.parmZoneCode();     // KILOMETRAJE
+                    trvExpTrans.KMOwnCar      = line.parmKMOwnCar();     // KILOMETRAJE (decimal)
+                    trvExpTrans.TaxIncluded   = NoYes::Yes;
+                    trvExpTrans.insert();
+                    numLineas++;
+                }
+
+                ttscommit;
+
+                response.parmSuccess(true);
+                response.parmMessage(strFmt("Reporte creado con %1 linea(s).", numLineas));
+                response.parmExpenseReportNumber(trvExpTable.ExpNumber);
+                response.parmHeaderRecId(trvExpTable.RecId);
+                response.parmLineCount(numLineas);
+            }
+        }
+        catch (Exception::Error)
+        {
+            response.parmSuccess(false);
+            response.parmMessage(strFmt("Error al crear el reporte para %1: %2",
+                                        _request.parmPersonnelNumber(), infolog.text()));
+        }
+
+        return response;
+    }
+}

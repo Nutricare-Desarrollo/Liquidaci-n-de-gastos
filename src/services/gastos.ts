@@ -6,14 +6,11 @@ import { metodoPago } from "../domain/metodoPago.js";
 import { evaluarLimite } from "../domain/reglasMonto.js";
 import { resolverGrupoImpuesto } from "../domain/grupoImpuesto.js";
 import { monedaToDb, situacionToDb } from "../db/map.js";
-import type { Moneda, Proposito, ReglaMonto, SituacionFiscal } from "../domain/types.js";
+import type { Moneda, ReglaMonto, SituacionFiscal } from "../domain/types.js";
+import { propositoDeClave, categoriaEsValida, permiteUnSoloGasto } from "../domain/proposito.js";
 import type { StoragePort } from "../ports/index.js";
 
 type Rec = Record<string, unknown>;
-
-const PROP: Record<string, Proposito> = {
-  CAJA_CHICA: "CAJA CHICA", FONDOS_PERSONALES: "PAGO CON FONDOS PERSONALES", TARJETA_CORPORATIVA: "TARJETA CORPORATIVA",
-};
 
 async function recalcular(db: Db, liquidacionId: string): Promise<void> {
   const gastos = (await db.gasto.findMany({ where: { liquidacionId } })) as Rec[];
@@ -78,34 +75,59 @@ export async function dividirGasto(db: Db, gastoId: string, opts: {
 export async function crearGastoSimplificado(db: Db, liquidacionId: string, opts: {
   monto: number; fecha: string; comerciante: string; categoriaId: string;
   situacionFiscal: SituacionFiscal; centroCostoId?: string | null;
-}): Promise<{ ok: boolean; error?: string }> {
+  capturaId?: string; adjunto?: { nombre: string; url: string; tipo: string }; numeroFactura?: string;
+  zona?: string | null; kilometros?: number | null; tipoComprobante?: string;
+  litros?: number | null; tipoGasolina?: string | null;
+}): Promise<{ ok: boolean; error?: string; gastoId?: string }> {
   const liq = (await db.liquidacion.findUnique({ where: { id: liquidacionId } })) as Rec | null;
   const cat = (await db.categoria.findUnique({ where: { id: opts.categoriaId } })) as Rec | null;
   if (!liq || !cat) return { ok: false, error: "Falta liquidación o categoría." };
   if (!(Number(opts.monto) > 0)) return { ok: false, error: "El monto debe ser mayor que 0." };
 
   const moneda = String(liq["moneda"]) as Moneda;
-  const proposito = PROP[String(liq["proposito"])] ?? "TARJETA CORPORATIVA";
+  const proposito = propositoDeClave(String(liq["proposito"]));
+
+  // Regla por proposito: categoria permitida.
+  if (!categoriaEsValida(proposito, String(cat["codigo"])))
+    return { ok: false, error: `La categoría ${cat["codigo"]} no es válida para el propósito ${proposito}.` };
+
+  // Regla ANTICIPOS: un solo gasto por liquidacion.
+  if (permiteUnSoloGasto(proposito)) {
+    const yaHay = (await db.gasto.findMany({ where: { liquidacionId } })) as Rec[];
+    if (yaHay.length > 0) return { ok: false, error: "Un informe de ANTICIPOS admite un único gasto." };
+  }
   const reglas = await reglasDominio(db);
   const grupos = (await db.grupoImpuesto.findMany()) as Rec[];
   const grupo = resolverGrupoImpuesto({ taxItemGroupCategoria: String(cat["taxItemGroup"]), gruposDisponibles: grupos.map((g) => String(g["name"])) });
-  const limite = evaluarLimite({ categoriaCodigo: String(cat["codigo"]), monto: Number(opts.monto), monedaInforme: moneda, reglas });
 
-  await db.gasto.create({
+  // KILOMETRAJE: si hay tarifa por km configurada (>0) para la zona, el monto = km * tarifa.
+  // Si la tarifa esta en 0 (aun no cargada), se usa el monto ingresado a mano.
+  let montoFinal = Number(opts.monto);
+  if (opts.zona && opts.kilometros != null) {
+    const tarifa = (await db.tarifaKm.findFirst({ where: { zona: opts.zona, activo: true } })) as Rec | null;
+    const t = Number(tarifa?.["montoPorKm"] ?? 0);
+    if (t > 0) montoFinal = t * Number(opts.kilometros);
+  }
+  const limite = evaluarLimite({ categoriaCodigo: String(cat["codigo"]), monto: montoFinal, monedaInforme: moneda, reglas });
+
+  const creado = (await db.gasto.create({
     data: {
       name: `GAS-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-      liquidacionId, facturaId: null, capturaId: null,
-      montoTotal: Number(opts.monto), moneda: monedaToDb(moneda), fecha: new Date(opts.fecha),
+      liquidacionId, facturaId: null, capturaId: opts.capturaId ?? null,
+      adjuntos: opts.adjunto ? [opts.adjunto] : undefined,
+      numeroFactura: opts.numeroFactura ?? null,
+      montoTotal: montoFinal, moneda: monedaToDb(moneda), fecha: new Date(opts.fecha),
       categoriaId: opts.categoriaId, comerciante: opts.comerciante,
       centroCostoId: opts.centroCostoId ?? (liq["centroCostoId"] as string | null) ?? null,
       metodoPago: metodoPago(proposito, moneda), situacionFiscal: situacionToDb(opts.situacionFiscal),
-      grupoImpuesto: grupo.grupo, litros: null, tipoGasolina: null,
+      grupoImpuesto: grupo.grupo, litros: opts.litros ?? null, tipoGasolina: opts.tipoGasolina ?? null,
+      zona: opts.zona ?? null, kilometros: opts.kilometros ?? null,
       excedeLimite: limite.excede, alerta: limite.alerta, urlPdf: null,
-      tipoComprobante: "REGIMEN_SIMPLIFICADO",
+      tipoComprobante: (opts.tipoComprobante ?? "REGIMEN_SIMPLIFICADO"),
     },
-  });
+  })) as Rec;
   await recalcular(db, liquidacionId);
-  return { ok: true };
+  return { ok: true, gastoId: String((creado as Rec)["id"]) };
 }
 
 export interface Adjunto { nombre: string; url: string; tipo: string; }

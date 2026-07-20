@@ -1,9 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import { api, fotoDemo, type Catalogos, type Liquidacion } from "./api.js";
+import { PROPOSITOS } from "./proposito.js";
+import { Combo } from "./Combo.js";
+import { api, fotoDemo, type Catalogos, type Liquidacion, type Sesion } from "./api.js";
+import { getFotoUrl } from "./auth.js";
+import { UsuarioPicker } from "./UsuarioPicker.js";
+import { BrandLogo } from "./BrandLogo.js";
 
-export function MobileCaptura({ cat }: { cat: Catalogos }) {
-  const empleado = cat.usuarios[0];
+export function MobileCaptura({ cat, sesion, selfApproval }: { cat: Catalogos; sesion?: Sesion | null; selfApproval?: boolean }) {
+  // Empleado = usuario autenticado (Entra). Fallback al catalogo solo en modo dev sin sesion.
+  const empleado = sesion
+    ? { id: sesion.id, email: sesion.email, nombre: sesion.nombre ?? sesion.email }
+    : cat.usuarios[0];
   const [empresa, setEmpresa] = useState("ntc");
+  const [tipo, setTipo] = useState<"electronica" | "regimen">("electronica");
   const [nueva, setNueva] = useState(true);
   const [proposito, setProposito] = useState("TARJETA_CORPORATIVA");
   const [moneda, setMoneda] = useState("CRC");
@@ -12,21 +21,29 @@ export function MobileCaptura({ cat }: { cat: Catalogos }) {
   const [categoriaId, setCategoriaId] = useState("");
   const [liqExistente, setLiqExistente] = useState("");
   const [liqs, setLiqs] = useState<Liquidacion[]>([]);
-  const [fotoNombre, setFotoNombre] = useState("");
+  const [fotoFile, setFotoFile] = useState<File | null>(null);
   const [xml, setXml] = useState("");
   const [enviando, setEnviando] = useState(false);
   const [msg, setMsg] = useState<{ t: "ok" | "err"; x: string } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [fotoUrl, setFotoUrl] = useState<string | null>(null);
 
   useEffect(() => { api.listar().then(setLiqs).catch(() => {}); }, []);
+  useEffect(() => { getFotoUrl().then(setFotoUrl).catch(() => setFotoUrl(null)); }, []);
+  const iniciales = (empleado?.nombre ?? "").split(" ").filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase() || "NN";
   const cats = cat.categorias.filter((c) => c.empresa === empresa);
+  const aprobadores = selfApproval ? cat.usuarios : cat.usuarios.filter((u) => u.id !== empleado?.id);
+  useEffect(() => { if (aprobadorId === empleado?.id || !aprobadores.some((u) => u.id === aprobadorId)) setAprobadorId(aprobadores[0]?.id ?? ""); }, [empleado?.id]);
 
   async function enviar() {
     setMsg(null);
     if (!categoriaId) return setMsg({ t: "err", x: "Elegi la categoria del gasto." });
-    if (!xml.trim()) return setMsg({ t: "err", x: "En demo, pega el XML de la factura para simular la foto." });
+    if (tipo === "regimen" && !fotoFile) return setMsg({ t: "err", x: "Subi la foto del comprobante (regimen simplificado)." });
+    if (tipo === "electronica" && !fotoFile && !xml.trim()) return setMsg({ t: "err", x: "Subi una foto del comprobante o pega el XML." });
+    if (nueva && !aprobadorId) return setMsg({ t: "err", x: "Elegi un aprobador (distinto a vos)." });
     setEnviando(true);
     try {
+      // 1) liquidacion (nueva o existente)
       let liqId = liqExistente;
       if (nueva) {
         const l = await api.crearLiquidacion({
@@ -36,17 +53,48 @@ export function MobileCaptura({ cat }: { cat: Catalogos }) {
         liqId = l.id;
       }
       if (!liqId) throw new Error("Elegi o crea una liquidacion.");
-      const ing = await api.ingestarXml(xml);
-      const clave = ing.clave;
-      if (!clave) throw new Error("El XML no trae clave valida.");
-      const texto = `FACTURA ELECTRONICA\nClave: ${clave.replace(/(.{5})/g, "$1 ")}\n${fotoNombre || ""}`;
-      await api.crearCaptura({ correoEmpleado: empleado?.email, imagenBase64: fotoDemo(texto), categoriaId, liquidacionId: liqId });
+
+      // Regimen simplificado: sube la foto SIN OCR ni cruce; contabilidad la convierte en gasto.
+      if (tipo === "regimen") {
+        const imagenBase64 = await fileToBase64(fotoFile!);
+        await api.crearCaptura({ correoEmpleado: empleado?.email, imagenBase64, mimeType: fotoFile!.type || "image/jpeg", categoriaId, liquidacionId: liqId, esRegimen: true });
+        setMsg({ t: "ok", x: "Comprobante de regimen enviado. Contabilidad lo convertira en gasto." });
+        setFotoFile(null);
+        api.listar().then(setLiqs).catch(() => {});
+        return;
+      }
+
+      // 2) si se pega el XML, se ingesta (en produccion llega por correo)
+      let claveXml: string | undefined;
+      if (xml.trim()) {
+        const ing = await api.ingestarXml(xml);
+        claveXml = ing.clave;
+      }
+
+      // 3) imagen: si hay foto real, se envia la imagen (el OCR lee el QR/clave);
+      //    si no hay foto, se simula con la clave del XML (util sin OCR real).
+      let imagenBase64: string;
+      let mimeType = "image/jpeg";
+      if (fotoFile) {
+        imagenBase64 = await fileToBase64(fotoFile);
+        mimeType = fotoFile.type || "image/jpeg";
+      } else {
+        if (!claveXml) throw new Error("Subi una foto o pega un XML con clave valida.");
+        imagenBase64 = fotoDemo(`FACTURA ELECTRONICA\nClave: ${claveXml.replace(/(.{5})/g, "$1 ")}`);
+        mimeType = "text/plain";
+      }
+      const capt = await api.crearCaptura({ correoEmpleado: empleado?.email, imagenBase64, mimeType, categoriaId, liquidacionId: liqId });
+
+      // 4) cruce
       const cruce = await api.cruce();
-      setMsg({ t: "ok", x: `Comprobante enviado. ${cruce.cruzados} gasto(s) creados.` });
-      setXml(""); setFotoNombre("");
+      const aviso = (capt as { avisoOcr?: string }).avisoOcr ? ` (${(capt as { avisoOcr?: string }).avisoOcr})` : "";
+      setMsg({ t: "ok", x: `Comprobante enviado.${aviso} ${cruce.cruzados} gasto(s) creados.` });
+      setXml(""); setFotoFile(null);
       api.listar().then(setLiqs).catch(() => {});
     } catch (e) {
-      setMsg({ t: "err", x: (e as Error).message ?? "No se pudo enviar." });
+      const body = (e as { body?: { error?: string; errores?: string[] } }).body;
+      const detalle = body?.error ?? body?.errores?.join(" | ") ?? (e as Error).message;
+      setMsg({ t: "err", x: detalle ?? "No se pudo enviar." });
     } finally {
       setEnviando(false);
     }
@@ -56,7 +104,7 @@ export function MobileCaptura({ cat }: { cat: Catalogos }) {
     <div className="phone-wrap">
       <div className="phone">
         <div className="ph-head">
-          <span className="logo" style={{ background: "#dfe5ec", color: "#12324f" }}>N</span>
+          <span className="logo" style={{ background: "#dfe5ec", color: "#0F6A93" }}><BrandLogo /></span>
           <span className="t">Liquidacion de gastos</span>
           <select value={empresa} onChange={(e) => setEmpresa(e.target.value)}>
             <option value="ntc">ntc</option>
@@ -65,17 +113,24 @@ export function MobileCaptura({ cat }: { cat: Catalogos }) {
         </div>
         <div className="ph-body">
           <div className="hello">
-            <div className="av">USER</div>
+            <div className="av">{fotoUrl ? <img src={fotoUrl} alt="" /> : iniciales}</div>
             <div><b>Hola, {empleado?.nombre ?? "empleado"}</b></div>
           </div>
-          <div className={`dropzone ${fotoNombre ? "filled" : ""}`} onClick={() => fileRef.current?.click()}>
-            <div className="cam">{fotoNombre ? "FOTO OK" : "+ FOTO"}</div>
-            <div>{fotoNombre ? fotoNombre : "Clic para agregar foto"}</div>
+          <label className="mini-label">Tipo de comprobante</label>
+          <select value={tipo} onChange={(e) => setTipo(e.target.value as "electronica" | "regimen")}>
+            <option value="electronica">Factura electronica (con clave)</option>
+            <option value="regimen">Regimen simplificado (sin factura)</option>
+          </select>
+          <div className={`dropzone ${fotoFile ? "filled" : ""}`} onClick={() => fileRef.current?.click()}>
+            <div className="cam">{fotoFile ? "FOTO OK" : "+ FOTO"}</div>
+            <div>{fotoFile ? fotoFile.name : "Clic para agregar foto"}</div>
           </div>
           <input ref={fileRef} type="file" accept="image/*" style={{ display: "none" }}
-            onChange={(e) => setFotoNombre(e.target.files?.[0]?.name ?? "")} />
-          <label className="mini-label">(demo) Pega el XML de la factura para simular la foto</label>
-          <textarea rows={3} value={xml} onChange={(e) => setXml(e.target.value)} placeholder="<FacturaElectronica>...</FacturaElectronica>" />
+            onChange={(e) => setFotoFile(e.target.files?.[0] ?? null)} />
+          {tipo === "electronica" && <>
+            <label className="mini-label">(opcional) Pega el XML de la factura para la prueba</label>
+            <textarea rows={3} value={xml} onChange={(e) => setXml(e.target.value)} placeholder="<FacturaElectronica>...</FacturaElectronica>" />
+          </>}
           <div className="toggle-row">
             <span>Crear nueva liquidacion</span>
             <button className={`toggle ${nueva ? "on" : ""}`} onClick={() => setNueva(!nueva)} aria-label="toggle"><span className="knob" /></button>
@@ -84,9 +139,7 @@ export function MobileCaptura({ cat }: { cat: Catalogos }) {
             <>
               <label className="mini-label">Selecciona el proposito</label>
               <select value={proposito} onChange={(e) => setProposito(e.target.value)}>
-                <option value="TARJETA_CORPORATIVA">TARJETA CORPORATIVA</option>
-                <option value="CAJA_CHICA">CAJA CHICA</option>
-                <option value="FONDOS_PERSONALES">PAGO CON FONDOS PERSONALES</option>
+                {PROPOSITOS.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
               </select>
               <label className="mini-label">Selecciona la moneda del informe</label>
               <select value={moneda} onChange={(e) => setMoneda(e.target.value)}>
@@ -94,9 +147,7 @@ export function MobileCaptura({ cat }: { cat: Catalogos }) {
                 <option value="USD">Dolares (USD)</option>
               </select>
               <label className="mini-label">Selecciona el aprobador</label>
-              <select value={aprobadorId} onChange={(e) => setAprobadorId(e.target.value)}>
-                {cat.usuarios.map((u) => <option key={u.id} value={u.id}>{u.nombre ?? u.email}</option>)}
-              </select>
+              <UsuarioPicker usuarios={aprobadores} value={aprobadorId} onChange={setAprobadorId} />
               <label className="mini-label">Selecciona el centro de costo</label>
               <select value={centroCostoId} onChange={(e) => setCentroCostoId(e.target.value)}>
                 {cat.centrosCosto.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -112,15 +163,22 @@ export function MobileCaptura({ cat }: { cat: Catalogos }) {
             </>
           )}
           <label className="mini-label">Categoria del gasto</label>
-          <select value={categoriaId} onChange={(e) => setCategoriaId(e.target.value)}>
-            <option value="">-- elegir --</option>
-            {cats.map((c) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
-          </select>
+          <Combo options={cats.map((c) => ({ value: c.id, label: c.nombre, hint: c.codigo }))}
+            value={categoriaId} onChange={setCategoriaId} placeholder="-- elegir categoria --" />
           {msg && <div className={`msg ${msg.t}`}>{msg.x}</div>}
-          <button className="btn-block" disabled={enviando} onClick={enviar}>{enviando ? "Enviando..." : "Enviar comprobante"}</button>
+          <button className="btn-block" disabled={enviando} onClick={enviar}>{enviando && <span className="spinner" />}{enviando ? "Enviando..." : "Enviar comprobante"}</button>
         </div>
         <div className="ph-foot">Pedi siempre la factura a nombre de Nutricare (cedula juridica).</div>
       </div>
     </div>
   );
+}
+
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onerror = () => reject(new Error("No se pudo leer la imagen"));
+    r.onload = () => { const v = String(r.result); resolve(v.slice(v.indexOf(",") + 1)); };
+    r.readAsDataURL(file);
+  });
 }

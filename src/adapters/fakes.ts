@@ -38,10 +38,11 @@ export class FakeFinance implements FinancePort {
 }
 
 export class FakeAuth implements AuthPort {
-  async usuarioActual(token: string): Promise<{ id: string; email: string } | null> {
-    // En demo, el token ES el email.
-    if (!token) return null;
-    return { id: `demo-${token}`, email: token };
+  constructor(private readonly devRoles: string[] = ["Admin"]) {}
+  async usuarioActual(token: string): Promise<{ id: string; email: string; nombre?: string; roles: string[] } | null> {
+    // Sin auth real: usuario de desarrollo con los roles indicados (default Admin).
+    if (!token || token === "dev") return { id: "dev-user", email: "dev@nutricare.co.cr", nombre: "Usuario Dev", roles: this.devRoles };
+    return { id: `demo-${token}`, email: token, nombre: token, roles: this.devRoles };
   }
 }
 
@@ -51,7 +52,7 @@ export class FakeNotificacion implements NotificacionPort {
   async notificar(params: { paraEmail: string; titulo: string; cuerpo: string }): Promise<void> {
     this.enviadas.push({ paraEmail: params.paraEmail, titulo: params.titulo });
   }
-  async solicitarAprobacion(params: { aprobadorEmail: string; aprobadorNombre?: string; titulo: string; liquidacionId: string; liquidacionName?: string }): Promise<void> {
+  async solicitarAprobacion(params: { aprobadorEmail: string; aprobadorNombre?: string; titulo: string; liquidacionId: string; liquidacionName?: string; enlace?: string }): Promise<void> {
     // [DEMO] En produccion aqui se crea el Teams Approval para el aprobador.
     this.aprobaciones.push({ aprobadorEmail: params.aprobadorEmail, liquidacionId: params.liquidacionId });
   }

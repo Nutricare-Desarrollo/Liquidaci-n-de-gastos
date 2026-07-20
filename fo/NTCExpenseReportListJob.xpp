@@ -1,0 +1,22 @@
+// =====================================================================
+//  Diagnostico: lista los reportes de gastos de NTC con su NTCExternalId,
+//  para entender el comportamiento del anti-duplicado.
+// =====================================================================
+class NTCExpenseReportListJob
+{
+    public static void main(Args _args)
+    {
+        TrvExpTable t;
+        int n;
+        changecompany('NTC')
+        {
+            while select t order by RecId
+            {
+                n++;
+                info(strFmt("%1 | ExpNumber=%2 | NTCExternalId=[%3] | Txt2=%4",
+                            n, t.ExpNumber, t.NTCExternalId, t.Txt2));
+            }
+            info(strFmt("Total reportes en NTC: %1", n));
+        }
+    }
+}

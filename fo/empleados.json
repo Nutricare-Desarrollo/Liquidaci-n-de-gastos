@@ -1,0 +1,391 @@
+{
+  "@odata.context":"https://ntc-produccion.operations.dynamics.com/data/$metadata#EmployeesV2(PersonnelNumber,Name,EmploymentLegalEntityId,PrimaryContactEmail)","value":[
+    {
+      "@odata.etag":"W/\"JzE0NjI3MzYwMzAsNTYzNzE0NDU3NjsxNTY2OTY0NDIxLDU2MzcxNTA1Nzc7MSw1NjM3MTQ0NjgwOzEsNTYzNzE0NDY4MzswLDA7MSw1NjM3MTQ0NjgzOzEsNTYzNzE0NDY4MDsxLDU2MzcxNDYwNzY7MSw1NjM3MTQ1MzI4OzEsNTYzNzE0NjA3Nic=\"","PersonnelNumber":"Dynamics","Name":"Dynamics 365F&O","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"dynamics365@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE0NjI3MzYwMzAsNTYzNzE0NDU3NjsxNTY2OTY0NDIxLDU2MzcxNTA1Nzc7MSw1NjM3MTQ0NjgwOzEsNTYzNzE0NDY4MzswLDA7MSw1NjM3MTQ0NjgzOzEsNTYzNzE0NDY4MDsxLDU2MzcxNDQ1NzY7MSw1NjM3MTQ0NjgwOzEsNTYzNzE0NDU3Nic=\"","PersonnelNumber":"Dynamics","Name":"Dynamics 365F&O","EmploymentLegalEntityId":"FEH","PrimaryContactEmail":"dynamics365@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzcyMzEwNzIxNyw1NjM3MTQ1MzI4OzE0MzM1ODg0NDksNTYzNzE1NDM1ODsyOTQ0ODk5NTcsNTYzNzE0NDU3ODsxLDU2MzcxNDQ1Nzg7MSw1NjM3MTUwOTIxOzEsNTYzNzE0NDU3ODsxLDU2MzcxNDQ1Nzg7MTQ2OTgzMjE5Nyw1NjM3MTQ1MzI4OzEsNTYzNzE0NDU3ODsxLDU2MzcxNDUzMjgn\"","PersonnelNumber":"NTC-0330","Name":"WILLIAM JOSUE HERRERA URE\u00d1A","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"wherrera@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE0NTQ4MTYxMjUsNTYzNzE0NTMyOTsyMDQxMzM3MjA1LDU2MzcxNTQzNDE7MTMyNjAwNTcxLDU2MzcxNDQ1Nzk7MSw1NjM3MTQ0NTc5OzIxMzkxMTc1MDksNTYzNzE1MjMwMjsxLDU2MzcxNDQ1Nzk7MSw1NjM3MTQ0NTc5Ozg4ODY1OTkyNiw1NjM3MTQ1MzI5OzEsNTYzNzE0NDU3OTsxLDU2MzcxNDUzMjkn\"","PersonnelNumber":"NTC-0254","Name":"ADRIANA FLORES PADILLA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"aflores@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"Jzk0NDAxMzMxNCw1NjM3MTQ1MzMzOzYxNzQ2ODk4LDU2MzcxNTQzNTQ7MTY5MzQyNTk0Myw1NjM3MTQ0NTgzOzEsNTYzNzE0NDU4MzsxLDU2MzcxNTA5Mjk7MSw1NjM3MTQ0NTgzOzEsNTYzNzE0NDU4Mzs1OTQ2NTY5NTEsNTYzNzE0NTMzMzsxLDU2MzcxNDQ1ODM7MSw1NjM3MTQ1MzMzJw==\"","PersonnelNumber":"NTC-0321","Name":"ALVARO ENRIQUE PARAJELES FONSECA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"aparajeles@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzkxMjY1NTI2LDU2MzcxNDUzMzU7ODM4MTA5MzAsNTYzNzE1NDM2Mjs0NzE5NzY4NTMsNTYzNzE0NDU4NTsxLDU2MzcxNDYwODI7MSw1NjM3NTg4NTg3OzEsNTYzNzE0NDU4NTsxLDU2MzcxNDQ1ODU7MTgxMTkyNDkzLDU2MzcxNDUzMzU7MSw1NjM3MTQ0NTg1OzEsNTYzNzE0NTMzNSc=\"","PersonnelNumber":"NTC-0219","Name":"ANGELA NATASHA CHINCHILLA BALTODANO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"achinchilla@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE0NTY3Mzg4MjAsNTYzNzE0NTMzNjsxNDA4OTE0ODYsNTYzNzE1MjMzODsxODQwMzUyMjMyLDU2MzcxNDQ1ODY7MSw1NjM3MTQ2ODI4OzExNTMyMzEzOTAsNTYzNzE1MzEwMTsxLDU2MzcxNDQ1ODY7MSw1NjM3MTQ0NTg2OzkxNjM1NjY3Miw1NjM3MTQ1MzM2OzEsNTYzNzE0NDU4NjsxLDU2MzcxNDUzMzYn\"","PersonnelNumber":"NTC-0218","Name":"ARIEL JOSUE QUESADA MONGE","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"aquesada@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzIxNDY1NTM0MTMsNTYzNzE0NTMzOTsxNTYyMjk2MTc0LDU2MzcxNTQzNDQ7MTMzMDgwOTcxMSw1NjM3MTQ0NTg5OzEsNTYzNzE0NTMzMDsxLDU2MzcxNTA5MzY7MSw1NjM3MTQ0NTg5OzEsNTYzNzE0NDU4OTs4Njk3NDExNjcsNTYzNzE0NTMzOTsxLDU2MzcxNDQ1ODk7MSw1NjM3MTQ1MzM5Jw==\"","PersonnelNumber":"NTC-0266","Name":"BRYAN ANTONIO SALAZAR CHINCHILLA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"bsalazar@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE2MDQyMzU1NDcsNTYzNzE0NTM0MDs1NTU5MTg4NjEsNTYzNzE1NDM5MzsxMjExMzM4NDIsNTYzNzE0NDU5MDsxLDU2MzcxNDQ1OTA7MSw1NjM3MTUwOTM3OzEsNTYzNzE0NDU5MDsxLDU2MzcxNDQ1OTA7NzA2NDY2MDUxLDU2MzcxNDUzNDA7MSw1NjM3MTQ0NTkwOzEsNTYzNzE0NTM0MCc=\"","PersonnelNumber":"NTC-0309","Name":"CARLOS ANDREY NARANJO CASCANTE","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"cnaranjo@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzY2NjY5ODQzOSw1NjM3MTQ1MzQyOzM1Mzg0NTg2OSw1NjM3MTUyNDQyOzg0NjM0NDU1OSw1NjM3MTQ0NTkyOzEsNTYzNzE0NjgyNjs5OTM3OTg1NzMsNTYzNzE1MjExNTsxLDU2MzcxNDQ1OTI7MSw1NjM3MTQ0NTkyOzQ5MDM1NTE2Miw1NjM3MTQ1MzQyOzEsNTYzNzE0NDU5MjsxLDU2MzcxNDUzNDIn\"","PersonnelNumber":"NTC-0069","Name":"CARMEN EUGENIA C\u00d3RDOBA UGALDE","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"ccordoba@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzIxMTExNDczNDgsNTYzNzE0NTM0MzsxOTU2Nzk5OTUsNTYzNzE1NDM0MDs2OTU2NDY4MTgsNTYzNzE0NDU5MzsxLDU2MzcxNDQ1OTM7MTI5MDQ1MzE5Myw1NjM3MTUzMTUxOzEsNTYzNzE0NDU5MzsxLDU2MzcxNDQ1OTM7MTk5OTgwNzU3OSw1NjM3MTQ1MzQzOzEsNTYzNzE0NDU5MzsxLDU2MzcxNDUzNDMn\"","PersonnelNumber":"NTC-0252","Name":"CAROLINA FABIOLA BETANCOURT MU\u00d1OZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"cbetancourt@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzMyMTEyNTQ1Nyw1NjM3MTQ1MzQ4OzEzMjI1MDgxNjIsNTYzNzE1MjQ0NDsyMTE2OTk2NTkzLDU2MzcxNDQ1OTg7MSw1NjM3MTQ1MzI2OzEsNTYzNzE1MDk0NTsxLDU2MzcxNDQ1OTg7MSw1NjM3MTQ0NTk4OzE1NDI3MTE3MSw1NjM3MTQ1MzQ4OzEsNTYzNzE0NDU5ODsxLDU2MzcxNDUzNDgn\"","PersonnelNumber":"NTC-0012","Name":"DANNY SABAT LARA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"dsabat@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzU2MDQzMDUyNCw1NjM3MTQ1MzQ5Ozg3OTA2MzQ1MCw1NjM3MTU0MzY5Ozc0Njk1NDU0NSw1NjM3MTQ0NTk5OzEsNTYzNzE0NDU5OTsxLDU2MzcxNTA5NDc7MSw1NjM3MTQ0NTk5OzEsNTYzNzE0NDU5OTsyMTMzMTY4NTE4LDU2MzcxNDUzNDk7MSw1NjM3MTQ0NTk5OzEsNTYzNzE0NTM0OSc=\"","PersonnelNumber":"NTC-0352","Name":"DIANA MARIA CORDERO G\u00d3MEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"dcordero@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzYxMDI4NzM0Myw1NjM3MTQ1MzUxOzk2NTA5MzE0Myw1NjM3MTUyMjUzOzYyNjk0NjkwMyw1NjM3MTQ0NjAxOzEsNTYzNzE0NDYwMTsxLDU2MzgyNzEwOTM7MSw1NjM3MTQ0NjAxOzEsNTYzNzE0NDYwMTs5NzcxNjUyMyw1NjM3MTQ1MzUxOzEsNTYzNzE0NDYwMTsxLDU2MzcxNDUzNTEn\"","PersonnelNumber":"NTC-0122","Name":"DIEGO ERNESTO MORALES ABARCA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"dmorales@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzcyOTAxOTk5OCw1NjM3MTQ1MzU2OzE4Njg5OTY4MzYsNTYzNzE1MjMxNTsxMTgxMjQyMTI2LDU2MzcxNDQ2MDY7MSw1NjM3MTQ2MDc2OzE1NDkwODQ5ODcsNTYzNzE1Mjg2OTsxLDU2MzcxNDQ2MDc7MSw1NjM3MTQ0NjA2Ozk5NDgwOTQ0Miw1NjM3MTQ1MzU2OzEsNTYzNzE0NDYwNjsxLDU2MzcxNDUzNTYn\"","PersonnelNumber":"NTC-0013","Name":"FLORIBELLE MAR\u00cdN LLOSENT","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"fmarin@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE0MDMyMjk3MDgsNTYzNzE0NTM1OTs0NTMyOTczNDAsNTYzNzE1NDMzNzsxNjI2MzQ5MTk3LDU2MzcxNDQ2MDk7MSw1NjM3MTQ2MDgwOzEsNTYzNzE1MDk2MjsxLDU2MzcxNDQ2MTA7MSw1NjM3MTQ0NjA5OzE5ODQ3Njc4NTMsNTYzNzE0NTM1OTsxLDU2MzcxNDQ2MDk7MSw1NjM3MTQ1MzU5Jw==\"","PersonnelNumber":"NTC-0194","Name":"GILBERTH SAUL ALVARADO FLORES","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"galvarado@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE2NzI5NDExMDYsNTYzNzE0NTM2MTsyOTgzMTA3NTcsNTYzNzE1NDM5NjsxMzA1NzI0MzM0LDU2MzcxNDQ2MTE7MSw1NjM3MTQ0NjEyOzQ5OTU5OTI0NCw1NjM3MTUyMjU1OzEsNTYzNzE0NDYxMjsxLDU2MzcxNDQ2MTE7NjgwMzYzMDAyLDU2MzcxNDUzNjE7MSw1NjM3MTQ0NjExOzEsNTYzNzE0NTM2MSc=\"","PersonnelNumber":"NTC-0316","Name":"GLORIANA MANUELA MATARRITA V\u00c1SQUEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"gmatarrita@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"Jzc3MDEzODIyLDU2MzcxNDUzNjI7MTc1MzQ4MTQxNSw1NjM3MTUyMjg5OzE0OTI4MjQzMjUsNTYzNzE0NDYxMjsxLDU2MzcxNDYwODQ7MSw1NjM4MTIzMzI4OzEsNTYzNzE0NDYxMzsxLDU2MzcxNDQ2MTI7NzQ1NDU1MTkyLDU2MzcxNDUzNjI7MSw1NjM3MTQ0NjEyOzEsNTYzNzE0NTM2Mic=\"","PersonnelNumber":"NTC-0263","Name":"GREIVIN CH\u00c1VES QUESADA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"gchavesq@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE5NTM4OTQxMCw1NjM3MTQ1MzYzOzQ4NDYyMzEwMCw1NjM3MTUyNDc5OzEyMDI0OTc3MzksNTYzNzE0NDYxMzsxLDU2MzcxNDYwODE7MTMyNDExNTE4NSw1NjM3MTUzMDkyOzEsNTYzNzE0NDYxNDsxLDU2MzcxNDQ2MTM7MTg2MzAyMzcxMCw1NjM3MTQ1MzYzOzEsNTYzNzE0NDYxMzsxLDU2MzcxNDUzNjMn\"","PersonnelNumber":"NTC-0197","Name":"GREIVIN MAURICIO CASTRO MENA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"gcastrom@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEzMzUyOTg2NTQsNTYzNzE0NTM2Nzs0MjUzMjE0OTYsNTYzNzE1MjQ0NTsyMDcyMTQ4NzksNTYzNzE0NDYxNzsxLDU2MzcxNDQ2MTg7MTQ4NzI5NjE2NSw1NjM3MTUyMjUwOzEsNTYzNzE0NDYxODsxLDU2MzcxNDQ2MTc7MTIxMjgwNTgwOSw1NjM3MTQ1MzY3OzEsNTYzNzE0NDYxNzsxLDU2MzcxNDUzNjcn\"","PersonnelNumber":"NTC-0158","Name":"HANNIA BLASITA VARGAS RAM\u00cdREZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"bvargas@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEzMTk5MzMxNDIsNTYzNzE0NTM2ODsxMDI2NDk3NDYwLDU2MzcxNTQzODE7MTYzNTkyNTYwNyw1NjM3MTQ0NjE4OzEsNTYzNzE0NDYxOTsxLDU2MzcxNTA5NzU7MSw1NjM3MTQ0NjE5OzEsNTYzNzE0NDYxODs0Mzc0MzcyNzIsNTYzNzE0NTM2ODsxLDU2MzcxNDQ2MTg7MSw1NjM3MTQ1MzY4Jw==\"","PersonnelNumber":"NTC-0373","Name":"HANZEL ALBERTO MORA CEDE\u00d1O","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"hmorac@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE4NjE0NDI1ODksNTYzNzE0NTM2OTszNjE2NjE1MzgsNTYzNzE1MjI1NjsxMTM5OTUzMjY3LDU2MzcxNDQ2MTk7MSw1NjM3MTQ0NjIwOzE2MDg4NTY5MDgsNTYzNzE1MjEyNDsxLDU2MzcxNDQ2MjA7MSw1NjM3MTQ0NjE5OzY5NTM2OTg4Nyw1NjM3MTQ1MzY5OzEsNTYzNzE0NDYxOTsxLDU2MzcxNDUzNjkn\"","PersonnelNumber":"NTC-0201","Name":"HAZEL MARIA ESQUIVEL SOLANO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"hesquivel@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE0ODc1MDYwMzAsNTYzNzE0NTM3NTs5ODU0MDI5NDEsNTYzNzE1MjMyOTszMzE3OTUxNTYsNTYzNzE0NDYyNTsxLDU2MzcxNDQ2MjY7MSw1NjM3MTUwOTg0OzEsNTYzNzE2MzMyNjsxLDU2MzcxNDQ2MjU7MTYyNDE2NTMwNyw1NjM3MTczMDc2OzAsMDsxLDU2MzcxNzM4MjYn\"","PersonnelNumber":"NTC-0202","Name":"JORDAN GERARDO DUR\u00c1N MENDOZA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jduranm@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEwMzE4MDEzNjMsNTYzNzE0NTM3NjsxMDY4ODcxOTIxLDU2MzcxNTQzNDY7NzM5MDc2MTc4LDU2MzcxNDQ2MjY7MSw1NjM3MTQ2ODI5OzEsNTYzNzE1MDk4NjsxLDU2MzcxNDQ2Mjc7MSw1NjM3MTQ0NjI2OzU4NDEyOTg2OSw1NjM3MTQ1Mzc2OzEsNTYzNzE0NDYyNjsxLDU2MzcxNDUzNzYn\"","PersonnelNumber":"NTC-0273","Name":"JORGE LUIS L\u00d3PEZ OLIVAS","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jlopez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzkyMzgwOTE4Nyw1NjM3MTQ1Mzc4OzQxOTI2NDAzMSw1NjM3MTUyMjU0OzE2NDAwMzczMTQsNTYzNzE0NDYyODsxLDU2MzcxNDYwNzc7MTQ1MzM0MzQyNSw1NjM3MTUyODg4OzEsNTYzNzE0NDYyOTsxLDU2MzcxNDQ2Mjg7MTY4MDQ5NjkwNSw1NjM3MTQ1Mzc4OzEsNTYzNzE0NDYyODsxLDU2MzcxNDUzNzgn\"","PersonnelNumber":"NTC-0025","Name":"JOSE ARMANDO DEL VALLE Z\u00da\u00d1IGA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"adelvalle@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE1MjE3MDk0MzUsNTYzNzE0NTM3OTsyNzgzMjkxNzEsNTYzNzE1NDM4NDsxODY5NDU0NTgzLDU2MzcxNDQ2Mjk7MSw1NjM3MTQ0NjMwOzEsNTYzNzE1MDk4OTsxLDU2MzcxNDQ2MzA7MSw1NjM3MTQ0NjI5OzMwNzYxODM3OSw1NjM3MTQ1Mzc5OzEsNTYzNzE0NDYyOTsxLDU2MzcxNDUzNzkn\"","PersonnelNumber":"NTC-0377","Name":"JOSE PABLO BADILLA QUIR\u00d3S","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jbadilla@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE1Njk2NzczMjQsNTYzNzE0NTM4MDsxODg4NzgyMzc5LDU2MzcxNTI1NzA7MjA5Njg0NDEyMCw1NjM3MTQ0NjMwOzEsNTYzNzE0NjA4MzsxLDU2MzcxNTA5OTA7MSw1NjM3MTQ0NjMxOzEsNTYzNzE0NDYzMDs0MDk5NDgyMiw1NjM3MTQ1MzgwOzEsNTYzNzE0NDYzMDsxLDU2MzcxNDUzODAn\"","PersonnelNumber":"NTC-0221","Name":"JOSE PABLO G\u00c1MEZ CAMACHO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jgamez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzQ1MjM4NDgxNiw1NjM3MTQ1MzgyOzEwMTM4OTU4NzcsNTYzNzE1NDM5ODsxNjY0OTU2OTY3LDU2MzcxNDQ2MzI7MSw1NjM3MTQ0NjMzOzEsNTYzODM0MzA4MjsxLDU2MzcxNDQ2MzM7MSw1NjM3MTQ0NjMyOzM2Nzk5OTQxMiw1NjM3MTQ1MzgyOzEsNTYzNzE0NDYzMjsxLDU2MzcxNDUzODIn\"","PersonnelNumber":"NTC-0319","Name":"JOSELINE MARIA CASTRO P\u00c9REZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jcastro@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEyMDEwOTA3OTgsNTYzNzE0NTM4Mzs0Nzk2NjQ0MDQsNTYzNzE1NDM1MzszMTU3OTE1MjksNTYzNzE0NDYzMzsxLDU2MzcxOTQ4MjY7MSw1NjM3MTUwOTkzOzEsNTYzNzE5MzMyNjsxLDU2MzcxNDQ2MzM7MTg0MTk5Mzg0LDU2MzcyMDQ1NzY7MCwwOzEsNTYzNzIwNjgyNic=\"","PersonnelNumber":"NTC-0320","Name":"JOSHUA JAVIER GUTI\u00c9RREZ VARGAS","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jgutierrez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE5MDA2NTI1ODQsNTYzNzE0NTM4NTsxMzE5MTgzMjEzLDU2MzcxNTI0MzQ7OTY2NzUzNTQyLDU2MzcxNDQ2MzU7MSw1NjM3MTQ0NjM2OzcxOTY1MjgzOSw1NjM3MTUyMTQwOzEsNTYzNzE0NDYzNjsxLDU2MzcxNDQ2MzU7MzUwMDYwNzk3LDU2MzcxNDUzODU7MSw1NjM3MTQ0NjM1OzEsNTYzNzE0NTM4NSc=\"","PersonnelNumber":"NTC-0317","Name":"JUAN DIEGO MORA QUIR\u00d3S","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jumora@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE3NjgyMTg1MzcsNTYzNzE0NTM4Njs1ODYxNzgzODUsNTYzNzE1MjQ0MDs2NTU2MDkyNDYsNTYzNzE0NDYzNjsxLDU2MzcxNDQ2Mzc7MTQ4MzUzNTM2MSw1NjM3MTUwOTk3OzEsNTYzNzE0NDYzNzsxLDU2MzcxNDQ2MzY7NjMyODEzMjY4LDU2MzcxNDUzODY7MSw1NjM3MTQ0NjM2OzEsNTYzNzE0NTM4Nic=\"","PersonnelNumber":"NTC-0213","Name":"JUAN JOSE ESCOBAR ALFARO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jescobar@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"Jzg3OTg3NzIzNSw1NjM3MTQ1Mzg5OzkxOTE2NzAwOCw1NjM3MTU0MzcwOzIwMjYzMTcwNzksNTYzNzE0NDYzOTsxLDU2MzcxNDYwOTY7MSw1NjM3MTUxMDAxOzEsNTYzNzE0NDY0MDsxLDU2MzcxNDQ2Mzk7MjY1NDU2NzM2LDU2MzcxNDUzODk7MSw1NjM3MTQ0NjM5OzEsNTYzNzE0NTM4OSc=\"","PersonnelNumber":"NTC-0353","Name":"KAREN VANESSA ZAPATA CH\u00c9VEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"kzapata@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzU3MDQwMTg3MSw1NjM3MTQ1MzkwOzE2ODM0MTAxNDIsNTYzNzE1NDM2NDsxNDAzNjgyMTYwLDU2MzcxNDQ2NDA7MSw1NjM3MTQ0NjQxOzEsNTYzNzE1MTAwMjsxLDU2MzcxNDQ2NDE7MSw1NjM3MTQ0NjQwOzIyMzQ4MTcxNyw1NjM3MTQ1MzkwOzEsNTYzNzE0NDY0MDsxLDU2MzcxNDUzOTAn\"","PersonnelNumber":"NTC-0346","Name":"KAROL VALERIA AST\u00daA CASCANTE","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"vastua@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzIxMzM4MTQ3NDUsNTYzNzE0NTM5MTs1ODk0NDM2MDIsNTYzNzE1NDM0ODs1NTg3MjYxMDYsNTYzNzE0NDY0MTsxLDU2MzcxNDQ2NDI7MSw1NjM3MTUxMDAzOzEsNTYzNzE0NDY0MjsxLDU2MzcxNDQ2NDE7MzM3Mzk1OTU0LDU2MzcxNDUzOTE7MSw1NjM3MTQ0NjQxOzEsNTYzNzE0NTM5MSc=\"","PersonnelNumber":"NTC-0290","Name":"KAROLINA AST\u00daA MORA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"kastua@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"Jzc3OTQ0MTYwMiw1NjM3MTQ1Mzk1OzEyMDIwNzkyMDYsNTYzNzE1NDM1NzsxNTgwMTE0NTkwLDU2MzcxNDQ2NDU7MSw1NjM3MTQ0NjQ2OzEsNTYzNzE1MTAwODsxLDU2MzcxODg4MjY7MSw1NjM3MTQ0NjQ1OzMwOTIxOTg2Niw1NjM3MjAwMDc2OzAsMDsxLDU2MzcyMDMwNzcn\"","PersonnelNumber":"NTC-0329","Name":"KENNETH ARCE HIDALGO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"karce@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE3NzY0NTU5NzksNTYzNzE0NTM5NzsxMDcyNDk0OTUzLDU2MzcxNTQzOTk7NTc4NDE0NzI2LDU2MzcxNDQ2NDc7MSw1NjM3MTQ2MDk3OzEsNTYzNzE1MTAxMDsxLDU2MzcxNDQ2NDg7MSw1NjM3MTQ0NjQ3OzEwMDU1MTczNSw1NjM3MTQ1Mzk3OzEsNTYzNzE0NDY0NzsxLDU2MzcxNDUzOTcn\"","PersonnelNumber":"NTC-0355","Name":"LENNON GERARDO NAVARRO MONGE","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"lnavarro@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzY3ODEzNzUzOCw1NjM3MTQ1Mzk4OzkzNDY5ODA0Miw1NjM3MTU0MzI2OzUwOTMxMzc5NSw1NjM3MTQ0NjQ4OzEsNTYzNzE0NjA3ODsxLDU2MzcxNTEwMTE7MSw1NjM3MTQ0NjQ5OzEsNTYzNzE0NDY0ODsxOTg2MzM2MzU5LDU2MzcxNDUzOTg7MSw1NjM3MTQ0NjQ4OzEsNTYzNzE0NTM5OCc=\"","PersonnelNumber":"NTC-0031","Name":"LESMER FERNANDO QUESADA RODR\u00cdGUEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"lquesada@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzExNDQ4MTg2NDQsNTYzNzE0NTQwMTsxMzc1OTc2OTY3LDU2MzcxNTQzNTA7MTczODc5MzQ5OCw1NjM3MTQ0NjUxOzEsNTYzNzE0NDY1MjsxLDU2MzcxNTEwMTQ7MSw1NjM3MTQ0NjUyOzEsNTYzNzE0NDY1MTsxNjY1NDE4OTgsNTYzNzE0NTQwMTsxLDU2MzcxNDQ2NTE7MSw1NjM3MTQ1NDAxJw==\"","PersonnelNumber":"NTC-0295","Name":"LUIS ALONSO SOL\u00cdS PERNUDI","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"lsolis@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzYxNjU4MTk0LDU2MzcxNDU0MDQ7MjA1NzQ3NzA5Miw1NjM3MTU0MzMyOzYzMzU5NjYzLDU2MzcxNDQ2NTQ7MSw1NjM3MTQ2MDc5OzEsNTYzNzE1Mjk5NzsxLDU2MzcxNDQ2NTU7MSw1NjM3MTQ0NjU0OzExMTY4MTQzMjQsNTYzNzE0NTQwNDsxLDU2MzcxNDQ2NTQ7MSw1NjM3MTQ1NDA0Jw==\"","PersonnelNumber":"NTC-0152","Name":"MARIA LIDIETH ARRONES PORTUGUEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"larrones@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzM0OTIyNzA3Niw1NjM3MTQ1NDA1OzE0MDUzODc5OTksNTYzNzE1NDM0NTs1MzY4MzkwMDgsNTYzNzE0NDY1NTsxLDU2MzcxNDQ2NTY7MSw1NjM3MTUxMDE4OzEsNTYzNzE0NDY1NjsxLDU2MzcxNDQ2NTU7OTMzNzU3NjkzLDU2MzcxNDU0MDU7MSw1NjM3MTQ0NjU1OzEsNTYzNzE0NTQwNSc=\"","PersonnelNumber":"NTC-0269","Name":"MARIA LORETT VARGAS MORALES","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"lvargas@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE4NjAwNzMyNTMsNTYzNzE0NTQxMTsxNjUyOTI5OTAzLDU2MzcxNTQzOTI7MTUxMzI0NjM0MCw1NjM3MTQ0NjYxOzEsNTYzNzE0NDY2MjsxNDI4Njg5MDcxLDU2MzcxNTIxMjE7MSw1NjM3MTQ0NjYyOzEsNTYzNzE0NDY2MTs2NzkyMzEyNjQsNTYzNzE0NTQxMTsxLDU2MzcxNDQ2NjE7MSw1NjM3MTQ1NDExJw==\"","PersonnelNumber":"NTC-0308","Name":"MONICA CHAC\u00d3N SOLANO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"mochacon@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE1MjA1OTczMDIsNTYzNzE0NTQxNDsyMTI0NDkwOTAyLDU2MzcxNTQzNzc7OTc1ODYzODIyLDU2MzcxNDQ2NjQ7MSw1NjM3MTQ2MTAxOzEsNTYzNzE1MTAyOTsxLDU2MzcxNDQ2NjU7MSw1NjM3MTQ0NjY0Ozc4ODI5OTE4Myw1NjM3MTQ1NDE0OzEsNTYzNzE0NDY2NDsxLDU2MzcxNDU0MTQn\"","PersonnelNumber":"NTC-0366","Name":"OSCAR ALBERTO BARRIENTOS ROM\u00c1N","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"obarrientos@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzgyNDg5MTU3Nyw1NjM3MTQ1NDE1OzYwMzIzNTQyMSw1NjM3MTU0MzY4OzIwNTU5ODM4MjcsNTYzNzE0NDY2NTsxLDU2MzcxNDQ2NjY7MTIyNTc4MzE5MCw1NjM3MTUyMzczOzEsNTYzNzE0NDY2NjsxLDU2MzcxNDQ2NjU7ODk2NTIzNDczLDU2MzcxNDU0MTU7MSw1NjM3MTQ0NjY1OzEsNTYzNzE0NTQxNSc=\"","PersonnelNumber":"NTC-0351","Name":"PABLO CESAR VALVERDE HIDALGO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"pvalverde@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzM0MTU4OTM2OCw1NjM3MTQ1NDE5OzExNTU5ODg5MzcsNTYzNzE1NDMzNDsxMDUwNjcxNTYwLDU2MzcxNDQ2Njk7MSw1NjM3MTQ0NjcwOzE1NDUzNDg2NDMsNTYzNzE1MzI0NDsxLDU2MzcxNDQ2NzA7MSw1NjM3MTQ0NjY5Ozk2MDU3MjU1MSw1NjM3MTQ1NDE5OzEsNTYzNzE0NDY2OTsxLDU2MzcxNDU0MTkn\"","PersonnelNumber":"NTC-0163","Name":"RONALD FRANCISCO VINDAS MONTERO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"rvindas@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE2NTA5MzUyNTYsNTYzNzE0NTQyMTs1NjkzOTcxNjAsNTYzNzE1NDM3NTsxNjk3MTExNDg2LDU2MzcxNDQ2NzE7MSw1NjM3MTQ0NjczOzEsNTYzNzE1MTAzOTsxLDU2MzcxNDQ2NzM7MSw1NjM3MTQ0NjcxOzQwNzEwMTM1NSw1NjM3MTQ1NDIxOzEsNTYzNzE0NDY3MTsxLDU2MzcxNDU0MjEn\"","PersonnelNumber":"NTC-0249","Name":"STEFANNY MARIA ALTAMIRANO MORA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"saltamirano@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE4OTMwNzkxNTUsNTYzNzE0NTQyMjs0MzEyMTcxNjMsNTYzNzE1NDM0MjsxNzUwODg5ODMyLDU2MzcxNDQ2NzI7MSw1NjM3MTQ0Njc0OzEsNTYzNzE1MTA0MDsxLDU2MzcxNDQ2NzQ7MSw1NjM3MTQ0NjcyOzEzMDI0Njc5MTIsNTYzNzE0NTQyMjsxLDU2MzcxNDQ2NzI7MSw1NjM3MTQ1NDIyJw==\"","PersonnelNumber":"NTC-0261","Name":"SUSAN ROJAS AG\u00dcERO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"srojas@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEwNTkxNzQ1Niw1NjM3MTQ1NDIzOzgyNTU1NjExNSw1NjM3MTU0Mzg1OzE4MTAxNjA1MDgsNTYzNzE0NDY3MzsxLDU2MzcxNDYxMDU7MSw1NjM3MTUxMDQxOzEsNTYzNzE0NDY3NTsxLDU2MzcxNDQ2NzM7MjMwMTc1NTQ0LDU2MzcxNDU0MjM7MSw1NjM3MTQ0NjczOzEsNTYzNzE0NTQyMyc=\"","PersonnelNumber":"NTC-0378","Name":"SYLVIA DE LOS ANGELES BARBOZA VALVERDE","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"sbarboza@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"Jzc4MTMwNjM4LDU2MzcxNDU0MjU7MTI4NTI5OTg5OSw1NjM3MTUyMjk2OzExMzUwODg3MTIsNTYzNzE0NDY3NTsxLDU2MzcxNDQ2Nzc7NjE5NDUxMDg0LDU2MzcxNTIxNTI7MSw1NjM3MTQ0Njc3OzEsNTYzNzE0NDY3NTsxODQxNTQxODM0LDU2MzcxNDU0MjU7MSw1NjM3MTQ0Njc1OzEsNTYzNzE0NTQyNSc=\"","PersonnelNumber":"NTC-0224","Name":"TATIANA SEQUERIA ALVARADO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"tsequeira@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzQ1MzYyNzE1LDU2MzcxNDU0MjY7MTQyNjE1MzQ0OCw1NjM3MTU0MzM1OzE1OTQ4MTkzMzksNTYzNzE0NDY3NjsxLDU2MzcxNDQ2Nzg7MTk4OTIyMzY0Miw1NjM3MTUzMDY0OzEsNTYzNzE0NDY3ODsxLDU2MzcxNDQ2NzY7MTYwODcxMTg5Myw1NjM3MTQ1NDI2OzEsNTYzNzE0NDY3NjsxLDU2MzcxNDU0MjYn\"","PersonnelNumber":"NTC-0160","Name":"VANESSA GINETTE TORRES RODR\u00cdGUEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"vtorres@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzQxNTI3NjcwLDU2MzcxNDU0Mjc7MTMwMjU3MzQzOCw1NjM3MTU0MzkwOzk4NDY2NDQ4Niw1NjM3MTQ0Njc3OzEsNTYzNzE0NDY3OTsxLDU2Mzc4OTk4Mjc7MSw1NjM3MTQ0Njc5OzEsNTYzNzE0NDY3NzsxNjYxMTkwNTY2LDU2MzcxNDU0Mjc7MSw1NjM3MTQ0Njc3OzEsNTYzNzE0NTQyNyc=\"","PersonnelNumber":"NTC-0303","Name":"VIVIANA CASTRILLO ARRIETA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"vcastrillo@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzUzMDQyODEyNyw1NjM3MTQ1NDMwOzEyNTQxMjUwNjcsNTYzNzE1MjI1MDsxMzY0NjkzNjk1LDU2MzcxNDQ2ODE7MSw1NjM3MTQ0Njg0OzEsNTYzNzE1MTA1MTsxLDU2MzcxNDQ2ODQ7MSw1NjM3MTQ0NjgxOzgzNzg5OTA5OSw1NjM3MTQ1NDMwOzEsNTYzNzE0NDY4MTsxLDU2MzcxNDU0MzAn\"","PersonnelNumber":"NTC-0153","Name":"NATALIA ALVARADO BONILLA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"nalvarado@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzMzMDQ4Njg0Nyw1NjM3MTQ1NDMxOzExOTc0MzU1Miw1NjM3MTU0MzUxOzEzNzc3NjYzNzUsNTYzNzE0NDY4MjsxLDU2MzcxNDQ2ODU7MSw1NjM3MTUxMDUyOzEsNTYzNzE0NDY4NTsxLDU2MzcxNDQ2ODI7MTUwODkwOTgyMSw1NjM3MTQ1NDMxOzEsNTYzNzE0NDY4MjsxLDU2MzcxNDU0MzEn\"","PersonnelNumber":"NTC-0305","Name":"ESTEBAN GUILLERMO ARAYA VENEGAS","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"earaya@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzcxNTMxNTM4NCw1NjM3MTQ1NDMyOzIwOTI4MDg4MzIsNTYzNzE1NDMzMDsxMzUzMTU4NDk3LDU2MzcxNDQ2ODM7MSw1NjM3MTQ0Njg2OzEsNTYzNzE1MTA1MzsxLDU2MzcxNDQ2ODY7MSw1NjM3MTQ0NjgzOzE4NzIxODAxNjksNTYzNzE0NTQzMjsxLDU2MzcxNDQ2ODM7MSw1NjM3MTQ1NDMyJw==\"","PersonnelNumber":"NTC-0088","Name":"FIORELLA AVIL\u00c9S MORA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"faviles@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"Jzc2ODc3ODQxMiw1NjM3MTQ1NDM0OzE4MDM4MTk3MzcsNTYzNzE1MjI2MDs2OTY0ODQwMCw1NjM3MTQ0Njg1OzEsNTYzNzE3NTMyNjsxLDU2MzcxNTEwNTU7MSw1NjM3MTQ0Njg4OzEsNTYzNzE0NDY4NTszMTIxNTQ0NDMsNTYzNzE0NTQzNDsxLDU2MzcxNDQ2ODU7MSw1NjM3MTQ1NDM0Jw==\"","PersonnelNumber":"NTC-0140","Name":"DIANA VANESSA BARRANTES RAMOS","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"dbarrantes@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzIxMjQ1NjkyMjEsNTYzNzE0NTQzNTsyMDQwMDM2MTQzLDU2MzcxNTIyNzI7MTQ0MzM2NzY5Niw1NjM3MTQ0Njg2OzEsNTYzNzE0NDY4OTsxLDU2MzgzODUwNzY7MSw1NjM3MTQ0Njg5OzEsNTYzNzE0NDY4Njs4MDU5NTA3NDAsNTYzNzE0NTQzNTsxLDU2MzcxNDQ2ODY7MSw1NjM3MTQ1NDM1Jw==\"","PersonnelNumber":"NTC-0049","Name":"MELISSA CHAVARR\u00cdA V\u00cdQUEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"melichavarria@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEyNzMyMjc3MzIsNTYzNzE0NTQzNzs1NDQ2MTU5NzAsNTYzNzE1MjMzNTsxNTM4MTIwMjMwLDU2MzcxNDQ2ODg7MSw1NjM3MTQ0NjkxOzEsNTYzNzg4NDA5MTsxLDU2MzcxNDQ2OTE7MSw1NjM3MTQ0Njg4OzQwOTYyMDU4Miw1NjM3MTQ1NDM3OzEsNTYzNzE0NDY4ODsxLDU2MzcxNDU0Mzcn\"","PersonnelNumber":"NTC-0171","Name":"EDDIE ESPINOZA JIM\u00c9NEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"eespinoza@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzU4OTczOTc2Nyw1NjM3MTQ1NDM4OzEwMjE2MTE0MTUsNTYzNzE1MjA5ODszMDA5ODYxOSw1NjM3MTQ0Njg5OzEsNTYzNzE0NDY5MjsxLDU2MzcxNTEwNjA7MSw1NjM3MTQ0NjkyOzEsNTYzNzE0NDY4OTsxNjIzNzMyMDk5LDU2MzcxNDU0Mzg7MSw1NjM3MTQ0Njg5OzEsNTYzNzE0NTQzOCc=\"","PersonnelNumber":"NTC-0113","Name":"KEVIN STARLYN FALLAS CASCANTE","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"kfallas@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzExODE0NjkwNDAsNTYzNzE0NTQzOTs4Njc1OTQxNTEsNTYzNzE1MjI1NTs0MDMzNjQyODQsNTYzNzE0NDY5MDsxLDU2MzcxNDQ2OTM7MSw1NjM3MTUyOTY4OzEsNTYzNzE0NDY5MzsxLDU2MzcxNDQ2OTA7NjM0Mjc1OTg4LDU2MzcxNDU0Mzk7MSw1NjM3MTQ0NjkwOzEsNTYzNzE0NTQzOSc=\"","PersonnelNumber":"NTC-0117","Name":"IVAN ANDRES GAZEL PATI\u00d1O","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"igazel@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzYzOTQ5OTYzOSw1NjM3MTQ1NDQwOzQ1NzIxMDQ0MSw1NjM3MTUyMjQ3OzE1NTgwOTE4Niw1NjM3MTQ0NjkxOzEsNTYzNzE0NDY5NDsxLDU2MzcxNTEwNjI7MSw1NjM3MTQ0Njk0OzEsNTYzNzE0NDY5MTsxNDgxNjY1MzMyLDU2MzcxNDU0NDA7MSw1NjM3MTQ0NjkxOzEsNTYzNzE0NTQ0MCc=\"","PersonnelNumber":"NTC-0006","Name":"MARICELA GONZ\u00c1LEZ CALVO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"mgonzalez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzY2NzM3MjA1OCw1NjM3MTQ1NDQxOzM2MzQ5OTk3OSw1NjM3MTUyMTI4OzE4MzU1MzQwNCw1NjM3MTQ0NjkyOzEsNTYzNzE0NDY5NTsxLDU2MzcxNTEwNjM7MSw1NjM3MjEwNTgxOzEsNTYzNzE0NDY5MjsxNTY2NjUzNjk3LDU2MzcyMjQwNzY7MCwwOzEsNTYzNzIyNjMyNic=\"","PersonnelNumber":"NTC-0002","Name":"SILVIA MAR\u00cdA GRILLO GONZ\u00c1LEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"sgrillo@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzExODY2NDA0MjQsNTYzNzE0NTQ0NTszNTEzMDE2NTIsNTYzNzE1MjQ4Mzs3OTc0NzA5ODQsNTYzNzE0NDY5NjsxLDU2MzcxNDY4Mjc7MSw1NjM3MTUxMDY3OzEsNTYzNzE0NDY5OTsxLDU2MzcxNDQ2OTY7MTMxMDc1NjAwNiw1NjM3MTQ1NDQ1OzEsNTYzNzE0NDY5NjsxLDU2MzcxNDU0NDUn\"","PersonnelNumber":"NTC-0325","Name":"ADRIANA MARCELA NAVARRO ROJAS","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"anavarro@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzIxOTMwODM5LDU2MzcxNDU0NDY7ODAzODIwOTg0LDU2MzcxNTI0MDc7MjI2MDgyNDUsNTYzNzE0NDY5NzsxLDU2MzcxNDQ3MDA7MSw1NjM3MTUxMDY4OzEsNTYzNzE0NDcwMDsxLDU2MzcxNDQ2OTc7MTYzOTExNDUzMCw1NjM3MTQ1NDQ2OzEsNTYzNzE0NDY5NzsxLDU2MzcxNDU0NDYn\"","PersonnelNumber":"NTC-0306","Name":"KARLA VANESSA NAVAS CHAC\u00d3N","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"knavas@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"Jzg3MzI2MTU1NSw1NjM3MTQ1NDQ5OzcyMjEzNjE2MCw1NjM3MTUyNTI5OzExNzQzNDg1NDUsNTYzNzE0NDcwMDsxLDU2MzcxNDQ3MDM7MSw1NjM3MTUyMjgzOzEsNTYzNzE0NDcwMzsxLDU2MzcxNDQ3MDA7MTEwNzQ1Mjk0Miw1NjM3MTQ1NDQ5OzEsNTYzNzE0NDcwMDsxLDU2MzcxNDU0NDkn\"","PersonnelNumber":"NTC-0332","Name":"DEBORAH ALEJANDRA QUESADA GONZ\u00c1LEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"dquesada@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzU3NDg2NjczMSw1NjM3MTQ1NDUxOzIwMjg4MDExNjUsNTYzNzE1NDMyNzsxMjE4Njc3MjE4LDU2MzcxNDQ3MDI7MSw1NjM3MTQ0NzA1OzEsNTYzNzE1MTA3MzsxLDU2MzcxNDQ3MDU7MSw1NjM3MTQ0NzAyOzg1NTQyNDc1NSw1NjM3MTQ1NDUxOzEsNTYzNzE0NDcwMjsxLDU2MzcxNDU0NTEn\"","PersonnelNumber":"NTC-0010","Name":"FERNANDO RIVERA UMA\u00d1A","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"frivera@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzYzNTA4NDgwMiw1NjM3MTQ1NDUzOzE1MzAxMjAyMiw1NjM3MTU0MzM5OzE2NDg4MDY4OTAsNTYzNzE0NDcwNDsxLDU2MzcxNDY4MzY7MSw1NjM3Njg1MzI3OzEsNTYzNzE0NDcwNzsxLDU2MzcxNDQ3MDQ7MTgwNzkzNDksNTYzNzE0NTQ1MzsxLDU2MzcxNDQ3MDQ7MSw1NjM3MTQ1NDUzJw==\"","PersonnelNumber":"NTC-0209","Name":"JAIRO ANDRES S\u00c1NCHEZ CUBILLO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jasanchez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE5NDE3MDUxMjYsNTYzNzE0NTQ1NDsxODcwNTY1MTgwLDU2MzcxNTIzMzk7MTk5MDAwMzU2Miw1NjM3MTQ0NzA1OzEsNTYzNzE3NTMyNzs4NjEwMTQxODUsNTYzNzE1MTA3NjsxLDU2MzcxNDQ3MDg7MSw1NjM3MTQ0NzA1OzE2MjM3NzM2MDUsNTYzNzE0NTQ1NDsxLDU2MzcxNDQ3MDU7MSw1NjM3MTQ1NDU0Jw==\"","PersonnelNumber":"NTC-0015","Name":"DANIEL SIBAJA MAR\u00cdN","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"dsibaja@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE1MTYwNDM0ODUsNTYzNzE0NTQ1NTsxNjQzMDA5NTUxLDU2MzcxNTIyNzE7MTMyNDk0MTcyMSw1NjM3MTQ0NzA2OzEsNTYzNzE0NDcwOTsxOTE2NDY5NTI2LDU2MzcxNTEwNzc7MSw1NjM3MTQ0NzA5OzEsNTYzNzE0NDcwNjsxMjgzMDc5NTc5LDU2MzcxNDU0NTU7MSw1NjM3MTQ0NzA2OzEsNTYzNzE0NTQ1NSc=\"","PersonnelNumber":"NTC-0193","Name":"CARLOS JOSE SOL\u00cdS ROJAS","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"csolis@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzczNTE1MzI3MSw1NjM3MTQ1NDU2OzEyMDk0NDIxMTUsNTYzNzE1NDM0OTs3OTUxMjYyNCw1NjM3MTQ0NzA3OzEsNTYzNzE0NjgzODsxLDU2MzcxNTM1OTY7MSw1NjM3MTY2MzI2OzEsNTYzNzE0NDcwNzsyMTExNjQzODk3LDU2MzcxNzc1NzY7MCwwOzEsNTYzNzE3ODMyNic=\"","PersonnelNumber":"NTC-0294","Name":"MAR\u00cdA PILAR SU\u00c1REZ TRUJILLO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"psuarez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE3NTI5MjkwMDksNTYzNzE0NTQ1OTs0MDQyMjI0NDEsNTYzNzE1MjI2NTsyMTA2Njg0ODYwLDU2MzcxNDQ3MTA7MSw1NjM3MTQ2ODM3OzEsNTYzNzE1MTA4MTsxLDU2MzcxNDQ3MTM7MSw1NjM3MTQ0NzEwOzU1MTU0MzkzMyw1NjM3MTQ1NDU5OzEsNTYzNzE0NDcxMDsxLDU2MzcxNDU0NTkn\"","PersonnelNumber":"NTC-0236","Name":"JOSE ANDRES VALVERDE CAMPOS","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"avalverde@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzIwODQ2MzI4Myw1NjM3MTQ1NDYwOzYzODIyODUxMiw1NjM3MTUyNDA1OzExMjMyODAwMTcsNTYzNzE0NDcxMTsxLDU2MzcxNDQ3MTQ7MSw1NjM3MTUxMDgyOzEsNTYzNzE0NDcxNDsxLDU2MzcxNDQ3MTE7MTUzMjEwMjE3MSw1NjM3MTQ1NDYwOzEsNTYzNzE0NDcxMTsxLDU2MzcxNDU0NjAn\"","PersonnelNumber":"NTC-0120","Name":"KATTIA VANESSA VARGAS SEQUEIRA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"kvargas@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzUyMDMxMTQzOCw1NjM3MTQ1NDYxOzc2NTc4NDYzNCw1NjM3MTU0MzI5OzI4MjM5NTMxMSw1NjM3MTQ0NzEyOzEsNTYzNzE0NjgzNDsxLDU2MzcxNTEwODM7MSw1NjM3MTg0MzI2OzEsNTYzNzE0NDcxMjsxMjI0OTAyNDI5LDU2MzcxOTQ4MjY7MCwwOzEsNTYzNzE5NjMyNic=\"","PersonnelNumber":"NTC-0066","Name":"GRETTEL VANESSA VILLARREAL ARIAS","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"gvillarreal@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzExNTU1ODI1MzYsNTYzNzE0NTQ2MjsxMjAyODcxNTIsNTYzNzE1MjQ3MjsyNzU3NjU2NCw1NjM3MTQ0NzEzOzEsNTYzNzE0NDcxNjsxLDU2MzcxNTEwODQ7MSw1NjM3MTQ0NzE2OzEsNTYzNzE0NDcxMzsyODQ5MDY4NjgsNTYzNzE0NTQ2MjsxLDU2MzcxNDQ3MTM7MSw1NjM3MTQ1NDYyJw==\"","PersonnelNumber":"NTC-0282","Name":"IRINNIA MARIA ZELED\u00d3N CHAVARR\u00cdA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"izeledon@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzI3MzE4NzM0Nyw1NjM3MTQ1NDYzOzYzMDkwOTMxNSw1NjM3MTU0MzMzOzEsNTYzNzE0NDcxNDsxLDU2MzcxNDUzMjk7MSw1NjM3NzMzMzUwOzEsNTYzNzE0NDcxNzsxLDU2MzcxNDQ3MTQ7MTg5NjI1OTg2Nyw1NjM3MTQ1NDYzOzEsNTYzNzE0NDcxNDsxLDU2MzcxNDU0NjMn\"","PersonnelNumber":"NTC-0162","Name":"JENNIFER DEL CARMEN HERN\u00c1NDEZ ZELAYA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jhernandez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"Jzc0OTk1NjYzMiw1NjM3MTQ1NDY0OzMzMTg5NTQ2Nyw1NjM3MTUyMTM2OzEwMjE1ODYwODUsNTYzNzE0NDcxNTsxLDU2MzcxNDQ3MTg7MSw1NjM3MTUxMDg3OzEsNTYzNzE0NDcxODsxLDU2MzcxNDQ3MTU7MTM4MDU4MDcyOCw1NjM3MTQ1NDY0OzEsNTYzNzE0NDcxNTsxLDU2MzcxNDU0NjQn\"","PersonnelNumber":"FEH-0001","Name":"MICHAEL AG\u00dcERO ROJAS","EmploymentLegalEntityId":"FEH","PrimaryContactEmail":"maguero@farmaciaesp.com"
+    },{
+      "@odata.etag":"W/\"JzEwODc2NTk3OTEsNTYzNzE0NTQ2NjsyNTg2NDg5NTYsNTYzNzE1MjE0NTsyMDIwMDA4MjU4LDU2MzcxNDQ3MTc7MSw1NjM3MTQ0NzIwOzEsNTYzNzE1MTA5MDsxLDU2MzcxNzYwNzY7MSw1NjM3MTQ0NzE3OzE0NTc4NTIzMTQsNTYzNzIyMTA3NjswLDA7MSw1NjM3MjIzMzI2Jw==\"","PersonnelNumber":"FEH-0015","Name":"SUSANA ARROYO FERN\u00c1NDEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"sarroyo@farmaciaesp.com"
+    },{
+      "@odata.etag":"W/\"JzIwNDYyMjk1MTEsNTYzNzE0OTA3ODs2MTg1NjIzNDEsNTYzNzIwMzA3OTsxLDU2MzcxNTM1Nzg7MSw1NjM3MTUwNTc4OzEsNTYzNzIxMjgzMjsxLDU2MzcxNzMwNzc7MCwwOzY4MzY0MDk2MCw1NjM3MTg0MzI3OzAsMDsxLDU2MzcxODU4Mjcn\"","PersonnelNumber":"NTC-0385","Name":"JEAUSTIN ESTEBAN C\u00c1RDENAS V\u00c1SQUEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jcardenas@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzM2MDAzMjc3MSw1NjM3MTQ5ODI2OzQxOTc1MzczOCw1NjM3MjA4MzI3OzEsNTYzNzE1NTA3NjsxLDU2MzcxNTEzMjY7MSw1NjM3MjE3MzMwOzEsNTYzNzE0NjgyNjswLDA7MTQ5NTU4NzI5OCw1NjM3MTUwNTc2OzAsMDsxLDU2MzcxNTEzMjYn\"","PersonnelNumber":"NTC-0386","Name":"JONATHAN CALDER\u00d3N SEGURA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jcalderon@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEyMTA3NjM0MDcsNTYzNzE1MTMyNjsxODc0MDIwMDA2LDU2MzcyMjI1NzY7MSw1NjM3MTU2NTc3OzEsNTYzNzE1MjA3NzsxLDU2MzcyMzM4MjY7MSw1NjM3MTQ3NTc3OzAsMDsyMDc2MzAwNTY2LDU2MzcxNTIwNzY7MCwwOzEsNTYzNzE1MjgyNic=\"","PersonnelNumber":"NTC-0388","Name":"LUIS FERNANDO G\u00d3MEZ RAM\u00cdREZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"lgomez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzExNDA4NTY2MjcsNTYzNzE1MjA3NjsxNDE5MjE0MTQxLDU2MzcxNTIxNzY7MSw1NjM3MjAyMzI2OzAsMDsxLDU2MzcxNDk0OTc7MSw1NjM3MTc4MzI2OzAsMDs5NDA5NTgwOTksNTYzNzE4OTU3NzswLDA7MSw1NjM3MTkxMDc3Jw==\"","PersonnelNumber":"M&G-0001","Name":"GUISELLE GRILLO GONZALES","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"ggrillo@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEwOTg3MjE2MjIsNTYzNzE1MzU3NjsxNDU1Njg0MTExLDU2MzcyNTcwODA7MSw1NjM3MTU3MzI2OzEsNTYzNzE1MjgyNjsxLDU2MzcyNzIwOTA7MSw1NjM3MTQ4MzI2OzAsMDsyMDc1MjM0NjUyLDU2MzcxNTQzMjY7MCwwOzEsNTYzNzE1NTA3Nic=\"","PersonnelNumber":"NTC-0390","Name":"SERGIO ADRIAN FERN\u00c1NDEZ MURILLO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"sfernandez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"Jzc1NjQ3NDU5Niw1NjM3MTU0MzI2OzE2NDMzMjkwNzgsNTYzNzI2ODMyOTsxLDU2MzcxNTg4MjY7MSw1NjM3MTUzNTc2OzEsNTYzNzI4NTU4NDsxLDU2MzcxNDkwNzY7MCwwOzEzMTQ3MDI5MDAsNTYzNzE1NTA3NjswLDA7MSw1NjM3MTU1ODI2Jw==\"","PersonnelNumber":"NTC-0391","Name":"SANTIAGO TORRIJOS OSPINA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"storrijos@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEzNjE2MTc0MDAsNTYzNzE1NTA3NjsxOTkzNzM2NjEzLDU2MzcyNzI4Mjk7MSw1NjM3MTU5NTc2OzEsNTYzNzE1NDMyNjsxLDU2MzcyOTAwODI7MSw1NjM3MTQ5ODI2OzAsMDs5MTYyMzAyNTMsNTYzNzE1NTgyNjswLDA7MSw1NjM3MTU2NTc2Jw==\"","PersonnelNumber":"NTC-0392","Name":"OLGA MARIN SALAZAR","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"omarin@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE1MzM4NDAwNDAsNTYzNzE1NTA3NzsxMzM5NDAxMjg5LDU2MzcyNzI4MzE7MSw1NjM3MTU5NTc3OzEsNTYzNzE1NDMyNzsxLDU2MzgyNzEwOTI7MSw1NjM3MTc1MzI2OzAsMDsxNzMxOTU3ODg4LDU2MzcxODY1NzY7MCwwOzEsNTYzNzE4ODA3Nic=\"","PersonnelNumber":"NTC-0393","Name":"STACY GARC\u00cdA HUEZO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"sgarcia@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE5NTU4ODY0Nyw1NjM3MTU1ODI2OzEzNzYyMDM2NTIsNTYzNzI3ODgyOTsxLDU2MzcxNjEwNzc7MSw1NjM3MTU1MDc2OzEsNTYzNzI5NjA4MzsxLDU2MzcxNTEzMjY7MCwwOzQ3MTk1ODEzNiw1NjM3MTU3MzI2OzAsMDsxLDU2MzcxNTgwNzYn\"","PersonnelNumber":"NTC-0394","Name":"CHRISTIAN GABRIEL LEZAMA FLORES","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"clezama@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE0ODUxNTU0MDYsNTYzNzE1NzMyNjs3ODUzNDk5NTIsNTYzNzI5ODMyODsxLDU2MzcxNjI1NzY7MSw1NjM3MTU2NTc2OzEsNTYzNzMyMzA4MDsxLDU2MzcxNTIwNzY7MCwwOzY0NTg2NDY0Miw1NjM3MTU4ODI2OzAsMDsxLDU2MzcxNTk1NzYn\"","PersonnelNumber":"NTC-0396","Name":"VIELKA MARIA BETHANCOURT REYNOLDS","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"vbethancourt@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzUzODkzOTM5Nyw1NjM3MTU4MDc2OzE5MzU4NTg2NTgsNTYzNzE4NjU3NjsxLDU2MzcxNjQwNzY7MSw1NjM3MTU3MzI2OzEsNTYzODMyMjA4NjsxLDU2MzcxNTI4MjY7MCwwOzEwMjI5NzAxNjEsNTYzNzE1OTU3NjswLDA7MSw1NjM3MTYwMzI2Jw==\"","PersonnelNumber":"NTC-0397","Name":"DANIEL CASTILLO LIBBY","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"dcastillo@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"Jzg3Nzk3NTgwMCw1NjM3MTU4ODI2OzU3OTA0MjY2MSw1NjM3MzE4NTc2OzEsNTYzNzE2NDgyNzsxLDU2MzcxNTgwNzc7MSw1NjM4MDYyNTg0OzEsNTYzNzE1MzU3NzswLDA7MTM1MTI5NTU5Niw1NjM3MTYwMzI2OzAsMDsxLDU2MzcxNjEwNzYn\"","PersonnelNumber":"NTC-0398","Name":"FRANCINI MORALES GUTIERREZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"fmorales@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE5MjM1NTU3MzMsNTYzNzE2MDMyODsxMTE2NTk1Njk5LDU2MzczMzk1ODI7MSw1NjM3MTY2MzMyOzEsNTYzNzE1ODgyODsxLDU2MzczNjczMzA7MSw1NjM3MTU0MzI4OzAsMDsxMjUyNjM2NDgwLDU2MzcxNjE4Mjg7MCwwOzEsNTYzNzE2MjU3OCc=\"","PersonnelNumber":"NTC-0401","Name":"LUIS ALBERTO HERNANDEZ ZUMBADO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"lhernandezz@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE4MzMxOTQwMzksNTYzNzE2MjU3ODs5ODM5NzAwOTYsNTYzNzM2NjU4NDsxLDU2MzcxNjkzMzE7MSw1NjM3MTYwMzI4OzEsNTYzNzM5NTgzNjsxLDU2MzcyMTY1Nzc7MCwwOzEyMjE5NjAxMzIsNTYzNzIzMDgyNjswLDA7MSw1NjM3MjMzMDc2Jw==\"","PersonnelNumber":"NTC-0406","Name":"CALEB DAVID LOPEZ VARGAS","EmploymentLegalEntityId":"FEH","PrimaryContactEmail":"clopez@farmaciaesp.com"
+    },{
+      "@odata.etag":"W/\"JzE5MzMwMzQzMjYsNTYzNzE2NDgyNjsxMTc0NzE4MjI1LDU2MzczODgzMjY7MSw1NjM3MTcxNTc2OzEsNTYzNzE2MjU3NjsxLDU2Mzc0MTY4MjY7MSw1NjM3MTU4MDc2OzAsMDsxOTc3MTA3NDAxLDU2MzcxNjc4MjY7MCwwOzEsNTYzNzE2ODU3Nic=\"","PersonnelNumber":"NTC-0409","Name":"DIANA RODRIGUEZ ALVARADO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"drodriguez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"Jzk5NzQ2ODE1Miw1NjM3MTY2MzI2OzUyNTc1NDI4OCw1NjM3Mzk1ODI4OzEsNTYzNzE3MzgyNjsxLDU2MzcxNjQwNzY7MSw1NjM3NDI1ODMzOzEsNTYzNzE1OTU3NjswLDA7MTk2ODM3MTYxLDU2MzcxNjkzMjY7MCwwOzEsNTYzNzE3MDA3Nic=\"","PersonnelNumber":"NTC-0411","Name":"VERONICA JESSENIA CASTRO LEANDRO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"vcastro@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEyNDc0NjExNzEsNTYzNzE2NzA3NjsxNjQ5NzUzNTAsNTYzNzM5NzMyNjsxLDU2MzcxNzQ1NzY7MSw1NjM3MTY0ODI2OzEsNTYzNzQyNzMyNjsxLDU2MzcxNjAzMjY7MCwwOzExNjAwNTg0ODUsNTYzNzE3MDA3NjswLDA7MSw1NjM3MTcwODI2Jw==\"","PersonnelNumber":"NTC-0413","Name":"JENNYFER PATRICIA CALERO SAMAYOA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jcalero@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzExNTY5MzcwMTIsNTYzNzE2NzA3NzsxMDY2OTUwNTA1LDU2MzczOTczMjc7MSw1NjM3MTc0NTc4OzEsNTYzNzE2NDgyNzsxLDU2Mzc0MjczMjg7MSw1NjM3MTYwMzI3OzAsMDsxMzU0Njk5OTU1LDU2MzcxNzAwNzc7MCwwOzEsNTYzNzE3MDgyNyc=\"","PersonnelNumber":"NTC-0414","Name":"JIMMY ESTEBAN RODRIGUEZ LUGO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jrodriguezl@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE4MDY1NzE3NzEsNTYzNzE2NzgyNjsxNTQ5NDI3MDg4LDU2Mzc0MDg1NzY7MSw1NjM3MTc1MzI2OzEsNTYzNzE2NTU3NjsxLDU2Mzc0Mzg1NzY7MSw1NjM3MTYxMDc2OzAsMDsxNTA1NzM1MjQxLDU2MzcxNzA4MjY7MCwwOzEsNTYzNzE3MTU3Nic=\"","PersonnelNumber":"NTC-0415","Name":"SERGIO ALONSO L\u00d3PEZ L\u00d3PEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"slopez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzI5NDM4NTAyLDU2MzcxNjc4Mjc7MTI3NDgwNjgxNyw1NjM3NDA4NTc3OzEsNTYzNzE3NTMyOTsxLDU2MzcxNjU1Nzc7MSw1NjM3NDM4NTc4OzEsNTYzNzE2MTA3NzswLDA7OTg1OTU1MTg3LDU2MzcxNzA4Mjc7MCwwOzEsNTYzNzE3MTU3Nyc=\"","PersonnelNumber":"NTC-0416","Name":"OLGA DAYANNA MATA BERM\u00daDEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"omata@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE4OTczMTEyNTgsNTYzNzE2NzgyOTsxNDMzODI0NTQwLDU2Mzc0MDg1Nzk7MSw1NjM3MTc1MzM0OzEsNTYzNzE2NTU3OTsxLDU2Mzc0Mzg1ODI7MSw1NjM3MTYxMDc5OzAsMDsxMDk1ODE2NDgsNTYzNzE3MDgyOTswLDA7MSw1NjM3MTcxNTc5Jw==\"","PersonnelNumber":"NTC-0418","Name":"JUAN DANIEL BLANCO MONTERO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"dblanco@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE3MzEyNzk3NjcsNTYzNzE2ODU3NjsyMDgwOTQ3MDEyLDU2Mzc0MjEzMjg7MSw1NjM3MTc2MDc5OzEsNTYzNzE2NjMyNzsxLDU2Mzc0NTI4MzI7MSw1NjM3MTYxODI3OzAsMDsxMzIzMTIxMTcwLDU2MzcxNzE1NzY7MCwwOzEsNTYzNzE3MjMyNic=\"","PersonnelNumber":"NTC-0419","Name":"MARTA YOHANA CUADRA ORTIZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"mcuadra@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzgzMTYzNTkzNiw1NjM3MTY4NTc3OzQ0NzcwNTc1MSw1NjM3NDIxMzI5OzEsNTYzNzE3NjA3NjsxLDU2MzcxNjYzMjY7MSw1NjM3NDUyODM0OzEsNTYzNzE2MTgyNjswLDA7MTg3MTgxMTkxLDU2MzcxNzE1Nzc7MCwwOzEsNTYzNzE3MjMyNyc=\"","PersonnelNumber":"NTC-0420","Name":"KATHERINNE DAHIANA QUESADA CALDERON","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"kquesada@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEwMjk2ODkxNDgsNTYzNzE2ODU3ODsxMjU3Mjk4MzY5LDU2Mzc0MjEzMzA7MSw1NjM3MTc2MDgyOzEsNTYzNzE2NjMyODsxLDU2Mzc0NTI4MzY7MSw1NjM3MTYxODI4OzAsMDsyMDc2ODgyNzgyLDU2MzcxNzE1Nzg7MCwwOzEsNTYzNzE3MjMyOCc=\"","PersonnelNumber":"FEH-0020","Name":"HAZEL CEDE\u00d1O FONSECA","EmploymentLegalEntityId":"FEH","PrimaryContactEmail":"hcedeno@farmaciaesp.com"
+    },{
+      "@odata.etag":"W/\"JzE2Njc1MjM4MDAsNTYzNzE3MDA3NjsxMTE2MTU1NTc1LDU2MzczNTYwNzc7MTU4MDU0Njk3OSw1NjM3MTc5MDc2OzEsNTYzNzE2NzgyNjsxLDU2MzczODUzMjk7MSw1NjM3MTc2ODI2OzAsMDs3MjI5MTQ4MzYsNTYzNzE4ODA3NjswLDA7MSw1NjM3MTg5NTc2Jw==\"","PersonnelNumber":"NTC-0421","Name":"PAOLA RIOS VILLARREAL","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"prios@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE1OTk5MjkyNDIsNTYzNzE3MzA3Njs5NDU3NjczMTIsNTYzNzQ4NTA3NzsxLDU2MzcxODIwODY7MSw1NjM3MTcwMDc4OzEsNTYzNzUyNzA4MTsxLDU2MzcxNjcwNzg7MCwwOzEwNDE0MTQ1ODksNTYzNzE3NjgyNjswLDA7MSw1NjM3MTc3NTc2Jw==\"","PersonnelNumber":"NTC-0424","Name":"KIMBERLY PAMELA GOMEZ GARITA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"kgomez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE0MDI1NTE3OTgsNTYzNzE3MzA3ODs2Mjc4MjI0MTIsNTYzNzQ4NTA3OTsxLDU2MzcxODIwNzY7MSw1NjM3MTcwMDc2OzEsNTYzNzUyNzA4NTsxLDU2MzcxNjcwNzY7MCwwOzYzNDI2Nzg3MSw1NjM3MTc2ODI4OzAsMDsxLDU2MzcxNzc1Nzgn\"","PersonnelNumber":"NTC-0426","Name":"ALEJANDRA PANIAGUA MELENDEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"apaniagua@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE4MzEwNTM1NDIsNTYzNzE3MzA3OTsyMDY4OTEwMTYzLDU2Mzc0ODUwODA7MSw1NjM3MTgyMDg3OzEsNTYzNzE3MDA3OTsxLDU2Mzc1MjcwODc7MSw1NjM3MTY3MDc5OzAsMDszMTkzMDk4MTEsNTYzNzE3NjgyOTswLDA7MSw1NjM3MTc3NTc5Jw==\"","PersonnelNumber":"NTC-0427","Name":"FERNANDO JOSE ALVAREZ CRUZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"falvarez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE3NDA1Njg3MTAsNTYzNzE3MzgyNjsxMDQ3MjY4OTY4LDU2Mzc0OTkzMjY7MSw1NjM3MTg1MDc2OzEsNTYzNzE3MDgyNjsxLDU2Mzc1NDI4Mjc7MSw1NjM3MTY3ODI2OzAsMDsxODA4NzE3ODIwLDU2MzcxNzkwNzY7MCwwOzEsNTYzNzE4MDU3Nic=\"","PersonnelNumber":"NTC-0428","Name":"ADRIANA CAROLINA GOMEZ CASCANTE","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"agomez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzY0MTI3NzcyMSw1NjM3MTczODI3OzE2ODYzNTAyNDAsNTYzNzQ5OTMyNzsxLDU2MzcxODUwNzc7MSw1NjM3MTcwODI3OzEsNTYzNzU0MjgzMDsxLDU2MzcxNjc4Mjc7MCwwOzI3MTc1OTY4LDU2MzcxNzkwNzc7MCwwOzEsNTYzNzE4MDU3Nyc=\"","PersonnelNumber":"NTC-0429","Name":"JORDY MAURICIO OBANDO TRUJILLO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jobando@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"Jzc0NDQxNzQ4Miw1NjM3MTc0NTc2OzEwMDY3NzI5MTIsNTYzNzUwMzA3NjsxLDU2MzcxODU4MjY7MSw1NjM3MTcxNTc2OzEsNTYzNzU0NTgyODsxLDU2MzcxNjg1NzY7MCwwOzg5OTczMjk4OCw1NjM3MTc5ODI2OzAsMDsxLDU2MzcxODEzMjYn\"","PersonnelNumber":"NTC-0430","Name":"AUGUSTO CESAR BENAVIDES RODRIGUEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"abenavides@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE3NTY0MjUxMzMsNTYzNzE3NTMyNjsxODI5MDE3MTkwLDU2Mzc1MTIwODE7MSw1NjM3MTg3MzI3OzEsNTYzNzE3MjMyNjsxLDU2Mzc1NTcwODY7MSw1NjM3MTY5MzI2OzAsMDs2Mzk5NTY2NjIsNTYzNzE4MDU3NjswLDA7MSw1NjM3MTgyMDc2Jw==\"","PersonnelNumber":"NTC-0431","Name":"LUIS ALBERTO BARBOZA CERDAS","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"lbarboza@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEyMzE3MjE0MzgsNTYzNzE3NTMyODs4MDY0NzczNjEsNTYzNzUxMjA4NjsxLDU2MzcxODczMzI7MSw1NjM3MTcyMzI4OzEsNTYzNzU1NzA5NDsxLDU2MzcxNjkzMjg7MCwwOzM1MzE0ODQyMCw1NjM3MTgwNTc4OzAsMDsxLDU2MzcxODIwNzgn\"","PersonnelNumber":"NTC-0433","Name":"ANGIE PAOLA CHAVES MONTOYA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"achaves@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEyMjYyMzQ3OCw1NjM3MTc2MDc3OzkzMTAyNjc2OCw1NjM3NTMxNTc4OzEsNTYzNzE4OTU3NzsxLDU2MzcxNzMwNzc7MSw1NjM3NTc1ODMxOzEsNTYzNzE3MDA3NzswLDA7NDcxNDQyNjc4LDU2MzcxODEzMjc7MCwwOzEsNTYzNzE4MjgyNyc=\"","PersonnelNumber":"NTC-0435","Name":"MARIA REBECA VALVERDE JIMENEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"mvalverde@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE2NDcwNjY5NzEsNTYzNzE3NjgyNjsyNjYzODc3NzYsNTYzNzUzNjA3NzsxLDU2MzcxOTAzMjY7MSw1NjM3MTc0NTc2OzEsNTYzNzU4MTA3OTsxLDU2MzcxNzA4MjY7MCwwOzEyMDk5MzMwODksNTYzNzE4MjA3NjswLDA7MSw1NjM3MTgzNTc2Jw==\"","PersonnelNumber":"FEH-0022","Name":"ALEJANDRO JOSE GARITA PEREZ","EmploymentLegalEntityId":"FEH","PrimaryContactEmail":"agarita@farmaciaesp.com"
+    },{
+      "@odata.etag":"W/\"JzE1OTc1Mzk2MTksNTYzNzE3ODMyNjsxNTE1MDEwMDY0LDU2Mzc1NTQ4Mjc7MSw1NjM3MTk0MDc2OzEsNTYzNzE3NjgyNjsxLDU2Mzc2MDA1ODE7MSw1NjM3MTcyMzI2OzAsMDsxODg0MTExMDU5LDU2MzcxODM1NzY7MCwwOzEsNTYzNzE4NTA3Nic=\"","PersonnelNumber":"NTC-0437","Name":"ENRIQUE PICADO SOLANO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"epicado@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE4MTM1MDUzODAsNTYzNzE3OTgyNjs3NjQ4MDc3MjIsNTYzNzU5MzA3NjsxLDU2MzcxOTc4MjY7MSw1NjM3MTc4MzI2OzEsNTYzNzY0NDA3NjsxLDU2MzcxNzM4MjY7MCwwOzEzNTM1OTMxNTQsNTYzNzE4NTA3NjswLDA7MSw1NjM3MTg2NTc2Jw==\"","PersonnelNumber":"NTC-0439","Name":"TRACY ALEJANDRA ESPINOZA MENDEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"tespinoza@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEwMDQ5MjIwODYsNTYzNzE3OTgyNzsxNjI5ODA2MTI1LDU2Mzc1OTMwNzg7MSw1NjM3MTk3ODI4OzEsNTYzNzE3ODMyNzsxLDU2Mzc2NDQwODA7MSw1NjM3MTczODI3OzAsMDsxNjY3MjAxNTgxLDU2MzcxODUwNzc7MCwwOzEsNTYzNzE4NjU3Nyc=\"","PersonnelNumber":"NTC-0440","Name":"DANIELA QUIROS BERMUDEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"dquiros@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzI4Nzc4ODExLDU2MzcxNzk4Mjg7NTU0NzQ4MjczLDU2Mzc1OTMwNzk7MSw1NjM3MTk3ODMwOzEsNTYzNzE3ODMyODsxLDU2Mzc2NDQwODI7MSw1NjM3MTczODI4OzAsMDsxOTIwNDg5MTA0LDU2MzcxODUwNzg7MCwwOzEsNTYzNzE4NjU3OCc=\"","PersonnelNumber":"NTC-0441","Name":"YIRCANIA REBECA MATA GONZALEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"ymata@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzQ0MzU3MjgyMSw1NjM3MTc5ODI5Ozg1NjI1OTUzNSw1NjM3NTkzMDgyOzEsNTYzNzE5NzgzMjsxLDU2MzcxNzgzMjk7MSw1NjM3NjQ0MDg4OzEsNTYzNzE3MzgyOTswLDA7Mjk3NDAzNDI2LDU2MzcxODUwNzk7MCwwOzEsNTYzNzE4NjU3OSc=\"","PersonnelNumber":"NTC-0442","Name":"JOSE ANDRES RAMIREZ ARAYA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"aramirez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzQxNzU2MTM2Niw1NjM3MTc5ODMwOzQ5MjQ5NjY3Myw1NjM3NTkzMDg0OzEsNTYzNzE5NzgzNDsxLDU2MzcxNzgzMzA7MSw1NjM3NjQ0MDkxOzEsNTYzNzE3MzgzMDswLDA7NjIwMDY5MjA2LDU2MzcxODUwODA7MCwwOzEsNTYzNzE4NjU4MCc=\"","PersonnelNumber":"NTC-0443","Name":"GREGORY MARTIN ROSALES APU","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"grosales@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzIwNjQ3Njk4ODEsNTYzNzE3OTgzMTsyMjQzNDIwMjIsNTYzNzU5MzA4ODsxLDU2MzcxOTc4Mzg7MSw1NjM3MTc4MzMxOzEsNTYzNzY0NDA5NTsxLDU2MzcxNzM4MzE7MCwwOzEyOTEyODQxNjMsNTYzNzE4NTA4MTswLDA7MSw1NjM3MTg2NTgxJw==\"","PersonnelNumber":"NTC-0444","Name":"ALESSANDRO SOJO MURILLO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"asojo@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzQ2MDY2NDAwMiw1NjM3MTgxMzI2OzE5Mzc0NjEwNCw1NjM3NjE2MzI3OzEsNTYzNzE5OTMyNjsxLDU2MzcxNzk4MjY7MSw1NjM3NjY3MzI5OzEsNTYzNzE3NjgyNzswLDA7MTMzMjU4MzQ3Niw1NjM3MTg4MDc3OzAsMDsxLDU2MzcxODk1Nzcn\"","PersonnelNumber":"NTC-0446","Name":"MONICA YULIANA CALDERON SANDOVAL","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"mcalderon@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE2NDgwMjk3MjYsNTYzNzE4MjgyNjsxOTQ3NTQ5OTYyLDU2Mzc2NzAzNTA7MSw1NjM3MjAzODI2OzEsNTYzNzE4MTMyNjsxLDU2Mzc3MjY2NTA7MSw1NjM3MTc5ODI2OzAsMDsyMDAzODE5NDcsNTYzNzE5MDMyNjswLDA7MSw1NjM3MTkxODI2Jw==\"","PersonnelNumber":"NTC-0449","Name":"LEIDY JOANNA RODRIGUEZ ARIAS","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"lrodriguez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzYwNzYzNDU3Myw1NjM3MTgyODI3OzUwNTA0NjIzMSw1NjM3NjcwMzUyOzEsNTYzNzIwMzgyODsxLDU2MzcxODEzMjc7MSw1NjM3NzI2NjU5OzEsNTYzNzE3OTgyNzswLDA7NTkwOTE2NTg4LDU2MzcxOTAzMjc7MCwwOzEsNTYzNzE5MTgyNyc=\"","PersonnelNumber":"NTC-0450","Name":"BERNON MANRIQUE MORA CORELLA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"bmora@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEwMzI2MTkxMDksNTYzNzE4NDMyNjsxNTI4MjI5NjEzLDU2Mzc2Nzg1Nzc7MSw1NjM3MjA1MzI2OzEsNTYzNzE4MjgyNjsxLDU2Mzc3MzQ4Mzk7MSw1NjM3MTgxMzI2OzAsMDs0MTE2MDE4NzYsNTYzNzE5MTgyNjswLDA7MSw1NjM3MTkzMzI2Jw==\"","PersonnelNumber":"NTC-0451","Name":"GABRIELA MEDRANO DURAN","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"gmedrano@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"Jzk0ODg4NjE4Miw1NjM3MTg1MDc2OzExMzc4NTE4MzAsNTYzNzY4NjgyOTsxLDU2MzcyMDYwNzY7MSw1NjM3MTgzNTc2OzEsNTYzNzc0MzA4MTsxLDU2MzcxODIwNzY7MCwwOzE5MzAwNjM0ODcsNTYzNzE5MjU3NjswLDA7MSw1NjM3MTk0MDc2Jw==\"","PersonnelNumber":"NTC-0452","Name":"LAURA ARIAS MATAMOROS","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"larias@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE0ODU5MzM0MjgsNTYzNzE4NTgyNzsxNjk3NTA1NDM4LDU2Mzc2ODk4Mzg7MSw1NjM3MjA3NTc4OzEsNTYzNzE4NDMyNzsxLDU2MzgzMTIzMzU7MSw1NjM3MTgyODI3OzAsMDsxNDc3MTg3NzAwLDU2MzcxOTMzMjc7MCwwOzEsNTYzNzE5NDgyNyc=\"","PersonnelNumber":"NTC-0454","Name":"JILBERTH MICHAEL IBARRA MORENO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jibarra@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE0ODk1NTEyMyw1NjM3MTg2NTc3OzUwMTIyMDM3OSw1NjM3NzA3ODM4OzEsNTYzNzIwODMyODsxLDU2MzcxODUwNzc7MSw1NjM3NzY1NjIwOzEsNTYzNzE4MzU3NzswLDA7MjQyNTcxMTg1LDU2MzcxOTQwNzc7MCwwOzEsNTYzNzE5NTU3Nyc=\"","PersonnelNumber":"FEH-0026","Name":"VALERIA MARIA MAGUI\u00d1A MEDINA","EmploymentLegalEntityId":"FEH","PrimaryContactEmail":"vmaguina@farmaciaesp.com"
+    },{
+      "@odata.etag":"W/\"Jzk2NjE1MzUyMSw1NjM3MTg3MzI2OzExNTk3OTgyNDMsNTYzNzcxNDU3NjsxLDU2MzcyMDkwNzY7MSw1NjM3MTg1ODI2OzEsNTYzNzc3MTU3NjsxLDU2MzcxODQzMjc7MCwwOzc5Nzk4OTkwMCw1NjM3MTk0ODI3OzAsMDsxLDU2MzcxOTYzMjcn\"","PersonnelNumber":"NTC-0456","Name":"EIMY FIORELLA RUIZ VARELA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"eruiz@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE1ODQ1ODUzMTAsNTYzNzE4ODA3Njs2MTIyODA2MDQsNTYzNzcyNDM1NDsxLDU2MzcyMDk4MjY7MSw1NjM3MTg2NTc2OzEsNTYzNzc4MTM4MzsxLDU2MzcxODUwNzY7MCwwOzExMDEwMTEzNDYsNTYzNzE5NTU3NjswLDA7MSw1NjM3MTk3MDc2Jw==\"","PersonnelNumber":"NTC-0457","Name":"YERLANY TATIANA URE\u00d1A NAVARRO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"yurena@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE4MzI0MzcyNzQsNTYzNzE4ODgyNjsxNzM0NzY2MDI2LDU2Mzc3NjQwNzc7MCwwOzAsMDswLDA7MCwwOzAsMDsxLDU2MzcxOTYzMjY7MCwwOzEsNTYzNzE5NzgyNic=\"","PersonnelNumber":"NTC-9998","Name":"Desarrollo TI NTC","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"desarrollo@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzkxODMwMjgyNiw1NjM3MTg5NTc2OzUyNjE5MTY1MSw1NjM3NzY0ODQzOzEsNTYzNzIxMjA3NjsxLDU2MzcxODczMjY7MSw1NjM4Mzc2MDkwOzEsNTYzNzE4NTgyNjswLDA7NjQ1MTY4MDA5LDU2MzcxOTcwNzY7MCwwOzEsNTYzNzE5ODU3Nic=\"","PersonnelNumber":"NTC-0458","Name":"PABLO ENRIQUE CARMONA SING","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"pcarmona@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE2NzY5NDQyMTEsNTYzNzE4OTU3Nzs0NDcwMjQxMjMsNTYzNzc2NDg0NTsxLDU2MzcyMTIwNzg7MSw1NjM3MTg3MzI3OzEsNTYzNzgyMjYxODsxLDU2MzcxODU4Mjc7MCwwOzQyNTA0MDg2Nyw1NjM3MTk3MDc3OzAsMDsxLDU2MzcxOTg1Nzcn\"","PersonnelNumber":"NTC-0459","Name":"ANA VIRGINIA HERNANDEZ CAMBRONERO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"ahernandez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"Jzk1OTA2NzI0Niw1NjM3MTg5NTc4OzExMTM5OTM1NTcsNTYzNzc2NDg0ODsxLDU2MzcyMTIwODE7MSw1NjM3MTg3MzI4OzEsNTYzNzgyMjYyMjsxLDU2MzcxODU4Mjg7MCwwOzIwNzIwMzA2NjgsNTYzNzE5NzA3ODswLDA7MSw1NjM3MTk4NTc4Jw==\"","PersonnelNumber":"NTC-0460","Name":"KARINA ANDREA MARTINEZ CEBALLOS","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"kmartinez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE4NjIzMDA2MjAsNTYzNzE4OTU4MDsxMzc0ODYzODgsNTYzNzc2NDg1MTsxLDU2MzcyMTIwODQ7MSw1NjM3MTg3MzI5OzEsNTYzNzgyMjYyNTsxLDU2MzcxODU4Mjk7MCwwOzgzMjEzMDUyNiw1NjM3MTk3MDgwOzAsMDsxLDU2MzcxOTg1ODAn\"","PersonnelNumber":"NTC-0461","Name":"ESTEFANY JOHANNA ZU\u00d1IGA LIZANO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"ezuniga@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzQ3NTY5ODg1MSw1NjM3MTkwMzI2OzU2NjA2MjkzMCw1NjM3Nzc0NTgyOzEsNTYzNzIxNDMyNjsxLDU2MzcxODgwNzY7MSw1NjM3ODM0NTg2OzEsNTYzNzE4NjU3NjswLDA7MTc1MTk5NDEzLDU2MzcxOTc4MjY7MCwwOzEsNTYzNzE5OTMyNic=\"","PersonnelNumber":"FEH-0027","Name":"JOSELYNE NU\u00d1EZ RODRIGUEZ","EmploymentLegalEntityId":"FEH","PrimaryContactEmail":"jnunez@farmaciaesp.com"
+    },{
+      "@odata.etag":"W/\"JzE1NjYyMjE1NSw1NjM3MTkxMDc3OzkzMTY0MTY3LDU2Mzc3OTI1ODI7MSw1NjM3MjE1ODI5OzEsNTYzNzE4ODgyNzsxLDU2Mzc4NTAzNDI7MSw1NjM3MTk4NTc2OzAsMDsxMTkzMzIwMjg5LDU2MzcyMDk4MjY7MCwwOzEsNTYzNzIxMjA3Nic=\"","PersonnelNumber":"NTC-0462","Name":"ANYELO ARTURO OBANDO LOPEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"aobando@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzExODEzOTMzODQsNTYzNzE5MTgyNzsyMTM3MzcxMTU4LDU2Mzc3OTQwNzY7MSw1NjM3MjE2NTc3OzEsNTYzNzE4OTU3NzsxLDU2Mzc4NTE4MjY7MSw1NjM3MTg4MDc3OzAsMDsxNzk1NDUwNTk1LDU2MzcxOTkzMjc7MCwwOzEsNTYzNzIwMDgyNyc=\"","PersonnelNumber":"NTC-0464","Name":"ANYELO AARON QUESADA QUIROS","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"anquesada@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"Jzc5MzIwNjY2LDU2MzcxOTMzMjY7MTIyMDQ2MDg1Myw1NjM3ODE0MzMyOzEsNTYzNzIxOTU3NjsxLDU2MzcxOTEwNzY7MSw1NjM3ODc0MzM4OzEsNTYzNzE4OTU3NjswLDA7MTAzOTk3NjI2Miw1NjM3MjAxNTc2OzAsMDsxLDU2MzcyMDM4MjYn\"","PersonnelNumber":"NTC-0467","Name":"EVELYN CHAVARRIA GUADAMUZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"echavarria@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzgzMDQ4NDc0LDU2MzcxOTQwNzY7NDIwMDM4MDQ5LDU2Mzc4Mjg1Nzk7MSw1NjM3MjIxODI4OzEsNTYzNzE5MjU3NjsxLDU2Mzc4ODg1Nzc7MSw1NjM3MTkxMDc2OzAsMDsxOTgzODY1MTg5LDU2MzcyMDIzMjY7MCwwOzEsNTYzNzIwNDU3Nic=\"","PersonnelNumber":"NTC-0468","Name":"ZAIDA MARIA DAVILA CASTRO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"zdavila@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzcwNDU3MzkxOSw1NjM3MTk3MDc2OzE1MzIyMjM5Nyw1NjM3OTQ5MzMzOzEsNTYzNzIyNzgyNjsxLDU2MzcxOTYzMjY7MSw1NjM4MDE1MzM0OzEsNTYzNzE5NDgyNjswLDA7NDc0MTk1NTAsNTYzNzIwNjA3NjswLDA7MSw1NjM3MjA4MzI2Jw==\"","PersonnelNumber":"NTC-0472","Name":"ALISSON DANIELA RAMOS QUESADA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"aramos@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEyNDM4MTMyNzEsNTYzNzE5NzgyNjs0NjE1NzY3MzksNTYzNzk2NTgzMjsxLDU2MzcyMjkzMjY7MSw1NjM3MTk3MDc2OzEsNTYzODAzNTU5MTsxLDU2MzcxOTU1NzY7MCwwOzE5NTA0OTc4NCw1NjM3MjA2ODI2OzAsMDsxLDU2MzcyMDkwNzYn\"","PersonnelNumber":"NTC-0473","Name":"SANDRA VIVIANA PORRAS ZAMORA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"sporras@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzIxMzcxOTQxNDYsNTYzNzE5ODU3NjsyNjE2Njg4MjcsNTYzNzk3NzgyNjsxLDU2MzcyMzAwNzY7MSw1NjM3MTk3ODI2OzEsNTYzODA0ODMyNjsxLDU2MzcxOTYzMjY7MCwwOzIxMjExMzg3NDMsNTYzNzIwNzU3NjswLDA7MSw1NjM3MjA5ODI2Jw==\"","PersonnelNumber":"NTC-0474","Name":"GENESIS SANCHEZ VARGAS","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"gsanchez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE2MjQ1MTIzMTMsNTYzNzE5ODU3NzsxMTU2MzQyMjIsNTYzNzk3NzgyNzsxLDU2MzcyMzAwNzg7MSw1NjM3MTk3ODI3OzEsNTYzODA0ODMyODsxLDU2MzcxOTYzMjc7MCwwOzE5MDc5MDcxMjYsNTYzNzIwNzU3NzswLDA7MSw1NjM3MjA5ODI3Jw==\"","PersonnelNumber":"NTC-0475","Name":"PAMELA DE LOS ANGELES ACU\u00d1A TAMES","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"pacuna@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzQ5NDIxNTMzNiw1NjM3MjAwMDc2OzE2NDMxMDkxNDUsNTYzNzk5MjgyOTsxLDU2MzcyMzE1NzY7MSw1NjM3MTk4NTc2OzEsNTYzODA2NDA4NDsxLDU2MzcxOTc4MjY7MCwwOzEzOTM0Mzc3MzcsNTYzNzIwOTA3NjswLDA7MSw1NjM3MjExMzI2Jw==\"","PersonnelNumber":"FEH-0033","Name":"LAURA PATRICIA BOGANTES PEREIRA","EmploymentLegalEntityId":"FEH","PrimaryContactEmail":"lbogantes@farmaciaesp.com"
+    },{
+      "@odata.etag":"W/\"Jzg2ODEwMzU3LDU2MzcyMDA4Mjc7MjEzOTE2NTA2Myw1NjM4MDA5MzI4OzEsNTYzNzIzMzA3NjsxLDU2MzcyMDAwNzY7MSw1NjM4MDgxMzMzOzEsNTYzNzE5OTMyNzswLDA7MjExNzAxMjgzNSw1NjM3MjEwNTc3OzAsMDsxLDU2MzcyMTI4Mjcn\"","PersonnelNumber":"NTC-0478","Name":"CAROL PRISCILLA SANCHEZ MADRIZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"csanchezm@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzIxMzU2OTY5MDIsNTYzNzIwMTU3NzsxNzA1ODU3MTA2LDU2MzgwMTc1Nzk7MSw1NjM3MjMzODI4OzAsMDsxLDU2MzgzNDY4Mjc7MSw1NjM3MjAwMDc3OzAsMDsxNTIxMTM2OTU2LDU2MzcyMTEzMjc7MCwwOzEsNTYzNzIxMzU3Nyc=\"","PersonnelNumber":"FEH-0034","Name":"CASANDRA CORTES GARCIA","EmploymentLegalEntityId":"FEH","PrimaryContactEmail":"ccortes@farmaciaesp.com"
+    },{
+      "@odata.etag":"W/\"JzE2NDI0NDk1MjksNTYzNzIwMjMyNjsyMDU1MjE4NzgxLDU2MzgwMjM1OTY7MSw1NjM3MjM0NTc2OzEsNTYzNzIwMTU3NjsxLDU2MzgwOTU2MTk7MSw1NjM3MjAwODI2OzAsMDsxMjg4MjIzMzMxLDU2MzcyMTIwNzY7MCwwOzEsNTYzNzIxNDMyNic=\"","PersonnelNumber":"NTC-0480","Name":"DANIELA MARIA GUEVARA MARTINEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"dguevara@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzQwNjMwNTQ2LDU2MzcyMDMwNzY7MjYwNjUyMjc2LDU2MzgwMjczMzM7MSw1NjM3MjM1MzMyOzEsNTYzNzIwMjMyNzsxLDU2MzgwOTg1OTI7MSw1NjM3MjAxNTc3OzAsMDs0ODY1MjU3ODAsNTYzNzIxMjgyNjswLDA7MSw1NjM3MjE1MDc2Jw==\"","PersonnelNumber":"NTC-0481","Name":"FREDDY GABRIEL ORTEGA MEJIAS","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"fortega@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzQ2NTIzNTcwMiw1NjM3MjAzMDc4OzE4ODc5NjgwMDcsNTYzODAyNzMzNTsxLDU2MzcyMzUzMjc7MSw1NjM3MjAyMzI2OzEsNTYzODA5ODU5NDsxLDU2MzcyMDE1NzY7MCwwOzIyNDM2MjA2MCw1NjM3MjEyODI4OzAsMDsxLDU2MzcyMTUwNzgn\"","PersonnelNumber":"NTC-0483","Name":"CHRISTOPHER ALEXIS GUTIERREZ MURILLO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"cgutierrez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE1OTI3MDc1OTUsNTYzNzIwMzgyNjsxOTA1NTg1MjcwLDU2MzgwMzMzMjY7MSw1NjM3MjM2MDc2OzEsNTYzNzIwMzA3NjsxLDU2MzgxMDQ1NzY7MSw1NjM3MjAyMzI2OzAsMDsxMDg1ODk1MDcsNTYzNzIxMzU3NjswLDA7MSw1NjM3MjE1ODI2Jw==\"","PersonnelNumber":"NTC-0484","Name":"MONICA LUCIA GAMBOA SIBAJA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"mgamboas@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzQ3ODEwNzU4OCw1NjM3MjA0NTc2OzU1NTA1MzIwMSw1NjM4MDQyMzMyOzEsNTYzNzIzNzU3NzsxLDU2MzcyMDM4MjY7MSw1NjM4MTEzNTg4OzEsNTYzNzIwMzA3NjswLDA7MjEwMjg4OTQ3MCw1NjM3MjE0MzI2OzAsMDsxLDU2MzcyMTY1NzYn\"","PersonnelNumber":"NTC-0485","Name":"JOSSELYNE ANDREA VASQUEZ SOTO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jvasquez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzcwMDgxNjgzNCw1NjM3MjA1MzI3OzY3Mjg3MDc4Niw1NjM4MDQzODM4OzEsNTYzNzIzNzU3OTsxLDU2MzcyMDM4Mjc7MSw1NjM4MTE1MTAyOzEsNTYzNzIwMzA3NzswLDA7MTc1MzY2NzI2LDU2MzcyMTUwNzc7MCwwOzEsNTYzNzIxNzMyNyc=\"","PersonnelNumber":"NTC-0486","Name":"ALBERT ISAAC CARRERA CALDERON","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"acarrera@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE2OTU3NTY5MTEsNTYzNzIwNjgyNjs1MDQzNDc5MTcsNTYzODA1MzU3OTsxLDU2MzcyMzkwNzY7MSw1NjM3MjA1MzI2OzEsNTYzODEyNDgzMzsxLDU2MzcyMDQ1NzY7MCwwOzE0NzY3MzY0MDAsNTYzNzIxNjU3NjswLDA7MSw1NjM3MjE4ODI2Jw==\"","PersonnelNumber":"NTC-0488","Name":"JOSELYNE DAYANA UGALDE ARCE","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jugalde@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzUzNjA3NjM4NSw1NjM3MjA3NTc3OzEwMjAyMDcyMzQsNTYzODA2MTg0MDsxLDU2MzcyNDA1ODA7MSw1NjM3MjA2MDc3OzEsNTYzODEzMzA5NzsxLDU2MzcyMDUzMjc7MCwwOzMyNzEwMjAwOSw1NjM3MjE3MzI3OzAsMDsxLDU2MzcyMTk1Nzcn\"","PersonnelNumber":"NTC-0490","Name":"CARLOS LEONEL DE LA O NU\u00d1EZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"cdelao@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"Jzk5MzMxMDE0MCw1NjM3MjA5MDc2OzEwNDk5MTg1OTIsNTYzODA3MDA3NjsxLDU2MzcyNDM1NzY7MSw1NjM3MjA3NTc2OzEsNTYzODE0MTMyNjsxLDU2MzcyMDY4MjY7MCwwOzE4MjUxMDE2NzMsNTYzNzIxODgyNjswLDA7MSw1NjM3MjIxMDc2Jw==\"","PersonnelNumber":"NTC-0491","Name":"ALEXANDER FABIAN VALVERDE GUTIERREZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"avalverdeg@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEyODgyMzI3NzMsNTYzNzIwOTgyNjsxNTcxMDMyMjA4LDU2MzgwNzY4MzM7MSw1NjM3MjQzNTc4OzEsNTYzNzIwNzU3NzsxLDU2MzgxNDgwODU7MSw1NjM3MjA2ODI3OzAsMDsxNzk0MzU1NzYwLDU2MzcyMTk1NzY7MCwwOzEsNTYzNzIyMTgyNic=\"","PersonnelNumber":"NTC-0492","Name":"GUSTAVO ADOLFO MARTINEZ CABEZAS","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"gmartinez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE5NDYzMjk0MDIsNTYzNzIxMDU3Njs4MTY5NjUyMjcsNTYzODA5MDMyNjsxLDU2MzcyNDQzMjY7MSw1NjM3MjA4MzI2OzEsNTYzODE1OTMyNjsxLDU2MzcyMDc1NzY7MCwwOzUyODI2NTI3Miw1NjM3MjIwMzI2OzAsMDsxLDU2MzcyMjI1NzYn\"","PersonnelNumber":"FEH-0038","Name":"DAVID ROBERTO LEIVA PICADO","EmploymentLegalEntityId":"FEH","PrimaryContactEmail":"dleiva@farmaciaesp.com"
+    },{
+      "@odata.etag":"W/\"JzcxNzgxNDg5OCw1NjM3MjEyMDc2OzE2MTgzMTQ3MzAsNTYzODEyODU4OTsxLDU2MzcyNDU4MjY7MSw1NjM3MjA5ODI2OzEsNTYzODE5NzYwNTsxLDU2MzcyMDkwNzY7MCwwOzE2NDMxMzQzNzksNTYzNzIyMjU3NjswLDA7MSw1NjM3MjI0ODI2Jw==\"","PersonnelNumber":"NTC-0494","Name":"RANYIT DE LOS ANGELES GUZMAN PRADO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"rguzmanp@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE1MTExOTY4NjQsNTYzNzIxMjA3NzsxNjc1MTQ2NTc0LDU2MzgxMjg1OTI7MSw1NjM3MjQ1ODI5OzEsNTYzNzIwOTgyNzsxLDU2MzgxOTc2MDg7MSw1NjM3MjA5MDc3OzAsMDsyMTA1MzQ1NDA2LDU2MzcyMjI1Nzc7MCwwOzEsNTYzNzIyNDgyNyc=\"","PersonnelNumber":"NTC-0495","Name":"JOCSHAN DANIEL CORDERO VEGA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jcordero@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEyMzQwNDI1OCw1NjM3MjEyMDc4OzIyOTQ1NzYyNSw1NjM4MTI4NTk0OzEsNTYzNzI0NTgzMTsxLDU2MzcyMDk4Mjg7MSw1NjM4MTk3NjExOzEsNTYzNzIwOTA3ODswLDA7MTcwODE3MjgxOCw1NjM3MjIyNTc4OzAsMDsxLDU2MzcyMjQ4Mjgn\"","PersonnelNumber":"NTC-0496","Name":"DANIEL VIQUEZ GONZALEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"dviquez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"Jzk4NDk1ODY4MSw1NjM3MjEyODI2OzE3NjM1NDAzOTIsNTYzODEzNTMzNDsxLDU2MzcyNDY1NzY7MSw1NjM3MjEwNTc2OzEsNTYzODIwMzU5NTsxLDU2MzcyMDk4MjY7MCwwOzYwOTIyNzY0OCw1NjM3MjIzMzI2OzAsMDsxLDU2MzcyMjU1NzYn\"","PersonnelNumber":"NTC-0497","Name":"DOUGLAS HERRERA VASQUEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"dherrera@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE1MDc5NjAwODMsNTYzNzIxMzU3Njs3MjY0MzE0Nyw1NjM4MTUwMzI2OzEsNTYzNzI0ODA3NjsxLDU2MzcyMTEzMjY7MSw1NjM4MjE4NTc2OzEsNTYzNzIxMTMyNjswLDA7NjcwMDE3NDYxLDU2MzcyMjQ4MjY7MCwwOzEsNTYzNzIyNzA3Nic=\"","PersonnelNumber":"NTC-0498","Name":"MARIA JOSE ARGUEDAS CHINCHILLA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"marguedas@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEyODc2NDA1MDIsNTYzNzIxNDMyNjsyMDc3OTEzODM1LDU2MzgxNTg1NzY7MSw1NjM3MjQ4ODMwOzEsNTYzNzIxMjA3NzsxLDU2MzgyMjc1NzY7MSw1NjM3MjEyMDc3OzAsMDsxMzQxNjAyNzE0LDU2MzcyMjU1NzY7MCwwOzEsNTYzNzIyNzgyNic=\"","PersonnelNumber":"NTC-0499","Name":"DIANA MARIA CORDERO VILLALOBOS","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"dcorderov@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzYzODU3NjAyMiw1NjM3MjE0MzI3OzE4NjQ0OTIzODcsNTYzODE1ODU3NzsxLDU2MzcyNDg4MjY7MSw1NjM3MjEyMDc2OzEsNTYzODIyNzU3ODsxLDU2MzcyMTIwNzY7MCwwOzEwMTYxNDY2NjcsNTYzNzIyNTU3NzswLDA7MSw1NjM3MjI3ODI3Jw==\"","PersonnelNumber":"NTC-0500","Name":"ROXANA REBECA QUIROS VIZCAINO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"rquiros@farmaciaesp.com"
+    },{
+      "@odata.etag":"W/\"JzExNzgyNTA0MTIsNTYzNzIxNTA3NjsxMzgwMDQ1ODk4LDU2MzgxNjUzMjk7MSw1NjM3MjQ5NTc2OzEsNTYzNzIxMjgyNjsxLDU2MzgyMzIwODM7MSw1NjM3MjEyODI2OzAsMDsxODA5ODA5Njg1LDU2MzcyMjYzMjY7MCwwOzEsNTYzNzIyODU3Nic=\"","PersonnelNumber":"NTC-0501","Name":"KARLA ARALYS PORRAS MENDOZA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"kporrar@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzExMjY0MzI3ODIsNTYzNzIxNTA3Nzs4MTA5NjM5MjMsNTYzODE2NTMzMzsxLDU2MzcyNDk1ODA7MSw1NjM3MjEyODI3OzEsNTYzODIzMjA4NjsxLDU2MzcyMTI4Mjc7MCwwOzMxMDk1NDY5Miw1NjM3MjI2MzI3OzAsMDsxLDU2MzcyMjg1Nzcn\"","PersonnelNumber":"NTC-0502","Name":"JEAN CARLO CALDERON CALVO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jcalderonc@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE1ODAyNDQ4NzEsNTYzNzIxNTgyNjs1MDAwNzU3Nyw1NjM4MTY3NTg2OzEsNTYzNzI1MDMyNjsxLDU2MzcyMTM1NzY7MSw1NjM4MjM0MzU2OzEsNTYzNzIxMzU3NjswLDA7ODMyMjc0NzU0LDU2MzcyMjcwNzY7MCwwOzEsNTYzNzIyOTMyNic=\"","PersonnelNumber":"NTC-0503","Name":"STEPHANIE GABRIELA BARRANTES VEGA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"sbarrantes@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzMzODQ4NDM5Nyw1NjM3MjE1ODI3OzExOTEzMjI5NTEsNTYzODE2NzU4NzsxLDU2MzcyNTAzMjg7MSw1NjM3MjEzNTc3OzEsNTYzODIzNDM1NzsxLDU2MzcyMTM1Nzc7MCwwOzE5NjE2NjQwMzAsNTYzNzIyNzA3NzswLDA7MSw1NjM3MjI5MzI3Jw==\"","PersonnelNumber":"NTC-0504","Name":"MAURO HERNAN CORDERO MENESES","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"mcordero@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzM3NjM5NjMwLDU2MzcyMTU4Mjg7MTE1OTU4Njg5OCw1NjM4MTY3NTg4OzEsNTYzNzI1MTgyNjsxLDU2MzcyMTUwNzY7MSw1NjM4MjM0MzU4OzEsNTYzNzIxMzU3ODswLDA7MjAyMzAwMTkwMCw1NjM3MjI3MDc4OzAsMDsxLDU2MzcyMjkzMjgn\"","PersonnelNumber":"NTC-0505","Name":"VLADIMIR ARIAS SOTO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"varias@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE2NTMxNjE4MzEsNTYzNzIxNjU3NjsyMDM3NTYxMDQxLDU2MzgxNzUwODI7MSw1NjM3MjUxMDc3OzEsNTYzNzIxNDMyNjsxLDU2MzgyNDEwOTg7MSw1NjM3MjE0MzI2OzAsMDsxNTc4NjYzMzQ5LDU2MzcyMjc4MjY7MCwwOzEsNTYzNzIzMDA3Nic=\"","PersonnelNumber":"FEH-0039","Name":"JUAN ALFONSO MONTERO MARIN","EmploymentLegalEntityId":"FEH","PrimaryContactEmail":"jmontero@farmaciaesp.com"
+    },{
+      "@odata.etag":"W/\"JzEwNDQ2OTE5ODYsNTYzNzIxNjU3NzsxNjk2NDEzODE0LDU2MzgxNzUwODM7MSw1NjM3MjUxMDgwOzEsNTYzNzIxNDMyNzsxLDU2MzgyNDExMDU7MSw1NjM3MjE0MzI3OzAsMDs0NDk3ODUwNTMsNTYzNzIyNzgyNzswLDA7MSw1NjM3MjMwMDc3Jw==\"","PersonnelNumber":"FEH-0040","Name":"GERARDO MANUEL BALTODANO MADRIGAL","EmploymentLegalEntityId":"FEH","PrimaryContactEmail":"gbaltodano@farmaciaesp.com"
+    },{
+      "@odata.etag":"W/\"JzY0MDg2MTQyNCw1NjM3MjE2NTc4OzkzMTA5OTAxMiw1NjM4MTc1MTA2OzEsNTYzNzI1MTA4MzsxLDU2MzcyMTQzMjg7MSw1NjM4MjQxMTM5OzEsNTYzNzIxNDMyODswLDA7NTM0OTk1Nzg1LDU2MzcyMjc4Mjg7MCwwOzEsNTYzNzIzMDA3OCc=\"","PersonnelNumber":"NTC-0506","Name":"KATTIA SHIRLENE HERNANDEZ NU\u00d1EZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"khernandez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzExNTgzODI0MzAsNTYzNzIxNjU3OTsxMzg1Njc0NDQzLDU2MzgxNzUxMDc7MSw1NjM3MjUxMDg3OzEsNTYzNzIxNDMyOTsxLDU2MzgzNDY4MjY7MSw1NjM3MjE0MzI5OzAsMDs5NDQxMzkyNTIsNTYzNzIyNzgyOTswLDA7MSw1NjM3MjMwMDc5Jw==\"","PersonnelNumber":"NTC-0507","Name":"KEVIN HUMBERTO GARCIA PORTILLA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"kgarcia@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE2Mzc5OTMyNzYsNTYzNzIxNjU4MDsxMjM5NTk4ODg2LDU2MzgxNzUxMDg7NTkyMjg4OTgsNTYzNzI1MTA4OTsxLDU2MzcyMTQzMzA7MSw1NjM4MjQxMTQxOzEsNTYzNzIxNDMzMDswLDA7ODc0NDk1NDIwLDU2MzcyMjc4MzA7MCwwOzEsNTYzNzIzMDA4MCc=\"","PersonnelNumber":"FEH-0041","Name":"GLEN ANTONIO RODRIGUEZ ZU\u00d1IGA","EmploymentLegalEntityId":"FEH","PrimaryContactEmail":"grodriguez@farmaciaesp.com"
+    },{
+      "@odata.etag":"W/\"JzE3NDg5NTQ4OSw1NjM3MjE3MzI2OzE2ODgyNjU1MjEsNTYzODIwNjU4MDsxLDU2MzcyNTMzMjY7MSw1NjM3MjE1ODI2OzEsNTYzODI3MTA4NDsxLDU2MzcyMTUwNzY7MCwwOzE0NzE0MjM0NzksNTYzNzIyODU3NjswLDA7MSw1NjM3MjMwODI2Jw==\"","PersonnelNumber":"NTC-0508","Name":"VICTORIA FERNANDEZ ZUMBADO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"vfernandez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"Jzg2MTI2MDQ4NSw1NjM3MjE3MzI3OzE5NDM1MzQ4MjAsNTYzODIwNjU4MTsxLDU2MzcyNTMzMjg7MSw1NjM3MjE1ODI3OzEsNTYzODI3MTA4NzsxLDU2MzcyMTUwNzc7MCwwOzEzMDk2MDMyNzUsNTYzNzIyODU3NzswLDA7MSw1NjM3MjMwODI3Jw==\"","PersonnelNumber":"NTC-0509","Name":"ROBERTO CARLOS ARCE CORDERO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"rarce@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE4ODY0Nzk2NzMsNTYzNzIxNzMyODsyODEzODk4NzIsNTYzODIwNjU4MjsxLDU2MzcyNTMzMjk7MSw1NjM3MjE1ODI4OzEsNTYzODI3MTA4OTsxLDU2MzcyMTUwNzg7MCwwOzE0MjU2NjYzNTcsNTYzNzIyODU3ODswLDA7MSw1NjM3MjMwODI4Jw==\"","PersonnelNumber":"NTC-0510","Name":"RODOLFO ASTUA GONZALEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"rastua@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEwMzY1MzcwNDAsNTYzNzIxODgyNjsxMTI5NTk1NTgsNTYzODIxNzA3NzsxLDU2MzcyNTQ4Mjg7MSw1NjM3MjE2NTc3OzEsNTYzODI4MDgyOTsxLDU2MzcyMTU4Mjg7MCwwOzMxOTU5OTI5OCw1NjM3MjMwMDc2OzAsMDsxLDU2MzcyMzIzMjYn\"","PersonnelNumber":"FEH-0043","Name":"CAROL MARCELA VALVERDE SALAZAR","EmploymentLegalEntityId":"FEH","PrimaryContactEmail":"cvalverde@farmaciaesp.com"
+    },{
+      "@odata.etag":"W/\"JzI2NDg2ODA1OSw1NjM3MjE4ODI3OzE2ODk5NTI3NjIsNTYzODIxNzA3OTsxLDU2MzcyNTQ4MzA7MSw1NjM3MjE2NTc4OzEsNTYzODI4MDgzMjsxLDU2MzcyMTU4Mjk7MCwwOzExMDc1MDY5ODUsNTYzNzIzMDA3NzswLDA7MSw1NjM3MjMyMzI3Jw==\"","PersonnelNumber":"NTC-0511","Name":"JOSELYN MILENA CALDERON MATA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jcalderonm@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE2MzIxODI2MzAsNTYzNzIxOTU3NjsxNzk1MjE1NDU4LDU2MzgyMjkwNzc7MSw1NjM3MjU1NTc2OzEsNTYzNzIyMDMyNzsxLDU2MzgzODU4MzA7MSw1NjM3MjE3MzI2OzAsMDsxNDc3MjEyMTMwLDU2MzcyMzE1NzY7MCwwOzEsNTYzNzIzMzgyNic=\"","PersonnelNumber":"NTC-0512","Name":"HELLEN GABRIELA QUESADA QUESADA","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"hquesada@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE5OTM2MTU5MDcsNTYzNzIyMDMyNjsxMjM4MTkwNzUwLDU2MzgyMzI4Mjc7MSw1NjM3MjU1NTc5OzEsNTYzNzIxNzMyNzsxLDU2MzgyOTUwOTI7MSw1NjM3MjE3MzI4OzAsMDsxOTA2ODM3NjEzLDU2MzcyMzIzMjY7MCwwOzEsNTYzNzIzNDU3Nic=\"","PersonnelNumber":"NTC-0514","Name":"ANA GABRIELA ROMAN BERMUDEZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"aroman@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzIxMDEyODU5MDAsNTYzNzIyMTA3NjsxOTQ0Njk4MDA0LDU2MzgyMzg4Mjc7MSw1NjM3MjU3ODI5OzEsNTYzNzIxODA3NzsxLDU2MzgzMDU1ODc7MSw1NjM3MjE4MDc3OzAsMDs0NzAwMDE2NDQsNTYzNzIzMzA3NjswLDA7MSw1NjM3MjM1MzI2Jw==\"","PersonnelNumber":"NTC-0515","Name":"ADRIANA MARIA VARGAS ALVARADO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"avargas@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEyMTU0NjYxODEsNTYzNzIyMTA3NzsxODgzMjY5MzgsNTYzODIzODgyODsxLDU2MzcyNTc4Mjc7MSw1NjM3MjE4MDc2OzEsNTYzODMwNTU4MjsxLDU2MzcyMTgwNzY7MCwwOzIwMTIwMzE0OTgsNTYzNzIzMzA3NzswLDA7MSw1NjM3MjM1MzI3Jw==\"","PersonnelNumber":"NTC-0516","Name":"STEVEN ALEXIS SALAZAR ALVAREZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"ssalazar@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE0OTE4NzE3MDgsNTYzNzIyMTgyNjs5MjQwMjI3MTMsNTYzODI0MTA4MDsxLDU2MzcyNTc4MzE7MSw1NjM3MjE4MDc4OzEsNTYzODMwNTU5MjsxLDU2MzcyMTgwNzg7MCwwOzEyNjM1NzYyNzYsNTYzNzIzMzgyNjswLDA7MSw1NjM3MjM2MDc2Jw==\"","PersonnelNumber":"NTC-0517","Name":"KIMBERLY PAOLA SOLANO CESPEDES","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"ksolano@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE0MzA3ODE5OTIsNTYzNzIyMjU3NjsxMjg5MDY4MDg3LDU2MzgyNDMzMzQ7MSw1NjM3MjU3ODMzOzEsNTYzNzIxODA3OTsxLDU2MzgzMDU2MTA7MSw1NjM3MjE4MDc5OzAsMDsyMDk0ODM1MzExLDU2MzcyMzQ1NzY7MCwwOzEsNTYzNzIzNjgyNic=\"","PersonnelNumber":"FEH-0044","Name":"JUAN FELIX PIZARRO PIZARRO","EmploymentLegalEntityId":"FEH","PrimaryContactEmail":""
+    },{
+      "@odata.etag":"W/\"JzE4MTA1MDk5OCw1NjM3MjIzMzI2OzIxMjgyMzc1OCw1NjM4MjQ0MDkyOzEsNTYzNzI1ODU3NjsxLDU2MzcyMTg4MjY7MSw1NjM4MzEyMzQ4OzEsNTYzNzIxODgyNjswLDA7MTU3NTg1NjM3Miw1NjM3MjM1MzI2OzAsMDsxLDU2MzcyMzc1NzYn\"","PersonnelNumber":"FEH-0045","Name":"HAZEL GEOVANNA LUNA SOLIS","EmploymentLegalEntityId":"FEH","PrimaryContactEmail":"hluna@farmaciaesp.com"
+    },{
+      "@odata.etag":"W/\"JzE5NDgyMzMzNzksNTYzNzIyMzMyNzs5NDY3ODg4MSw1NjM4MjQ0MDkzOzEsNTYzNzI1OTMyNjsxLDU2MzcyMTk1NzY7MSw1NjM4MzE2MDc2OzEsNTYzNzIxOTU3NjswLDA7OTk0MjYyOTg4LDU2MzcyMzUzMjc7MCwwOzEsNTYzNzIzNzU3Nyc=\"","PersonnelNumber":"FEH-0046","Name":"JAIRO ALBERTO VILLALOBOS VILLEGAS","EmploymentLegalEntityId":"FEH","PrimaryContactEmail":""
+    },{
+      "@odata.etag":"W/\"JzE0MTYxNDk4OTAsNTYzNzIyNDA3NjsxMDQzOTAyODY3LDU2MzgyNTM4MjY7MSw1NjM3MjU5MzI4OzEsNTYzNzIxOTU3NzsxLDU2MzgzMTYwNzk7MSw1NjM3MjE5NTc3OzAsMDsxNjQwMTA1OTAxLDU2MzcyMzYwNzY7MCwwOzEsNTYzNzIzODMyNic=\"","PersonnelNumber":"NTC-0518","Name":"KAREN SUSANA CHACON RAMON","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"kchaconr@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE5MTU1MjM5OTIsNTYzNzIyNDA3NzsxNDczNTk2ODk0LDU2MzgyNTM4Mjg7MSw1NjM3MjU5MzMwOzEsNTYzNzIxOTU3ODsxLDU2MzgzMTYwODM7MSw1NjM3MjE5NTc4OzAsMDsxNzEyMjIwMDIzLDU2MzcyMzYwNzc7MCwwOzEsNTYzNzIzODMyNyc=\"","PersonnelNumber":"NTC-0519","Name":"ELIAS QUESADA MORALES","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"equesada@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE2ODE5ODA3NCw1NjM3MjI0MDc4OzEzMDAwNjYwOTIsNTYzODI1MzgyNzsxLDU2MzcyNTkzMzI7MSw1NjM3MjE5NTc5OzEsNTYzODMxNjA4NjsxLDU2MzcyMTk1Nzk7MCwwOzkwMzg2MDM1LDU2MzcyMzYwNzg7MCwwOzEsNTYzNzIzODMyOCc=\"","PersonnelNumber":"NTC-0520","Name":"DIANA CORALIA RAMIREZ TORRES","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"dramirez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE3ODk2NDIxMzIsNTYzNzIyNDA3OTsxMDUzNDk3ODQ1LDU2MzgyNTM4Mjk7MSw1NjM3MjU4NTgwOzEsNTYzNzIxODgyNzsxLDU2MzgzNDY4Mjg7MSw1NjM3MjE4ODI3OzAsMDsxMzgwMjgxMjg3LDU2MzcyMzYwNzk7MCwwOzEsNTYzNzIzODMyOSc=\"","PersonnelNumber":"NTC-0521","Name":"PAOLA MASIS MARIN","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"pmasis@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE2MTI1ODIxMDAsNTYzNzIyNTU3NjsxMDExMDIxNzQ0LDU2MzgyODUzMjY7MSw1NjM3MjYwODI2OzEsNTYzNzIyMTA3NjsxLDU2MzgzNDgzMzA7MSw1NjM3MjIxMDc3OzAsMDsyMzY4MTkwOTUsNTYzNzIzNzU3NjswLDA7MSw1NjM3MjM5ODI2Jw==\"","PersonnelNumber":"NTC-0523","Name":"ESTEFANY DAYANA VEGA LEITON","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"evega@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzEyNzIzODY5NjEsNTYzNzIyNTU3ODs2NzAwNDAxMTcsNTYzODI4NTMyODsxLDU2MzcyNjA4MzE7MSw1NjM3MjIxMDc3OzEsNTYzODM0ODM0MDsxLDU2MzcyMjEwNzk7MCwwOzEzMjc1NDUwMSw1NjM3MjM3NTc4OzAsMDsxLDU2MzcyMzk4Mjgn\"","PersonnelNumber":"NTC-0525","Name":"JULISSA FABIOLA MATA PEREZ","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jmata@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE4NTc0NTgxNDUsNTYzNzIyNTU3OTs5MTIyMjQ1OTMsNTYzODI4NTMyOTsxLDU2MzcyNjA4MzM7MSw1NjM3MjIxMDc4OzEsNTYzODM0ODM0MzsxLDU2MzcyMjEwODA7MCwwOzE1Mzc1NzU0NSw1NjM3MjM3NTc5OzAsMDsxLDU2MzcyMzk4Mjkn\"","PersonnelNumber":"NTC-0526","Name":"JUANITA URIELA LEIVA BALTODANO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"jleiva@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzY0ODQ4ODQ0Nyw1NjM3MjI2MzI2OzE1NTU3MDQ2MTgsNTYzODI4NjgyODsxLDU2MzcyNjA4MzU7MSw1NjM3MjIxMDc5OzEsNTYzODM0ODM0NjsxLDU2MzcyMjEwODE7MCwwOzk4NTU4NDQyNSw1NjM3MjM4MzI2OzAsMDsxLDU2MzcyNDA1NzYn\"","PersonnelNumber":"NTC-0527","Name":"MARIA ISABEL FERNANDEZ SOTO","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"mfernandez@nutricare.co.cr"
+    },{
+      "@odata.etag":"W/\"JzE4OTQ2MjU5MTEsNTYzNzIyNzA3NjsxOTAwNDAxNDc3LDU2MzgzMDcwODE7MSw1NjM3MjYyMzI2OzEsNTYzNzIyMTgyNjsxLDU2MzgzNzYwOTg7MSw1NjM3MjIxODI2OzAsMDsxNDk3NDEwNjkzLDU2MzcyMzkwNzY7MCwwOzEsNTYzNzI0MTMyNic=\"","PersonnelNumber":"NTC-0528","Name":"ODALIER HUMBERTO CHACON BOLA\u00d1OS","EmploymentLegalEntityId":"NTC","PrimaryContactEmail":"ochacon@nutricare.co.cr"
+    }
+  ]
+}

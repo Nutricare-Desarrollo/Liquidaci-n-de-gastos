@@ -8,16 +8,11 @@ import { cruza } from "../domain/cruce.js";
 import { construirGasto } from "../domain/construirGasto.js";
 import { monedaToDb, situacionToDb } from "../db/map.js";
 import type {
-  Categoria, Empresa, Moneda, Proposito, ReglaMonto, SituacionFiscal, TipoGasolina,
+  Categoria, Empresa, Moneda, ReglaMonto, SituacionFiscal, TipoGasolina,
 } from "../domain/types.js";
+import { propositoDeClave } from "../domain/proposito.js";
 
 type Rec = Record<string, unknown>;
-
-const PROPOSITO_DB_A_DOMINIO: Record<string, Proposito> = {
-  CAJA_CHICA: "CAJA CHICA",
-  FONDOS_PERSONALES: "PAGO CON FONDOS PERSONALES",
-  TARJETA_CORPORATIVA: "TARJETA CORPORATIVA",
-};
 const SITUACION_DB_A_DOMINIO: Record<string, SituacionFiscal> = {
   IVA: "IVA", EXENTO: "EXENTO", NO_SUJETO: "NO SUJETO", SIN_DEFINIR: "",
 };
@@ -72,7 +67,7 @@ export async function crearGastoDesdeFactura(db: Db, opts: {
       urlPdf: (factura["urlPdf"] as string | null) ?? null,
     },
     liquidacion: {
-      proposito: PROPOSITO_DB_A_DOMINIO[String(liq["proposito"])] ?? "TARJETA CORPORATIVA",
+      proposito: propositoDeClave(String(liq["proposito"])),
       moneda: String(liq["moneda"]) as Moneda,
       centroCostoId: (liq["centroCostoId"] as string | null) ?? null,
     },
@@ -85,6 +80,7 @@ export async function crearGastoDesdeFactura(db: Db, opts: {
       liquidacionId, facturaId: String(factura["id"]), capturaId: capturaId ?? null,
       montoTotal: g.montoTotal, moneda: monedaToDb(g.moneda), fecha: new Date(g.fecha),
       categoriaId, comerciante: g.comerciante, centroCostoId: g.centroCostoId,
+      numeroFactura: String(factura["consecutivo"] ?? ""),
       metodoPago: g.metodoPago, situacionFiscal: situacionToDb(g.situacionFiscal),
       grupoImpuesto: g.grupoImpuesto, litros: g.litros,
       tipoGasolina: g.tipoGasolina !== null ? TIPO_GAS_A_DB[g.tipoGasolina as TipoGasolina] : null,

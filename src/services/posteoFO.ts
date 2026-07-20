@@ -23,6 +23,10 @@ export interface InformeParaPostear {
     description: string;
     taxGroup: SituacionFiscal;
     taxItemGroup: string;
+    receiptNumber?: string;
+    merchant?: string;
+    zone?: string;
+    km?: number;
   }>;
 }
 
@@ -60,6 +64,10 @@ export async function postearInforme(
     description: g.description,
     taxGroup: g.taxGroup,
     taxItemGroup: g.taxItemGroup,
+    receiptNumber: g.receiptNumber,
+    merchant: g.merchant,
+    zone: g.zone,
+    km: g.km,
   }));
 
   const reporte: ReporteGastoFO = {
@@ -67,6 +75,7 @@ export async function postearInforme(
     personnelNumber: informe.personnelNumber,
     purpose: informe.purpose,
     description: informe.descripcion,
+    externalId: informe.id,
     lineas,
   };
 

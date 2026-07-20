@@ -33,11 +33,17 @@ enum Proposito {
   CAJA_CHICA
   FONDOS_PERSONALES
   TARJETA_CORPORATIVA
+  CAJA_CHICA_TESORERIA
+  CAJA_CHICA_ALMACEN
+  LIQUIDACION_ANTICIPOS
+  ANTICIPOS
+  KILOMETRAJE
 }
 
 enum TipoComprobante {
   FACTURA_ELECTRONICA
   REGIMEN_SIMPLIFICADO
+  KILOMETRAJE
 }
 
 enum TipoGasolina {
@@ -59,6 +65,7 @@ enum EstadoLiquidacion {
 enum EstadoCaptura {
   PENDIENTE_OCR
   PENDIENTE_CRUCE
+  PENDIENTE_REGIMEN
   CRUZADA
 }
 
@@ -75,9 +82,6 @@ model Usuario {
   email          String        @unique
   nombre         String?
   personnelNumber String?      @unique // NTC-xxxx (para FO)
-  capturas       Captura[]
-  liquidaciones  Liquidacion[] @relation("empleado")
-  aprobaciones   Liquidacion[] @relation("aprobador")
   createdAt      DateTime      @default(now())
 }
 
@@ -92,8 +96,7 @@ model Captura {
   clave         String? // se llena al cruzar
   confianza     Float?
   correoEmpleado String
-  empleado      Usuario?      @relation(fields: [empleadoId], references: [id])
-  empleadoId    String?
+  empleadoId    String? // id del empleado (Entra) - sin FK
   categoria     Categoria?    @relation(fields: [categoriaId], references: [id])
   categoriaId   String?
   liquidacion   Liquidacion?  @relation(fields: [liquidacionId], references: [id])
@@ -138,16 +141,14 @@ model Factura {
 model Liquidacion {
   id             String            @id @default(cuid())
   name           String            @unique // LIQ-xxxx
-  empleado       Usuario           @relation("empleado", fields: [empleadoId], references: [id])
-  empleadoId     String
+  empleadoId     String  // id del empleado (Entra) - sin FK
   correoEmpleado String
   empresa        Empresa
   proposito      Proposito
   moneda         Moneda // una sola por informe (regla de negocio)
   centroCosto    CentroCosto?      @relation(fields: [centroCostoId], references: [id])
   centroCostoId  String?
-  aprobador      Usuario?          @relation("aprobador", fields: [aprobadorId], references: [id])
-  aprobadorId    String?
+  aprobadorId    String? // id del aprobador (Entra) - sin FK
   estado         EstadoLiquidacion @default(BORRADOR)
   montoInforme   Decimal           @default(0) @db.Decimal(18, 5)
   numeroReporteFO String? // se llena al postear — clave anti-duplicado
@@ -176,6 +177,7 @@ model Gasto {
   categoria       Categoria       @relation(fields: [categoriaId], references: [id])
   categoriaId     String
   comerciante     String? // heredado de factura
+  numeroFactura   String? // consecutivo de la factura (o nro. del comprobante de regimen)
   centroCosto     CentroCosto?    @relation(fields: [centroCostoId], references: [id])
   centroCostoId   String?
   metodoPago      String // calculado
@@ -184,6 +186,8 @@ model Gasto {
   tipoComprobante TipoComprobante @default(FACTURA_ELECTRONICA)
   litros          Decimal?        @db.Decimal(18, 5)
   tipoGasolina    TipoGasolina?
+  zona            String? // KILOMETRAJE: GAM / GIRAS -> TrvExpTrans.ZoneCode
+  kilometros      Decimal?        @db.Decimal(18, 5) // KILOMETRAJE -> TrvExpTrans.KMOwnCar
   excedeLimite    Boolean         @default(false)
   informacionAdicional String?
   alerta          String?
@@ -233,6 +237,13 @@ model ReglaMonto {
   montoMaxCRC     Decimal @db.Decimal(18, 5)
   montoMaxUSD     Decimal @db.Decimal(18, 5)
   activo          Boolean @default(true)
+}
+
+model TarifaKm {
+  id         String  @id @default(cuid())
+  zona       String  @unique // GAM / GIRAS
+  montoPorKm Decimal @db.Decimal(18, 5) @default(0)
+  activo     Boolean @default(true)
 }
 
 // ---------------------------------------------------------------------

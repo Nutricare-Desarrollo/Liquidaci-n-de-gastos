@@ -13,6 +13,7 @@ import { DocIntelligenceOcr } from "./adapters/azure/docIntelligenceOcr.js";
 import { GraphCorreoAdapter } from "./adapters/azure/graphCorreo.js";
 import { GraphUsuarios } from "./adapters/azure/graphUsuarios.js";
 import { EntraAuth } from "./adapters/azure/entraAuth.js";
+import { EntraJwtAuth } from "./adapters/azure/entraJwtAuth.js";
 import { FoHttpClient } from "./adapters/finance/foHttpClient.js";
 import { TeamsAprobacionNotificacion } from "./adapters/azure/teamsAprobacion.js";
 import { DbUsuarios } from "./adapters/dbUsuarios.js";
@@ -54,7 +55,7 @@ export function buildDeps(): Deps {
 
   // Usuarios (aprobadores)
   const usuarios: UsuariosPort = tokens
-    ? (modos.push("usuarios=entra"), new GraphUsuarios(tokens))
+    ? (modos.push("usuarios=entra"), new GraphUsuarios(tokens, config.usuarios))
     : (modos.push("usuarios=db"), new DbUsuarios(db));
 
   // Notificacion (Teams Approval)
@@ -64,10 +65,12 @@ export function buildDeps(): Deps {
 
   // Finance (D365 FO) - se deja de ultimo
   const finance: FinancePort = (tokens && config.fo.baseUrl && config.fo.scope)
-    ? (modos.push("fo=real"), new FoHttpClient({ baseUrl: config.fo.baseUrl, servicePath: config.fo.servicePath, getAccessToken: () => tokens.getToken(config.fo.scope) }))
+    ? (modos.push("fo=real"), new FoHttpClient({ baseUrl: config.fo.baseUrl, servicePath: config.fo.servicePath, getAccessToken: () => tokens.getToken(config.fo.scope), timeoutMs: config.fo.timeoutMs }))
     : (modos.push("fo=FAKE"), new FakeFinance());
 
-  const auth: AuthPort = tokens ? new EntraAuth() : new FakeAuth();
+  const auth: AuthPort = config.auth.enabled && config.auth.tenantId && config.auth.apiAudience
+    ? (modos.push("auth=entra"), new EntraJwtAuth({ tenantId: config.auth.tenantId, audience: config.auth.apiAudience }))
+    : (modos.push("auth=FAKE"), new FakeAuth(config.auth.devRoles));
   const facturaRepo = new PrismaFacturaRepo(db);
 
   // Correo entrante

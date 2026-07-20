@@ -14,6 +14,7 @@ export interface Delegate<T = Record<string, unknown>> {
   create(args: { data: Record<string, unknown> }): Promise<T>;
   update(args: { where: Record<string, unknown>; data: Record<string, unknown> }): Promise<T>;
   count(args?: unknown): Promise<number>;
+  deleteMany(args?: { where?: Record<string, unknown> }): Promise<{ count: number }>;
 }
 
 export interface Db {
@@ -26,6 +27,7 @@ export interface Db {
   centroCosto: Delegate;
   grupoImpuesto: Delegate;
   reglaMonto: Delegate;
+  tarifaKm: Delegate;
   auditoria: Delegate;
   $disconnect(): Promise<void>;
 }

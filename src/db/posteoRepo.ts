@@ -1,19 +1,29 @@
 // Carga/actualiza la liquidacion para el posteo a FO.
 import type { Db } from "./client.js";
+import type { UsuariosPort } from "../ports/index.js";
 import type { InformeParaPostear } from "../services/posteoFO.js";
 import type { Empresa, MetodoPago, Moneda, SituacionFiscal } from "../domain/types.js";
 import { situacionFromDb } from "./map.js";
 
 /** Arma el InformeParaPostear leyendo la liquidacion con sus gastos. */
-export async function cargarInforme(db: Db, liquidacionId: string): Promise<InformeParaPostear | null> {
+export async function cargarInforme(db: Db, liquidacionId: string, usuarios?: UsuariosPort): Promise<InformeParaPostear | null> {
   const liq = (await db.liquidacion.findUnique({
     where: { id: liquidacionId },
   })) as Record<string, unknown> | null;
   if (!liq) return null;
 
-  const empleado = (await db.usuario.findUnique({
-    where: { id: String(liq["empleadoId"]) },
-  })) as Record<string, unknown> | null;
+  // personnelNumber: 1) tabla local de empleados (por correo, mapeo de la app),
+  //                    2) fallback al employeeId de Entra (por oid/correo).
+  const correo = String(liq["correoEmpleado"] ?? "").toLowerCase();
+  const empleado = correo
+    ? ((await db.usuario.findFirst({ where: { email: correo } })) as Record<string, unknown> | null)
+    : null;
+
+  let personnelNumber = String(empleado?.["personnelNumber"] ?? "");
+  if (!personnelNumber && usuarios) {
+    const u = (await usuarios.listar()).find((x) => x.id === String(liq["empleadoId"]) || x.email === correo);
+    personnelNumber = u?.personnelNumber ?? "";
+  }
 
   const gastos = (await db.gasto.findMany({
     where: { liquidacionId },
@@ -24,7 +34,7 @@ export async function cargarInforme(db: Db, liquidacionId: string): Promise<Info
     id: String(liq["id"]),
     numeroReporteFO: (liq["numeroReporteFO"] as string | null) ?? null,
     empresa: String(liq["empresa"]).toLowerCase() as Empresa,
-    personnelNumber: String(empleado?.["personnelNumber"] ?? ""),
+    personnelNumber,
     purpose: String(liq["proposito"]),
     descripcion: String(liq["name"] ?? ""),
     gastos: gastos.map((g) => ({
@@ -36,6 +46,10 @@ export async function cargarInforme(db: Db, liquidacionId: string): Promise<Info
       description: String(g["comerciante"] ?? ""),
       taxGroup: situacionFromDb(g["situacionFiscal"] as "IVA" | "EXENTO" | "NO_SUJETO" | "SIN_DEFINIR"),
       taxItemGroup: String(g["grupoImpuesto"] ?? ""),
+      receiptNumber: String(g["numeroFactura"] ?? ""),
+      merchant: String(g["comerciante"] ?? ""),
+      zone: g["zona"] != null ? String(g["zona"]) : undefined,
+      km: g["kilometros"] != null ? Number(g["kilometros"]) : undefined,
     })),
   };
 }

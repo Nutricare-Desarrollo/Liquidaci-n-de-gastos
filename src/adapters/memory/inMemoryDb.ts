@@ -61,6 +61,14 @@ class InMemoryDelegate implements Delegate {
     const where = (args as { where?: Rec } | undefined)?.where;
     return this.store.filter((x) => matchWhere(x, where)).length;
   }
+  async deleteMany(args?: { where?: Rec }): Promise<{ count: number }> {
+    const where = args?.where;
+    let count = 0;
+    for (let i = this.store.length - 1; i >= 0; i--) {
+      if (matchWhere(this.store[i] as Rec, where)) { this.store.splice(i, 1); count++; }
+    }
+    return { count };
+  }
 }
 
 export class InMemoryDb implements Db {
@@ -74,6 +82,7 @@ export class InMemoryDb implements Db {
     centroCosto: [] as Rec[],
     grupoImpuesto: [] as Rec[],
     reglaMonto: [] as Rec[],
+    tarifaKm: [] as Rec[],
     auditoria: [] as Rec[],
   };
 
@@ -83,6 +92,7 @@ export class InMemoryDb implements Db {
   gasto = new InMemoryDelegate(this.stores.gasto, {}, (rec, include) => {
     const out = { ...rec };
     if (include["categoria"]) out["categoria"] = this.stores.categoria.find((c) => c["id"] === rec["categoriaId"]) ?? null;
+    if (include["factura"]) out["factura"] = this.stores.factura.find((f) => f["id"] === rec["facturaId"]) ?? null;
     return out;
   });
   usuario = new InMemoryDelegate(this.stores.usuario);
@@ -90,6 +100,7 @@ export class InMemoryDb implements Db {
   centroCosto = new InMemoryDelegate(this.stores.centroCosto);
   grupoImpuesto = new InMemoryDelegate(this.stores.grupoImpuesto);
   reglaMonto = new InMemoryDelegate(this.stores.reglaMonto, { activo: true });
+  tarifaKm = new InMemoryDelegate(this.stores.tarifaKm, { activo: true, montoPorKm: 0 });
   auditoria = new InMemoryDelegate(this.stores.auditoria);
 
   async $disconnect(): Promise<void> {}
