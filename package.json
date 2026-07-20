@@ -21,20 +21,23 @@
     "db:down": "docker compose down",
     "prisma:seed": "prisma db seed",
     "real": "tsx --env-file=.env src/index.ts",
-    "real:watch": "tsx watch --env-file=.env src/index.ts"
+    "real:watch": "tsx watch --env-file=.env src/index.ts",
+    "start:azure": "node dist/src/index.js",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@fastify/static": "^7.0.4",
     "@prisma/client": "^5.19.0",
     "fast-xml-parser": "^4.5.0",
     "fastify": "^4.28.1"
   },
   "devDependencies": {
     "@types/node": "^20.14.0",
-    "prisma": "^5.19.0",
-    "typescript": "^5.5.4",
-    "vitest": "^2.0.5",
     "cross-env": "^7.0.3",
-    "tsx": "^4.19.0"
+    "prisma": "^5.19.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

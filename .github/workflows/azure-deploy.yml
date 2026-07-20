@@ -1,0 +1,59 @@
+# Despliegue a Azure App Service (Node, Linux) al hacer push a main.
+# Requisitos (una sola vez):
+#  - Secret AZUREAPPSERVICE_PUBLISHPROFILE  = perfil de publicacion del App Service.
+#  - Secret DATABASE_URL                    = cadena de conexion Postgres (prod) para migraciones.
+#  - Ajustar AZURE_WEBAPP_NAME al nombre real del App Service.
+name: Deploy a Azure App Service
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: nutricare-liquidacion   # <-- cambiar por el nombre real del App Service
+  NODE_VERSION: "20.x"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      # ---- Backend ----
+      - name: Instalar dependencias (backend)
+        run: npm ci
+      - name: Generar cliente Prisma
+        run: npx prisma generate
+      - name: Compilar backend
+        run: npm run build
+
+      # ---- Frontend (se sirve desde el mismo App Service) ----
+      - name: Instalar dependencias (frontend)
+        working-directory: frontend
+        run: npm ci
+      - name: Compilar frontend
+        working-directory: frontend
+        env:
+          VITE_API_URL: ""        # mismo origen: fetch relativo al backend
+        run: npm run build
+
+      # ---- Migraciones contra la BD de produccion ----
+      - name: Aplicar migraciones
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npx prisma migrate deploy
+
+      # ---- Deploy ----
+      - name: Deploy a App Service
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+          package: .

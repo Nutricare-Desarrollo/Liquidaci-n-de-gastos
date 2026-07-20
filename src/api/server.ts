@@ -1,5 +1,8 @@
 // API HTTP (Fastify). Cablea puertos y servicios a rutas.
 import Fastify, { type FastifyInstance, type FastifyReply, type FastifyRequest } from "fastify";
+import fastifyStatic from "@fastify/static";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import type { Deps } from "../deps.js";
 import { decodeBase64 } from "../services/ingestaFactura.js";
 import { parseFactura, FacturaIgnorableError } from "../domain/parseFactura.js";
@@ -370,6 +373,20 @@ export function buildServer(deps: Deps): FastifyInstance {
       envSugerido: { STORAGE_PROVIDER: "sharepoint", SHAREPOINT_SITE_ID: site.id, SHAREPOINT_CARPETA_BASE: "Comprobantes Gastos" },
     });
   });
+
+  // ---- Frontend compilado (produccion): el mismo App Service sirve la web ----
+  //  El build de Vite queda en <raiz>/frontend/dist. Si existe, se sirve como
+  //  estatico con fallback SPA (rutas del cliente -> index.html).
+  const webDir = join(process.cwd(), "frontend", "dist");
+  if (existsSync(webDir)) {
+    app.register(fastifyStatic, { root: webDir, wildcard: false });
+    app.setNotFoundHandler((req, reply) => {
+      const aceptaHtml = (req.headers["accept"] ?? "").includes("text/html");
+      if (req.method === "GET" && aceptaHtml) return reply.sendFile("index.html");
+      return reply.code(404).send({ error: "No encontrado" });
+    });
+    app.log.info(`Frontend servido desde ${webDir}`);
+  }
 
   return app;
 }
