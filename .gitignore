@@ -23,3 +23,5 @@ srv.log
 publish-profile.xml
 *.publishsettings
 azure-setup.log
+publish-profile-colega.xml
+azure-setup-colega.log

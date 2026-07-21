@@ -27,6 +27,7 @@ export interface Deps {
   config?: AppConfig; demo: boolean; db: Db;
   ocr: OcrPort; storage: StoragePort; auth: AuthPort; finance: FinancePort;
   notificacion: NotificacionPort; usuarios: UsuariosPort; correo: CorreoJob; facturaRepo: FacturaRepo;
+  modos?: string[];
 }
 
 export function buildDeps(): Deps {
@@ -82,5 +83,5 @@ export function buildDeps(): Deps {
   } else { correo = { poll: async () => ({ procesados: 0 }) }; modos.push("correo=FAKE"); }
 
   console.log(`[deps] modo real. Servicios: ${modos.join(", ")}`);
-  return { config, demo: false, db, ocr, storage, auth, finance, notificacion, usuarios, correo, facturaRepo };
+  return { config, demo: false, db, ocr, storage, auth, finance, notificacion, usuarios, correo, facturaRepo, modos };
 }

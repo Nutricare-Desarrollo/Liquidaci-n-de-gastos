@@ -64,7 +64,7 @@ export function buildServer(deps: Deps): FastifyInstance {
     const base = deps.config?.app.baseUrl ?? "";
     return base ? `${base.replace(/\/+$/, "")}/?liq=${id}` : undefined;
   };
-  app.get("/health", async () => ({ ok: true, demo: deps.demo, auth: authOn, selfApproval: !!deps.config?.permitirAutoaprobacion }));
+  app.get("/health", async () => ({ ok: true, demo: deps.demo, auth: authOn, selfApproval: !!deps.config?.permitirAutoaprobacion, servicios: deps.modos ?? [] }));
   app.get("/me", async (req) => req.sesion ?? null);
 
   app.get("/catalogos", async () => ({
