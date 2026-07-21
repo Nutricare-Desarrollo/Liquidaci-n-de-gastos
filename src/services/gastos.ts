@@ -82,7 +82,6 @@ export async function crearGastoSimplificado(db: Db, liquidacionId: string, opts
   const liq = (await db.liquidacion.findUnique({ where: { id: liquidacionId } })) as Rec | null;
   const cat = (await db.categoria.findUnique({ where: { id: opts.categoriaId } })) as Rec | null;
   if (!liq || !cat) return { ok: false, error: "Falta liquidación o categoría." };
-  if (!(Number(opts.monto) > 0)) return { ok: false, error: "El monto debe ser mayor que 0." };
 
   const moneda = String(liq["moneda"]) as Moneda;
   const proposito = propositoDeClave(String(liq["proposito"]));
@@ -102,12 +101,13 @@ export async function crearGastoSimplificado(db: Db, liquidacionId: string, opts
 
   // KILOMETRAJE: si hay tarifa por km configurada (>0) para la zona, el monto = km * tarifa.
   // Si la tarifa esta en 0 (aun no cargada), se usa el monto ingresado a mano.
-  let montoFinal = Number(opts.monto);
+  let montoFinal = Number(opts.monto) || 0;
   if (opts.zona && opts.kilometros != null) {
     const tarifa = (await db.tarifaKm.findFirst({ where: { zona: opts.zona, activo: true } })) as Rec | null;
     const t = Number(tarifa?.["montoPorKm"] ?? 0);
     if (t > 0) montoFinal = t * Number(opts.kilometros);
   }
+  if (!(montoFinal > 0)) return { ok: false, error: "El monto debe ser mayor que 0 (para kilometraje ingresá km y cargá la tarifa de la zona)." };
   const limite = evaluarLimite({ categoriaCodigo: String(cat["codigo"]), monto: montoFinal, monedaInforme: moneda, reglas });
 
   const creado = (await db.gasto.create({

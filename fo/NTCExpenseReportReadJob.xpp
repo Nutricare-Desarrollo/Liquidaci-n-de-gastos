@@ -1,7 +1,7 @@
 // =====================================================================
-//  Job de LECTURA (DEV): verifica el reporte creado sin abrir el modulo
-//  de Gestion de gastos. Lee TrvExpTable + TrvExpTrans directo e imprime
-//  en el Infolog los campos de esta ronda (tipo de cambio, zona, km, etc).
+//  Job de LECTURA (DEV): verifica el reporte creado. Imprime en el Infolog
+//  los campos clave y DECODIFICA la dimension financiera de cada linea,
+//  para confirmar que quedo con el centro de costo antes de pasar a sandbox.
 //
 //  Ajusta el NTCExternalId al que usaste en el TestJob.
 // =====================================================================
@@ -9,14 +9,15 @@ class NTCExpenseReportReadJob
 {
     public static void main(Args _args)
     {
-        TrvExpTable trvExpTable;
-        TrvExpTrans trvExpTrans;
-        int         n;
+        TrvExpTable                        trvExpTable;
+        TrvExpTrans                        trvExpTrans;
+        DimensionAttributeValueSetStorage  dimStorage;
+        int                                n, di;
 
         changecompany('NTC')
         {
             select firstonly trvExpTable
-                where trvExpTable.NTCExternalId == 'LIQ-TEST-EXCH-001';   // <-- mismo id del TestJob
+                where trvExpTable.NTCExternalId == 'LIQ-TEST-DIM-001';   // <-- mismo id del TestJob
 
             if (!trvExpTable.RecId)
             {
@@ -36,20 +37,28 @@ class NTCExpenseReportReadJob
             {
                 n++;
                 info(strFmt("  Linea %1: %2 | %3 %4 -> MST=%5 | ExchRate=%6 | Pago=%7 | Aprob=%8",
-                            n,
-                            trvExpTrans.CostType,
-                            trvExpTrans.AmountCurr,
-                            trvExpTrans.ExchangeCode,
-                            trvExpTrans.AmountMST,
-                            trvExpTrans.ExchangeRate,
-                            trvExpTrans.PayMethod,
+                            n, trvExpTrans.CostType, trvExpTrans.AmountCurr, trvExpTrans.ExchangeCode,
+                            trvExpTrans.AmountMST, trvExpTrans.ExchangeRate, trvExpTrans.PayMethod,
                             enum2Str(trvExpTrans.ApprovalStatus)));
                 info(strFmt("           Factura=%1 | Comerciante=%2 | Zona=%3 | KM=%4 | DimRecId=%5",
-                            trvExpTrans.ReceiptNumber,
-                            trvExpTrans.MerchantId,
-                            trvExpTrans.ZoneCode,
-                            trvExpTrans.KMOwnCar,
-                            trvExpTrans.DefaultDimension));
+                            trvExpTrans.ReceiptNumber, trvExpTrans.MerchantId,
+                            trvExpTrans.ZoneCode, trvExpTrans.KMOwnCar, trvExpTrans.DefaultDimension));
+
+                // ---- Decodificar la dimension financiera (valor legible) ----
+                if (trvExpTrans.DefaultDimension)
+                {
+                    dimStorage = DimensionAttributeValueSetStorage::find(trvExpTrans.DefaultDimension);
+                    for (di = 1; di <= dimStorage.elements(); di++)
+                    {
+                        info(strFmt("             DIM %1 = %2",
+                                    DimensionAttribute::find(dimStorage.getAttributeByIndex(di)).Name,
+                                    dimStorage.getDisplayValueByIndex(di)));
+                    }
+                }
+                else
+                {
+                    info("             (SIN dimension asignada)");
+                }
             }
             info(strFmt("Total lineas: %1", n));
         }

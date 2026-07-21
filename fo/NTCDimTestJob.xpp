@@ -1,0 +1,42 @@
+// =====================================================================
+//  DIAGNOSTICO (DEV): prueba AISLADA de la dimension financiera.
+//  Confirma si el nombre 'C_CentrodeCosto' y el valor '100302' resuelven.
+//  Ejecutar: Set as Startup Object -> Ctrl+F5.
+// =====================================================================
+class NTCDimTestJob
+{
+    public static void main(Args _args)
+    {
+        DimensionAttribute                 dimAttr;
+        DimensionAttributeValue            dimAttrValue;
+        DimensionAttributeValueSetStorage  storage;
+        DimensionDefault                   result;
+        str  nombreDim = 'C_CentrodeCosto';   // nombre de la dimension
+        str  valorCC   = '100302';            // centro de costo a probar
+
+        changecompany('NTC')
+        {
+            dimAttr = DimensionAttribute::findByName(nombreDim);
+            info(strFmt("1) DimensionAttribute '%1' -> RecId=%2 | Name=%3",
+                        nombreDim, dimAttr.RecId, dimAttr.Name));
+            if (!dimAttr.RecId)
+            {
+                info("   *** No existe una dimension con ese nombre. Revisa el nombre exacto (DimensionAttribute.Name).");
+                return;
+            }
+
+            dimAttrValue = DimensionAttributeValue::findByDimensionAttributeAndValue(dimAttr, valorCC, false, true);
+            info(strFmt("2) Valor '%1' -> DimensionAttributeValue RecId=%2", valorCC, dimAttrValue.RecId));
+            if (!dimAttrValue.RecId)
+            {
+                info("   *** El valor no existe/activo para esa dimension en NTC.");
+                return;
+            }
+
+            storage = new DimensionAttributeValueSetStorage();
+            storage.addItem(dimAttrValue);
+            result = storage.save();
+            info(strFmt("3) DefaultDimension resultante = %1  (si es != 0, todo OK)", result));
+        }
+    }
+}

@@ -45,12 +45,13 @@ export function MobileCaptura({ cat, sesion, selfApproval }: { cat: Catalogos; s
     try {
       // 1) liquidacion (nueva o existente)
       let liqId = liqExistente;
+      let liqName = liqs.find((x) => x.id === liqExistente)?.name ?? "";
       if (nueva) {
         const l = await api.crearLiquidacion({
           empleadoId: empleado?.id, correoEmpleado: empleado?.email,
           empresa, proposito, moneda, centroCostoId, aprobadorId,
         });
-        liqId = l.id;
+        liqId = l.id; liqName = l.name;
       }
       if (!liqId) throw new Error("Elegi o crea una liquidacion.");
 
@@ -58,7 +59,7 @@ export function MobileCaptura({ cat, sesion, selfApproval }: { cat: Catalogos; s
       if (tipo === "regimen") {
         const imagenBase64 = await fileToBase64(fotoFile!);
         await api.crearCaptura({ correoEmpleado: empleado?.email, imagenBase64, mimeType: fotoFile!.type || "image/jpeg", categoriaId, liquidacionId: liqId, esRegimen: true });
-        setMsg({ t: "ok", x: "Comprobante de regimen enviado. Contabilidad lo convertira en gasto." });
+        setMsg({ t: "ok", x: `Comprobante de regimen enviado a la liquidacion ${liqName}. Contabilidad lo convertira en gasto.` });
         setFotoFile(null);
         api.listar().then(setLiqs).catch(() => {});
         return;
@@ -88,7 +89,7 @@ export function MobileCaptura({ cat, sesion, selfApproval }: { cat: Catalogos; s
       // 4) cruce
       const cruce = await api.cruce();
       const aviso = (capt as { avisoOcr?: string }).avisoOcr ? ` (${(capt as { avisoOcr?: string }).avisoOcr})` : "";
-      setMsg({ t: "ok", x: `Comprobante enviado.${aviso} ${cruce.cruzados} gasto(s) creados.` });
+      setMsg({ t: "ok", x: `Comprobante enviado a la liquidacion ${liqName}.${aviso} ${cruce.cruzados} gasto(s) creados.` });
       setXml(""); setFotoFile(null);
       api.listar().then(setLiqs).catch(() => {});
     } catch (e) {

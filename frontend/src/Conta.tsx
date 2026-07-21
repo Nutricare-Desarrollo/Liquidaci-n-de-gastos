@@ -45,7 +45,7 @@ export function Admin({ cat, initialLiqId, demo, vista, setVista, sesion, puedeC
         </div>
       </aside>
       <main className="content">
-        {seccion === "liquidaciones" && !liqId && <LiquidacionesList cat={cat} onOpen={setLiqId} />}
+        {seccion === "liquidaciones" && !liqId && <LiquidacionesList cat={cat} onOpen={setLiqId} sesion={sesion} />}
         {seccion === "liquidaciones" && liqId && !gastoId && (
           <LiquidacionForm id={liqId} cat={cat} onBack={() => setLiqId(null)} onGasto={setGastoId} />
         )}
@@ -62,12 +62,14 @@ export function Admin({ cat, initialLiqId, demo, vista, setVista, sesion, puedeC
   );
 }
 
-function LiquidacionesList({ cat, onOpen }: { cat: Catalogos; onOpen: (id: string) => void }) {
+function LiquidacionesList({ cat, onOpen, sesion }: { cat: Catalogos; onOpen: (id: string) => void; sesion?: Sesion | null }) {
   const [rows, setRows] = useState<Liquidacion[]>([]);
   const [estado, setEstado] = useState("");
   const [crear, setCrear] = useState(false);
   const [msg, setMsg] = useState<{ t: "ok" | "err"; x: string } | null>(null);
-  const [empId, setEmpId] = useState(cat.usuarios[0]?.id ?? "");
+  const [empId, setEmpId] = useState(
+    cat.usuarios.find((u) => u.email?.toLowerCase() === (sesion?.email ?? "").toLowerCase())?.id
+    ?? cat.usuarios[0]?.id ?? "");
   const [empresa, setEmpresa] = useState("ntc");
   const [proposito, setProposito] = useState("TARJETA_CORPORATIVA");
   const [moneda, setMoneda] = useState("CRC");
@@ -167,6 +169,7 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
   const [sComer, setSComer] = useState(""); const [sSit, setSSit] = useState("EXENTO"); const [sCc, setSCc] = useState("");
   const [sZona, setSZona] = useState("GAM"); const [sKm, setSKm] = useState("");
   const [sLitros, setSLitros] = useState(""); const [sTipoGas, setSTipoGas] = useState("");
+  const [sFile, setSFile] = useState<File | null>(null);
 
   const cargar = () => api.detalle(id).then(setLiq).catch(() => setMsg({ t: "err", x: "No se pudo cargar." }));
   const cargarFacturas = () => api.facturasSinCruzar().then(setFacturas).catch(() => {});
@@ -182,7 +185,10 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
   const apr = cat.usuarios.find((u) => u.id === liq.aprobadorId)?.nombre ?? "-";
   const permCod = categoriasPermitidas(liq.proposito);
   const cats = cat.categorias.filter((c) => c.empresa === liq.empresa && (!permCod || permCod.includes(c.codigo)));
-  const esCombSel = ["COMBUSTIBLE", "COMBUSTIBLES"].includes(cats.find((c) => c.id === catId)?.codigo ?? "");
+  const catSelCodigo = cats.find((c) => c.id === catId)?.codigo ?? "";
+  const esCombSel = ["COMBUSTIBLE", "COMBUSTIBLES"].includes(catSelCodigo);
+  const esKmCat = catSelCodigo === "KILOMETRAJE";
+  const esAnt = esAnticipos(liq.proposito);
   const editable = liq.estado === "BORRADOR" || liq.estado === "DEVUELTA";
   const puedeEditarApr = ["BORRADOR", "DEVUELTA", "ENVIADA"].includes(liq.estado);
 
@@ -192,18 +198,25 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
     setFacturaId(""); setCatId(""); setModo("");
   }
   async function agregarSimple() {
-    if (!sMonto || !sFecha || !sComer || !catId) return setMsg({ t: "err", x: "Completa monto, fecha, comerciante y categoria." });
+    if (!sFecha || !catId) return setMsg({ t: "err", x: "Completa fecha y categoria." });
+    if (!esKmCat && !sMonto) return setMsg({ t: "err", x: "Ingresa el monto." });
+    if (!esKmCat && !esAnt && !sComer) return setMsg({ t: "err", x: "Ingresa el comerciante." });
+    if (esKmCat && !(Number(sKm) > 0)) return setMsg({ t: "err", x: "Ingresa los kilometros." });
     if (esCombSel && (!sLitros || !sTipoGas)) return setMsg({ t: "err", x: "Para combustible ingresa litros y tipo de combustible." });
-    const esKm = esKilometraje(liq?.proposito ?? "");
-    await accion(() => api.crearGastoSimplificado(id, {
-      monto: Number(sMonto), fecha: sFecha, comerciante: sComer, categoriaId: catId,
-      situacionFiscal: sSit, centroCostoId: sCc || null,
-      ...(esKm ? { zona: sZona, kilometros: Number(sKm) || 0 } : {}),
-      ...(esCombSel
-        ? { litros: Number(sLitros), tipoGasolina: sTipoGas }
-        : esKm ? { tipoComprobante: "KILOMETRAJE" } : {}),
-    }), esKm && !esCombSel ? "Gasto de kilometraje agregado." : "Gasto agregado.");
-    setSMonto(""); setSFecha(""); setSComer(""); setSCc(""); setCatId(""); setSKm(""); setSLitros(""); setSTipoGas(""); setModo("");
+    await accion(async () => {
+      const r = await api.crearGastoSimplificado(id, {
+        monto: Number(sMonto) || 0, fecha: sFecha, comerciante: sComer, categoriaId: catId,
+        situacionFiscal: sSit, centroCostoId: sCc || null,
+        ...(esKmCat ? { zona: sZona, kilometros: Number(sKm) || 0, tipoComprobante: "KILOMETRAJE" } : {}),
+        ...(esCombSel ? { litros: Number(sLitros), tipoGasolina: sTipoGas } : {}),
+      });
+      const gid = (r as { gastoId?: string }).gastoId;
+      if (sFile && gid) {
+        const contenidoBase64 = await fileToB64(sFile);
+        await api.subirAdjunto(gid, { nombre: sFile.name, contenidoBase64, mimeType: sFile.type || "application/octet-stream" });
+      }
+    }, esKmCat ? "Gasto de kilometraje agregado." : "Gasto agregado.");
+    setSMonto(""); setSFecha(""); setSComer(""); setSCc(""); setCatId(""); setSKm(""); setSLitros(""); setSTipoGas(""); setSFile(null); setModo("");
   }
   async function guardarAprobador() {
     setMsg(null);
@@ -264,7 +277,7 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
           <h3 style={{ margin: 0 }}><span className="ico">$</span> Detalle de gastos</h3>
           <div className="toolbar">
             {editable && !esKilometraje(liq.proposito) && !esAnticipos(liq.proposito) && <button className="ghost" onClick={() => setModo(modo === "factura" ? "" : "factura")}>+ Desde factura</button>}
-            {editable && <button className="ghost" onClick={() => setModo(modo === "simple" ? "" : "simple")}>+ {esKilometraje(liq.proposito) ? "Kilometraje" : esAnticipos(liq.proposito) ? "Anticipo" : "Regimen simplificado"}</button>}
+            {editable && <button className="ghost" onClick={() => { const nm = modo === "simple" ? "" : "simple"; if (nm === "simple" && cats.length === 1) setCatId(cats[0].id); setModo(nm); }}>+ {esKilometraje(liq.proposito) ? "Kilometraje" : esAnticipos(liq.proposito) ? "Anticipo" : "Gasto"}</button>}
             <button className="ghost" onClick={cargar}>Actualizar</button>
           </div>
         </div>
@@ -293,9 +306,9 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
           <div className="section" style={{ background: "#f7f9fb" }}>
             <p><small className="mono">{esKilometraje(liq.proposito) ? "Kilometraje: el monto se calcula km x tarifa de la zona (si esta configurada en Tarifas KM); si no, usa el monto ingresado." : esAnticipos(liq.proposito) ? "Anticipo: un unico gasto, categoria de anticipos." : "Regimen simplificado: proveedor sin factura electronica. Se ingresan los datos a mano."}</small></p>
             <div className="fields">
-              <div className="field"><label>Monto ({liq.moneda})</label><input type="number" value={sMonto} onChange={(e) => setSMonto(e.target.value)} /></div>
+              {!esKmCat && <div className="field"><label>Monto ({liq.moneda})</label><input type="number" value={sMonto} onChange={(e) => setSMonto(e.target.value)} /></div>}
               <div className="field"><label>Fecha</label><input type="date" value={sFecha} onChange={(e) => setSFecha(e.target.value)} /></div>
-              <div className="field"><label>Comerciante</label><input value={sComer} onChange={(e) => setSComer(e.target.value)} placeholder="Nombre del proveedor" /></div>
+              {!esKmCat && !esAnt && <div className="field"><label>Comerciante</label><input value={sComer} onChange={(e) => setSComer(e.target.value)} placeholder="Nombre del proveedor" /></div>}
               <div className="field"><label>Categoria</label>
                 <Combo options={cats.map((c) => ({ value: c.id, label: c.nombre, hint: c.codigo }))}
                   value={catId} onChange={setCatId} placeholder="-- elegir categoria --" /></div>
@@ -308,7 +321,7 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
                   <option value="">(del informe)</option>
                   {cat.centrosCosto.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select></div>
-              {esKilometraje(liq.proposito) && (<>
+              {esKmCat && (<>
                 <div className="field"><label>Zona</label>
                   <select value={sZona} onChange={(e) => setSZona(e.target.value)}>
                     <option value="GAM">GAM</option><option value="GIRAS">GIRAS</option>
@@ -325,9 +338,11 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
                     <option value="GAS_LP">Gas LP</option>
                   </select></div>
               </>)}
+              <div className="field"><label>Adjunto (foto / PDF, opcional)</label>
+                <input type="file" accept="image/*,application/pdf" onChange={(e) => setSFile(e.target.files?.[0] ?? null)} /></div>
             </div>
             <div className="actions">
-              <AsyncButton className="primary" onClick={agregarSimple} loadingText="Agregando...">Agregar gasto simplificado</AsyncButton>
+              <AsyncButton className="primary" onClick={agregarSimple} loadingText="Agregando...">Agregar gasto</AsyncButton>
               <button className="ghost" onClick={() => setModo("")}>Cancelar</button>
             </div>
           </div>
@@ -958,6 +973,14 @@ function Field({ label, v }: { label: string; v?: string | number | null }) {
 }
 function fmt(n?: number): string { return (n ?? 0).toLocaleString("es-CR"); }
 function fdate(s?: string): string { return s ? new Date(s).toLocaleString("es-CR") : "-"; }
+function fileToB64(file: File): Promise<string> {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onerror = () => rej(new Error("No se pudo leer el archivo"));
+    r.onload = () => { const v = String(r.result); res(v.slice(v.indexOf(",") + 1)); };
+    r.readAsDataURL(file);
+  });
+}
 function propo(p: string): string { return labelProposito(p); }
 function tipoComp(t?: string): string {
   return t === "REGIMEN_SIMPLIFICADO" ? "Regimen simplificado" : "Factura electronica";

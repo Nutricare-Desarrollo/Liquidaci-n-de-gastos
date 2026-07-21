@@ -42,6 +42,9 @@ jobs:
         working-directory: frontend
         env:
           VITE_API_URL: ""        # mismo origen: fetch relativo al backend
+          VITE_AAD_CLIENT_ID: ${{ secrets.VITE_AAD_CLIENT_ID }}
+          VITE_AAD_TENANT_ID: ${{ secrets.VITE_AAD_TENANT_ID }}
+          VITE_API_SCOPE: ${{ secrets.VITE_API_SCOPE }}
         run: npm run build
 
       # ---- Migraciones contra la BD de produccion ----

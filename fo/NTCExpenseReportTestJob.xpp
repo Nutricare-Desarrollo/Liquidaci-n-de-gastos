@@ -30,7 +30,7 @@ class NTCExpenseReportTestJob
         request.parmPersonnelNumber('NTC-0377');            // worker real de ntc
         request.parmPurpose('TARJETA CORPORATIVA');
         request.parmDescription('Prueba tipo de cambio + kilometraje');
-        request.parmExternalId('LIQ-TEST-EXCH-001');        // cambia el sufijo para re-probar limpio
+        request.parmExternalId('LIQ-TEST-DIM-001');        // cambia el sufijo para re-probar limpio
 
         // ----- Linea 1: CRC (control) -----
         l1.parmCostType('ALMUERZO_CENA');
@@ -43,7 +43,7 @@ class NTCExpenseReportTestJob
         l1.parmTaxItemGroup('IVA 13%');
         l1.parmReceiptNumber('00100001010000000123');
         l1.parmMerchant('Soda Central');
-        l1.parmCostCenter(''); // <-- pon un centro de costo REAL (OMCostCenter) para probar la dimension
+        l1.parmCostCenter('100302'); // centro de costo REAL (Finanzas) - cambialo por el que quieras probar
         lines.addEnd(l1);
 
         // ----- Linea 2: USD -> verificar colonizacion (AmountMST != AmountCurr) -----
@@ -57,6 +57,7 @@ class NTCExpenseReportTestJob
         l2.parmTaxItemGroup('EXENTO');
         l2.parmReceiptNumber('INV-USD-777');
         l2.parmMerchant('Hotel Aeropuerto');
+        l2.parmCostCenter('100302');
         lines.addEnd(l2);
 
         // ----- Linea 3: KILOMETRAJE -> ZoneCode + KMOwnCar -----
@@ -70,6 +71,7 @@ class NTCExpenseReportTestJob
         l3.parmTaxItemGroup('EXENTO');
         l3.parmZoneCode('GAM');
         l3.parmKMOwnCar(120.5);                             // decimal
+        l3.parmCostCenter('100302');
         lines.addEnd(l3);
 
         request.parmLines(lines);
