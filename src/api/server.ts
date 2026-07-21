@@ -185,18 +185,22 @@ export function buildServer(deps: Deps): FastifyInstance {
     if (!r.ok) return reply.code(422).send(r);
     // Al enviar se crea el Teams Approval para el aprobador seleccionado.
     let aprobadorNotificado: string | undefined;
+    let notifError: string | undefined;
     try {
       const l = (await deps.db.liquidacion.findUnique({ where: { id: req.params.id } })) as Record<string, unknown> | null;
       const aprId = l?.["aprobadorId"] as string | undefined;
+      if (!aprId) { notifError = "La liquidacion no tiene aprobador asignado."; }
       if (aprId) {
         const apr = (await deps.usuarios.listar()).find((u) => u.id === aprId);
+        if (!apr) notifError = `No se encontro el aprobador (id ${aprId}) en el directorio.`;
+        else if (!apr.email) notifError = "El aprobador no tiene correo.";
         if (apr?.email) {
           await deps.notificacion.solicitarAprobacion({ aprobadorEmail: apr.email, aprobadorNombre: apr.nombre, titulo: `Aprobar liquidacion ${String(l?.["name"] ?? "")}`, liquidacionId: req.params.id, liquidacionName: String(l?.["name"] ?? ""), enlace: enlaceLiq(req.params.id) });
           aprobadorNotificado = apr.nombre ?? apr.email;
         }
       }
-    } catch (e) { app.log.error(`Notificacion de aprobacion fallo: ${(e as Error).message}`); }
-    return reply.send({ ...r, aprobadorNotificado });
+    } catch (e) { notifError = (e as Error).message; app.log.error(`Notificacion de aprobacion fallo: ${notifError}`); }
+    return reply.send({ ...r, aprobadorNotificado, notifError });
   });
   app.patch<{ Params: { id: string }; Body: { aprobadorId?: string; centroCostoId?: string | null } }>("/liquidaciones/:id", async (req, reply) => {
     const b = req.body ?? {};

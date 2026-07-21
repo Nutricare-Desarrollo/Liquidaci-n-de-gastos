@@ -241,7 +241,8 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
     try {
       const r = await api.enviar(id);
       const extra = r.aprobadorNotificado ? ` Se envio la aprobacion (Teams) a ${r.aprobadorNotificado}.` : "";
-      setMsg({ t: "ok", x: "Informe enviado." + extra });
+      const warn = r.notifError ? ` (Aprobacion NO enviada: ${r.notifError})` : "";
+      setMsg({ t: r.notifError ? "err" : "ok", x: "Informe enviado." + extra + warn });
       await cargar(); await cargarFacturas();
     } catch (e) { setMsg({ t: "err", x: describe(e) }); }
   }
