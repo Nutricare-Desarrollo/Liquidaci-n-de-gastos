@@ -198,8 +198,15 @@ export function buildServer(deps: Deps): FastifyInstance {
     } catch (e) { app.log.error(`Notificacion de aprobacion fallo: ${(e as Error).message}`); }
     return reply.send({ ...r, aprobadorNotificado });
   });
-  app.patch<{ Params: { id: string }; Body: { aprobadorId?: string } }>("/liquidaciones/:id", async (req, reply) => {
+  app.patch<{ Params: { id: string }; Body: { aprobadorId?: string; centroCostoId?: string | null } }>("/liquidaciones/:id", async (req, reply) => {
     const b = req.body ?? {};
+    // Centro de costo (se propaga a los gastos para la dimension financiera).
+    if (b.centroCostoId !== undefined) {
+      const rc = await liq.actualizarCentroCosto(deps.db, req.params.id, b.centroCostoId ?? null);
+      if (!rc.ok) return reply.code(400).send(rc);
+      if (b.aprobadorId === undefined) return reply.send(rc);
+    }
+    if (b.aprobadorId === undefined) return reply.send({ ok: true });
     const r = await liq.actualizarAprobador(deps.db, req.params.id, b.aprobadorId ?? null, !!deps.config?.permitirAutoaprobacion);
     if (!r.ok) return reply.code(400).send(r);
     // Si ya estaba ENVIADA, re-notificar (Teams Approval) al nuevo aprobador.

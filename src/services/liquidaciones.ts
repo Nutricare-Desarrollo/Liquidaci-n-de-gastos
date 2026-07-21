@@ -102,6 +102,18 @@ export async function enviarInforme(db: Db, id: string): Promise<{ ok: boolean; 
   return { ok: true, errores: [] };
 }
 
+export async function actualizarCentroCosto(db: Db, id: string, centroCostoId: string | null): Promise<{ ok: boolean; error?: string }> {
+  const liq = (await db.liquidacion.findUnique({ where: { id } })) as Rec | null;
+  if (!liq) return { ok: false, error: "No existe la liquidacion." };
+  if (!["BORRADOR", "DEVUELTA", "ENVIADA"].includes(String(liq["estado"])))
+    return { ok: false, error: `No se puede editar el centro de costo en el estado ${liq["estado"]}.` };
+  await db.liquidacion.update({ where: { id }, data: { centroCostoId: centroCostoId || null } });
+  // Propagar a los gastos (la dimension financiera de FO sale del centro de costo del gasto).
+  const gastos = (await db.gasto.findMany({ where: { liquidacionId: id } })) as Rec[];
+  for (const g of gastos) await db.gasto.update({ where: { id: String(g["id"]) }, data: { centroCostoId: centroCostoId || null } });
+  return { ok: true };
+}
+
 export async function actualizarAprobador(db: Db, id: string, aprobadorId: string | null, permitirAutoaprobacion = false): Promise<{ ok: boolean; error?: string; estado?: string }> {
   const liq = (await db.liquidacion.findUnique({ where: { id } })) as Rec | null;
   if (!liq) return { ok: false, error: "No existe la liquidacion." };

@@ -164,6 +164,7 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
   const [facturaId, setFacturaId] = useState("");
   const [catId, setCatId] = useState("");
   const [aprId, setAprId] = useState("");
+  const [ccLiq, setCcLiq] = useState("");
   // regimen simplificado
   const [sMonto, setSMonto] = useState(""); const [sFecha, setSFecha] = useState("");
   const [sComer, setSComer] = useState(""); const [sSit, setSSit] = useState("EXENTO"); const [sCc, setSCc] = useState("");
@@ -174,7 +175,7 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
   const cargar = () => api.detalle(id).then(setLiq).catch(() => setMsg({ t: "err", x: "No se pudo cargar." }));
   const cargarFacturas = () => api.facturasSinCruzar().then(setFacturas).catch(() => {});
   useEffect(() => { cargar(); cargarFacturas(); }, [id]);
-  useEffect(() => { if (liq) setAprId(String(liq.aprobadorId ?? "")); }, [liq]);
+  useEffect(() => { if (liq) { setAprId(String(liq.aprobadorId ?? "")); setCcLiq(String(liq.centroCostoId ?? "")); } }, [liq]);
 
   async function accion(fn: () => Promise<unknown>, ok: string) {
     setMsg(null);
@@ -218,6 +219,14 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
     }, esKmCat ? "Gasto de kilometraje agregado." : "Gasto agregado.");
     setSMonto(""); setSFecha(""); setSComer(""); setSCc(""); setCatId(""); setSKm(""); setSLitros(""); setSTipoGas(""); setSFile(null); setModo("");
   }
+  async function guardarCentro() {
+    setMsg(null);
+    try {
+      await api.actualizarLiquidacion(id, { centroCostoId: ccLiq || null });
+      setMsg({ t: "ok", x: "Centro de costo actualizado (se aplico a los gastos)." });
+      await cargar();
+    } catch (e) { setMsg({ t: "err", x: describe(e) }); }
+  }
   async function guardarAprobador() {
     setMsg(null);
     try {
@@ -257,7 +266,15 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
         <h3><span className="ico">#</span> Informacion general</h3>
         <div className="fields">
           <Field label="Nombre" v={liq.name} /><Field label="Proposito" v={propo(liq.proposito)} />
-          <Field label="Centro costo" v={cc} /><Field label="Correo empleado" v={liq.correoEmpleado} />
+          {puedeEditarApr ? (
+            <div className="field"><label>Centro de costo</label>
+              <div className="row-inline">
+                <Combo options={cat.centrosCosto.map((c) => ({ value: c.id, label: c.name, hint: c.operatingUnitNumber }))} value={ccLiq} onChange={setCcLiq} placeholder="Escribi el centro..." />
+                <AsyncButton className="ghost" onClick={guardarCentro} disabled={ccLiq === String(liq.centroCostoId ?? "")} loadingText="Guardando...">Guardar</AsyncButton>
+              </div>
+            </div>
+          ) : <Field label="Centro costo" v={cc} />}
+          <Field label="Correo empleado" v={liq.correoEmpleado} />
           <Field label="Moneda del informe" v={liq.moneda} /><Field label="Monto informe" v={`${fmt(liq.montoInforme)} ${liq.moneda}`} />
           {puedeEditarApr ? (
             <div className="field"><label>Aprobador</label>
