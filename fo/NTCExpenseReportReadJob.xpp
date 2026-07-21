@@ -44,11 +44,12 @@ class NTCExpenseReportReadJob
                             trvExpTrans.ExchangeRate,
                             trvExpTrans.PayMethod,
                             enum2Str(trvExpTrans.ApprovalStatus)));
-                info(strFmt("           Factura=%1 | Comerciante=%2 | Zona=%3 | KM=%4",
+                info(strFmt("           Factura=%1 | Comerciante=%2 | Zona=%3 | KM=%4 | DimRecId=%5",
                             trvExpTrans.ReceiptNumber,
                             trvExpTrans.MerchantId,
                             trvExpTrans.ZoneCode,
-                            trvExpTrans.KMOwnCar));
+                            trvExpTrans.KMOwnCar,
+                            trvExpTrans.DefaultDimension));
             }
             info(strFmt("Total lineas: %1", n));
         }

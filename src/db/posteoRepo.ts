@@ -30,6 +30,10 @@ export async function cargarInforme(db: Db, liquidacionId: string, usuarios?: Us
     include: { categoria: true },
   } as unknown)) as Array<Record<string, unknown>>;
 
+  // Mapa centroCostoId -> operatingUnitNumber (para la dimension financiera en FO).
+  const centros = (await db.centroCosto.findMany()) as Array<Record<string, unknown>>;
+  const ccPorId = new Map(centros.map((c) => [String(c["id"]), String(c["operatingUnitNumber"] ?? "")]));
+
   return {
     id: String(liq["id"]),
     numeroReporteFO: (liq["numeroReporteFO"] as string | null) ?? null,
@@ -50,6 +54,7 @@ export async function cargarInforme(db: Db, liquidacionId: string, usuarios?: Us
       merchant: String(g["comerciante"] ?? ""),
       zone: g["zona"] != null ? String(g["zona"]) : undefined,
       km: g["kilometros"] != null ? Number(g["kilometros"]) : undefined,
+      costCenter: g["centroCostoId"] ? (ccPorId.get(String(g["centroCostoId"])) || undefined) : undefined,
     })),
   };
 }

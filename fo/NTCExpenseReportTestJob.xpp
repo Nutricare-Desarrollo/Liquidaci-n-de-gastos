@@ -43,6 +43,7 @@ class NTCExpenseReportTestJob
         l1.parmTaxItemGroup('IVA 13%');
         l1.parmReceiptNumber('00100001010000000123');
         l1.parmMerchant('Soda Central');
+        l1.parmCostCenter(''); // <-- pon un centro de costo REAL (OMCostCenter) para probar la dimension
         lines.addEnd(l1);
 
         // ----- Linea 2: USD -> verificar colonizacion (AmountMST != AmountCurr) -----

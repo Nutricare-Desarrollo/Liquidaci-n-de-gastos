@@ -63,6 +63,7 @@ export interface LineaReporteFO {
   merchant?: string; // comerciante -> TrvExpTrans.MerchantId
   zone?: string; // KILOMETRAJE: GAM/GIRAS -> TrvExpTrans.ZoneCode
   km?: number; // KILOMETRAJE: kilometros -> TrvExpTrans.KMOwnCar
+  costCenter?: string; // centro de costo (OMCostCenter) -> DefaultDimension
 }
 
 export interface ReporteGastoFO {

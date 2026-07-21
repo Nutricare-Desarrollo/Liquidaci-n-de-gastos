@@ -25,6 +25,7 @@ public final class NTCExpenseReportLineContract
     str     merchant;
     str     zoneCode;
     real    kmOwnCar;
+    str     costCenter;
 
     [DataMemberAttribute('CostType')]
     public str parmCostType(str _v = costType) { costType = _v; return costType; }
@@ -61,6 +62,9 @@ public final class NTCExpenseReportLineContract
 
     [DataMemberAttribute('KMOwnCar')]
     public real parmKMOwnCar(real _v = kmOwnCar) { kmOwnCar = _v; return kmOwnCar; }
+
+    [DataMemberAttribute('CostCenter')]
+    public str parmCostCenter(str _v = costCenter) { costCenter = _v; return costCenter; }
 }
 
 // ---------------------------------------------------------------------
@@ -138,6 +142,26 @@ public final class NTCExpenseReportResponseContract
 // ---------------------------------------------------------------------
 public final class NTCExpenseReportService
 {
+    // Arma la DIMENSION FINANCIERA por defecto a partir del centro de costo.
+    // Nombre de la dimension financiera en FO (confirmado): 'C_CentrodeCosto'.
+    private static DimensionDefault ntcDimDefault(str _costCenter)
+    {
+        DimensionAttribute                 dimAttr;
+        DimensionAttributeValue            dimAttrValue;
+        DimensionAttributeValueSetStorage  storage;
+
+        if (!_costCenter)
+            return 0;
+        dimAttr = DimensionAttribute::findByName('C_CentrodeCosto');
+        if (!dimAttr.RecId)
+            return 0;
+        storage = new DimensionAttributeValueSetStorage();
+        dimAttrValue = DimensionAttributeValue::findByDimensionAttributeAndValue(dimAttr, _costCenter, false, true);
+        if (dimAttrValue.RecId)
+            storage.addItem(dimAttrValue);
+        return storage.save();
+    }
+
     public NTCExpenseReportResponseContract createExpenseReport(str _requestJson)
     {
         NTCExpenseReportResponseContract    response = new NTCExpenseReportResponseContract();
@@ -256,6 +280,7 @@ public final class NTCExpenseReportService
                     trvExpTrans.MerchantId    = line.parmMerchant();
                     trvExpTrans.ZoneCode      = line.parmZoneCode();     // KILOMETRAJE
                     trvExpTrans.KMOwnCar      = line.parmKMOwnCar();     // KILOMETRAJE (decimal)
+                    trvExpTrans.DefaultDimension = NTCExpenseReportService::ntcDimDefault(line.parmCostCenter()); // dimension financiera
                     trvExpTrans.TaxIncluded   = NoYes::Yes;
                     trvExpTrans.insert();
                     numLineas++;

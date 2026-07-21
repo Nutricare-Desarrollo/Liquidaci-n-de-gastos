@@ -27,6 +27,7 @@ export interface InformeParaPostear {
     merchant?: string;
     zone?: string;
     km?: number;
+    costCenter?: string;
   }>;
 }
 
@@ -68,6 +69,7 @@ export async function postearInforme(
     merchant: g.merchant,
     zone: g.zone,
     km: g.km,
+    costCenter: g.costCenter,
   }));
 
   const reporte: ReporteGastoFO = {

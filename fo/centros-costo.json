@@ -1,0 +1,178 @@
+[
+ {
+  "operatingUnitNumber": "100101",
+  "name": "Presidencia Ejecutiva"
+ },
+ {
+  "operatingUnitNumber": "100201",
+  "name": "Dirección General"
+ },
+ {
+  "operatingUnitNumber": "100302",
+  "name": "Finanzas"
+ },
+ {
+  "operatingUnitNumber": "100303",
+  "name": "Análisis y Planificación Financiera"
+ },
+ {
+  "operatingUnitNumber": "100307",
+  "name": "Gestión Administrativa"
+ },
+ {
+  "operatingUnitNumber": "100401",
+  "name": "Gerencia TI"
+ },
+ {
+  "operatingUnitNumber": "100402",
+  "name": "Infraestructura y Soporte"
+ },
+ {
+  "operatingUnitNumber": "100403",
+  "name": "Desarrollo de Sistemas"
+ },
+ {
+  "operatingUnitNumber": "100404",
+  "name": "Seguridad de la Información"
+ },
+ {
+  "operatingUnitNumber": "100501",
+  "name": "Dirección de Cultura y Talento"
+ },
+ {
+  "operatingUnitNumber": "100502",
+  "name": "Desarrollo Organizacional"
+ },
+ {
+  "operatingUnitNumber": "100601",
+  "name": "Dirección de Logística y Operaciones"
+ },
+ {
+  "operatingUnitNumber": "100602",
+  "name": "Almacén"
+ },
+ {
+  "operatingUnitNumber": "100603",
+  "name": "Compras"
+ },
+ {
+  "operatingUnitNumber": "100605",
+  "name": "Transportes"
+ },
+ {
+  "operatingUnitNumber": "100607",
+  "name": "Servicios Generales"
+ },
+ {
+  "operatingUnitNumber": "100701",
+  "name": "Dirección Comercial"
+ },
+ {
+  "operatingUnitNumber": "100702",
+  "name": "Contratación Administrativa"
+ },
+ {
+  "operatingUnitNumber": "100703",
+  "name": "ePMO"
+ },
+ {
+  "operatingUnitNumber": "102007",
+  "name": "Gestión Administrativa"
+ },
+ {
+  "operatingUnitNumber": "200101",
+  "name": "Gerencia de Terapias Especializadas"
+ },
+ {
+  "operatingUnitNumber": "200102",
+  "name": "Cuidado Crítico"
+ },
+ {
+  "operatingUnitNumber": "200103",
+  "name": "Cuidado Crónico"
+ },
+ {
+  "operatingUnitNumber": "200104",
+  "name": "Nefrología"
+ },
+ {
+  "operatingUnitNumber": "200201",
+  "name": "Gerencia de Especialidades Quirúrgicas"
+ },
+ {
+  "operatingUnitNumber": "200202",
+  "name": "Terapias Quirúrgicas"
+ },
+ {
+  "operatingUnitNumber": "200203",
+  "name": "Ortopedia"
+ },
+ {
+  "operatingUnitNumber": "200301",
+  "name": "Salud Cardiovascular"
+ },
+ {
+  "operatingUnitNumber": "200404",
+  "name": "Cuidado y Bienestar"
+ },
+ {
+  "operatingUnitNumber": "200502",
+  "name": "Diagnóstico y Tecnologías de Soporte"
+ },
+ {
+  "operatingUnitNumber": "200601",
+  "name": "Servicio Técnico Ventas"
+ },
+ {
+  "operatingUnitNumber": "201001",
+  "name": "Comercial Farmacia"
+ },
+ {
+  "operatingUnitNumber": "300101",
+  "name": "Dirección de Mercadeo"
+ },
+ {
+  "operatingUnitNumber": "300102",
+  "name": "Academia NTC"
+ },
+ {
+  "operatingUnitNumber": "300103",
+  "name": "Experiencia del cliente"
+ },
+ {
+  "operatingUnitNumber": "300104",
+  "name": "MKT"
+ },
+ {
+  "operatingUnitNumber": "400101",
+  "name": "Unidad Administración Integral de Riesgos UAIR"
+ },
+ {
+  "operatingUnitNumber": "400102",
+  "name": "Cumplimiento"
+ },
+ {
+  "operatingUnitNumber": "400103",
+  "name": "Calidad"
+ },
+ {
+  "operatingUnitNumber": "400104",
+  "name": "Asuntos Regulatorios"
+ },
+ {
+  "operatingUnitNumber": "400105",
+  "name": "Auditoría interna"
+ },
+ {
+  "operatingUnitNumber": "400106",
+  "name": "Salud Ocupacional"
+ },
+ {
+  "operatingUnitNumber": "400107",
+  "name": "Sostenibilidad"
+ },
+ {
+  "operatingUnitNumber": "500101",
+  "name": "ST Administrativo"
+ }
+]
