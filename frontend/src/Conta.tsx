@@ -138,7 +138,7 @@ function LiquidacionesList({ cat, onOpen }: { cat: Catalogos; onOpen: (id: strin
         <table>
           <thead><tr><th>Name</th><th>Fecha de creacion</th><th>Correo empleado</th><th>Moneda</th><th>Estado</th><th>Proposito</th><th className="num">Monto</th><th>Reporte FO</th></tr></thead>
           <tbody>
-            {rows.map((l) => (
+            {[...rows].sort((a, b) => String(b.createdAt ?? "").localeCompare(String(a.createdAt ?? ""))).map((l) => (
               <tr key={l.id} onClick={() => onOpen(l.id)}>
                 <td className="pill-link">{l.name}</td><td>{fdate(l.createdAt)}</td><td>{l.correoEmpleado}</td>
                 <td>{l.moneda}</td><td><span className={`badge estado-${l.estado}`}>{l.estado}</span></td>
