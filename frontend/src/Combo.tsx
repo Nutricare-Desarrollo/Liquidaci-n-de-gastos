@@ -8,10 +8,14 @@ export function Combo({ options, value, onChange, placeholder, max = 10 }: {
 }) {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
+  // Sincroniza el texto con el valor SOLO cuando el combo esta cerrado, para no
+  // pisar lo que el usuario escribe/filtra al cambiar la seleccion.
   useEffect(() => {
+    if (open) return;
     const s = options.find((o) => o.value === value);
     setQ(s ? s.label : "");
-  }, [value, options]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, open]);
 
   const ql = q.trim().toLowerCase();
   const matches = options

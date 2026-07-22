@@ -28,6 +28,8 @@ export interface InformeParaPostear {
     zone?: string;
     km?: number;
     costCenter?: string;
+    departamento?: string;
+    unidadNegocio?: string;
   }>;
 }
 
@@ -70,6 +72,8 @@ export async function postearInforme(
     zone: g.zone,
     km: g.km,
     costCenter: g.costCenter,
+    departamento: g.departamento,
+    unidadNegocio: g.unidadNegocio,
   }));
 
   const reporte: ReporteGastoFO = {

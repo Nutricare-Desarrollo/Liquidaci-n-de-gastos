@@ -10,7 +10,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { getDb } from "../src/db/client.js";
 
-interface CC { operatingUnitNumber: string; name: string; }
+interface CC { operatingUnitNumber: string; name: string; departamento?: string; unidadNegocio?: string; }
 
 async function main() {
   const ruta = fileURLToPath(new URL("../fo/centros-costo.json", import.meta.url));
@@ -23,7 +23,12 @@ async function main() {
     const operatingUnitNumber = String(c.operatingUnitNumber).trim();
     if (!operatingUnitNumber) continue;
     validos.add(operatingUnitNumber);
-    const data = { operatingUnitNumber, name: c.name || operatingUnitNumber };
+    // Dimensiones derivadas del codigo del centro (confirmado 44/44):
+    //   A (departamento)    = primeros 2 digitos
+    //   B (unidad de negocio) = primeros 4 digitos
+    const departamento  = c.departamento  ?? operatingUnitNumber.slice(0, 2);
+    const unidadNegocio = c.unidadNegocio ?? operatingUnitNumber.slice(0, 4);
+    const data = { operatingUnitNumber, name: c.name || operatingUnitNumber, departamento, unidadNegocio };
     const ex = (await db.centroCosto.findFirst({ where: { operatingUnitNumber } })) as { id: string } | null;
     if (ex) { await db.centroCosto.update({ where: { id: ex.id }, data }); actualizados++; }
     else { await db.centroCosto.create({ data }); creados++; }

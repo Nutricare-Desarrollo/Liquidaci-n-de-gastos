@@ -275,10 +275,12 @@ export function buildServer(deps: Deps): FastifyInstance {
   // Crear gasto de Regimen Simplificado (sin factura electronica).
   app.post<{ Params: { id: string }; Body: GastoSimpBody }>("/liquidaciones/:id/gastos-simplificado", async (req, reply) => {
     const b = req.body ?? {};
-    if (!b.monto || !b.fecha || !b.comerciante || !b.categoriaId || !b.situacionFiscal)
-      return reply.code(400).send({ error: "Faltan campos (monto, fecha, comerciante, categoriaId, situacionFiscal)" });
+    // Kilometraje no manda monto ni comerciante (monto = km x tarifa); anticipos no manda comerciante.
+    // Requerimos siempre fecha, categoria y situacion fiscal; el resto lo valida crearGastoSimplificado.
+    if (!b.fecha || !b.categoriaId || !b.situacionFiscal)
+      return reply.code(400).send({ error: "Faltan campos (fecha, categoria, situacion fiscal)" });
     const r = await crearGastoSimplificado(deps.db, req.params.id, {
-      monto: Number(b.monto), fecha: b.fecha, comerciante: b.comerciante,
+      monto: Number(b.monto) || 0, fecha: b.fecha, comerciante: b.comerciante ?? "",
       categoriaId: b.categoriaId, situacionFiscal: b.situacionFiscal, centroCostoId: b.centroCostoId ?? null,
       numeroFactura: b.numeroFactura, zona: b.zona ?? null,
       kilometros: b.kilometros != null ? Number(b.kilometros) : null,

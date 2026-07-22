@@ -220,8 +220,10 @@ model Categoria {
 
 model CentroCosto {
   id                  String        @id @default(cuid())
-  operatingUnitNumber String        @unique // codigo (OMCostCenter de FO)
+  operatingUnitNumber String        @unique // codigo (OMCostCenter de FO) = dimension C
   name                String
+  departamento        String? // dimension A (A_Departamento)
+  unidadNegocio       String? // dimension B (B_UnidaddeNegocio)
   liquidaciones       Liquidacion[]
   gastos              Gasto[]
 }

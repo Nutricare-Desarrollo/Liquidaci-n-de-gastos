@@ -32,7 +32,7 @@ export async function cargarInforme(db: Db, liquidacionId: string, usuarios?: Us
 
   // Mapa centroCostoId -> operatingUnitNumber (para la dimension financiera en FO).
   const centros = (await db.centroCosto.findMany()) as Array<Record<string, unknown>>;
-  const ccPorId = new Map(centros.map((c) => [String(c["id"]), String(c["operatingUnitNumber"] ?? "")]));
+  const ccPorId = new Map(centros.map((c) => [String(c["id"]), c] as [string, Record<string, unknown>]));
 
   return {
     id: String(liq["id"]),
@@ -54,7 +54,9 @@ export async function cargarInforme(db: Db, liquidacionId: string, usuarios?: Us
       merchant: String(g["comerciante"] ?? ""),
       zone: g["zona"] != null ? String(g["zona"]) : undefined,
       km: g["kilometros"] != null ? Number(g["kilometros"]) : undefined,
-      costCenter: g["centroCostoId"] ? (ccPorId.get(String(g["centroCostoId"])) || undefined) : undefined,
+      costCenter: g["centroCostoId"] ? (String(ccPorId.get(String(g["centroCostoId"]))?.["operatingUnitNumber"] ?? "") || undefined) : undefined,
+      departamento: g["centroCostoId"] ? (String(ccPorId.get(String(g["centroCostoId"]))?.["departamento"] ?? "") || undefined) : undefined,
+      unidadNegocio: g["centroCostoId"] ? (String(ccPorId.get(String(g["centroCostoId"]))?.["unidadNegocio"] ?? "") || undefined) : undefined,
     })),
   };
 }

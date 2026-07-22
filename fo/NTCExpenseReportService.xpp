@@ -26,6 +26,8 @@ public final class NTCExpenseReportLineContract
     str     zoneCode;
     real    kmOwnCar;
     str     costCenter;
+    str     departamento;
+    str     unidadNegocio;
 
     [DataMemberAttribute('CostType')]
     public str parmCostType(str _v = costType) { costType = _v; return costType; }
@@ -65,6 +67,12 @@ public final class NTCExpenseReportLineContract
 
     [DataMemberAttribute('CostCenter')]
     public str parmCostCenter(str _v = costCenter) { costCenter = _v; return costCenter; }
+
+    [DataMemberAttribute('Departamento')]
+    public str parmDepartamento(str _v = departamento) { departamento = _v; return departamento; }
+
+    [DataMemberAttribute('UnidadNegocio')]
+    public str parmUnidadNegocio(str _v = unidadNegocio) { unidadNegocio = _v; return unidadNegocio; }
 }
 
 // ---------------------------------------------------------------------
@@ -144,21 +152,28 @@ public final class NTCExpenseReportService
 {
     // Arma la DIMENSION FINANCIERA por defecto a partir del centro de costo.
     // Nombre de la dimension financiera en FO (confirmado): 'C_CentrodeCosto'.
-    private static DimensionDefault ntcDimDefault(str _costCenter)
+    // Agrega un valor de dimension al storage (si el atributo y el valor existen).
+    private static void ntcAddDim(DimensionAttributeValueSetStorage _storage, str _name, str _value)
     {
-        DimensionAttribute                 dimAttr;
-        DimensionAttributeValue            dimAttrValue;
-        DimensionAttributeValueSetStorage  storage;
-
-        if (!_costCenter)
-            return 0;
-        dimAttr = DimensionAttribute::findByName('C_CentrodeCosto');
+        DimensionAttribute       dimAttr;
+        DimensionAttributeValue  dimAttrValue;
+        if (!_value)
+            return;
+        dimAttr = DimensionAttribute::findByName(_name);
         if (!dimAttr.RecId)
-            return 0;
-        storage = new DimensionAttributeValueSetStorage();
-        dimAttrValue = DimensionAttributeValue::findByDimensionAttributeAndValue(dimAttr, _costCenter, false, true);
+            return;
+        dimAttrValue = DimensionAttributeValue::findByDimensionAttributeAndValue(dimAttr, _value, false, true);
         if (dimAttrValue.RecId)
-            storage.addItem(dimAttrValue);
+            _storage.addItem(dimAttrValue);
+    }
+
+    // Arma la DefaultDimension con las 3 dimensiones (D_Intercompany va vacio).
+    private static DimensionDefault ntcDimDefault(str _departamento, str _unidadNegocio, str _centroCosto)
+    {
+        DimensionAttributeValueSetStorage storage = new DimensionAttributeValueSetStorage();
+        NTCExpenseReportService::ntcAddDim(storage, 'A_Departamento',    _departamento);
+        NTCExpenseReportService::ntcAddDim(storage, 'B_UnidaddeNegocio', _unidadNegocio);
+        NTCExpenseReportService::ntcAddDim(storage, 'C_CentrodeCosto',   _centroCosto);
         return storage.save();
     }
 
@@ -280,7 +295,7 @@ public final class NTCExpenseReportService
                     trvExpTrans.MerchantId    = line.parmMerchant();
                     trvExpTrans.ZoneCode      = line.parmZoneCode();     // KILOMETRAJE
                     trvExpTrans.KMOwnCar      = line.parmKMOwnCar();     // KILOMETRAJE (decimal)
-                    trvExpTrans.DefaultDimension = NTCExpenseReportService::ntcDimDefault(line.parmCostCenter()); // dimension financiera
+                    trvExpTrans.DefaultDimension = NTCExpenseReportService::ntcDimDefault(line.parmDepartamento(), line.parmUnidadNegocio(), line.parmCostCenter()); // dimensiones A/B/C
                     trvExpTrans.TaxIncluded   = NoYes::Yes;
                     trvExpTrans.insert();
                     numLineas++;
