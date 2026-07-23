@@ -46,6 +46,7 @@ export interface Liquidacion {
   estado: string; montoInforme?: number; numeroReporteFO?: string | null;
   correoEmpleado?: string; centroCostoId?: string | null; aprobadorId?: string | null;
   comentarioConta?: string | null; createdAt?: string; updatedAt?: string; gastos?: Gasto[];
+  adjuntos?: Array<{ nombre: string; url: string; tipo: string }>;
 }
 export interface FacturaSinCruzar { id: string; clave: string; consecutivo?: string; emisorNombre?: string; totalComprobante: number; situacionFiscal: string; detalle?: string; }
 export interface Factura {
@@ -83,6 +84,7 @@ export const api = {
   subirAdjunto: (gastoId: string, b: Record<string, unknown>) => req<{ ok: boolean; adjuntos?: Array<{ nombre: string; url: string; tipo: string }> }>(`/gastos/${gastoId}/adjuntos`, { method: "POST", body: JSON.stringify(b) }),
   actualizarGasto: (id: string, patch: Record<string, unknown>) => req<{ gasto: Gasto; errores: string[] }>(`/gastos/${id}`, { method: "PATCH", body: JSON.stringify(patch) }),
   actualizarLiquidacion: (id: string, b: Record<string, unknown>) => req<{ ok: boolean; aprobadorNotificado?: string }>(`/liquidaciones/${id}`, { method: "PATCH", body: JSON.stringify(b) }),
+  subirAdjuntoLiquidacion: (id: string, b: Record<string, unknown>) => req<{ ok: boolean; adjuntos?: Array<{ nombre: string; url: string; tipo: string }> }>(`/liquidaciones/${id}/adjuntos`, { method: "POST", body: JSON.stringify(b) }),
   facturasSinCruzar: () => req<FacturaSinCruzar[]>("/facturas/sin-cruzar"),
   facturas: () => req<Factura[]>("/facturas"),
   crearFactura: (b: Record<string, unknown>) => req<{ ok: boolean }>("/facturas", { method: "POST", body: JSON.stringify(b) }),

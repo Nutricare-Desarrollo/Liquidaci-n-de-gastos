@@ -165,6 +165,7 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
   const [catId, setCatId] = useState("");
   const [aprId, setAprId] = useState("");
   const [ccLiq, setCcLiq] = useState("");
+  const [docFile, setDocFile] = useState<File | null>(null);
   // regimen simplificado
   const [sMonto, setSMonto] = useState(""); const [sFecha, setSFecha] = useState("");
   const [sComer, setSComer] = useState(""); const [sSit, setSSit] = useState("EXENTO"); const [sCc, setSCc] = useState("");
@@ -218,6 +219,15 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
       }
     }, esKmCat ? "Gasto de kilometraje agregado." : "Gasto agregado.");
     setSMonto(""); setSFecha(""); setSComer(""); setSCc(""); setCatId(""); setSKm(""); setSLitros(""); setSTipoGas(""); setSFile(null); setModo("");
+  }
+  async function subirDoc() {
+    if (!docFile) return;
+    setMsg(null);
+    try {
+      const contenidoBase64 = await fileToB64(docFile);
+      await api.subirAdjuntoLiquidacion(id, { nombre: docFile.name, contenidoBase64, mimeType: docFile.type || "application/octet-stream" });
+      setMsg({ t: "ok", x: "Documento adjuntado." }); setDocFile(null); await cargar();
+    } catch (e) { setMsg({ t: "err", x: describe(e) }); }
   }
   async function guardarCentro() {
     setMsg(null);
@@ -287,6 +297,20 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
           ) : <Field label="Aprobador" v={apr} />}
           <Field label="Reporte FO (Dynamics)" v={liq.numeroReporteFO ?? "-"} />
           <Field label="Ultima actualizacion" v={fdate(liq.updatedAt)} />
+        </div>
+      </div>
+
+      <div className="section">
+        <h3><span className="ico">D</span> Documentos adjuntos</h3>
+        {(liq.adjuntos ?? []).length === 0 && <p><small className="mono">Sin documentos adjuntos.</small></p>}
+        <ul style={{ margin: "4px 0 10px", paddingLeft: 18 }}>
+          {(liq.adjuntos ?? []).map((a, i) => (
+            <li key={i}><a className="pill-link" href={a.url} target="_blank" rel="noreferrer">{a.nombre}</a></li>
+          ))}
+        </ul>
+        <div className="row-inline">
+          <input type="file" accept="image/*,application/pdf" onChange={(e) => setDocFile(e.target.files?.[0] ?? null)} />
+          <AsyncButton className="ghost" onClick={subirDoc} disabled={!docFile} loadingText="Subiendo...">Adjuntar</AsyncButton>
         </div>
       </div>
 
@@ -524,7 +548,9 @@ function GastoForm({ liqId, gastoId, cat, onBack }: { liqId: string; gastoId: st
             <Field label="Emisor" v={g.factura.emisorNombre ?? "-"} />
             <Field label="Clave" v={g.factura.clave} />
             <Field label="Estado factura" v={g.factura.estado} />
-            <Field label="Total comprobante" v={`${fmt(g.factura.totalComprobante)} ${g.factura.moneda}`} />
+            <Field label="Subtotal" v={`${fmt(Number(g.factura.totalComprobante) - Number(g.factura.totalImpuesto ?? 0))} ${monShow(g.factura.moneda)}`} />
+            <Field label="IVA" v={`${fmt(Number(g.factura.totalImpuesto ?? 0))} ${monShow(g.factura.moneda)}`} />
+            <Field label="Total comprobante" v={`${fmt(g.factura.totalComprobante)} ${monShow(g.factura.moneda)}`} />
             <Field label="Situacion fiscal" v={g.factura.situacionFiscal} />
           </div>
           {editFac && (
@@ -991,6 +1017,7 @@ function Field({ label, v }: { label: string; v?: string | number | null }) {
 }
 function fmt(n?: number): string { return (n ?? 0).toLocaleString("es-CR"); }
 function fdate(s?: string): string { return s ? new Date(s).toLocaleString("es-CR") : "-"; }
+function monShow(m?: string): string { return (!m || m === "Otra") ? "CRC" : m; }
 function fileToB64(file: File): Promise<string> {
   return new Promise((res, rej) => {
     const r = new FileReader();

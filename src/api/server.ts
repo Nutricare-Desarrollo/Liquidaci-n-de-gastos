@@ -301,6 +301,12 @@ export function buildServer(deps: Deps): FastifyInstance {
   app.patch<{ Params: { id: string }; Body: GastoPatch }>("/gastos/:id", async (req) => liq.actualizarGasto(deps.db, req.params.id, req.body ?? {}));
 
   // Adjuntar imagen/PDF a un gasto (para casos sin PDF de Hacienda, o el PDF del correo).
+  app.post<{ Params: { id: string }; Body: { nombre?: string; contenidoBase64?: string; mimeType?: string } }>("/liquidaciones/:id/adjuntos", async (req, reply) => {
+    const b = req.body ?? {};
+    if (!b.nombre || !b.contenidoBase64) return reply.code(400).send({ error: "Falta el archivo (nombre/contenido)." });
+    const r = await liq.subirAdjuntoLiquidacion(deps.db, deps.storage, req.params.id, { nombre: b.nombre, contenidoBase64: b.contenidoBase64, mimeType: b.mimeType ?? "application/octet-stream" });
+    return r.ok ? reply.send(r) : reply.code(422).send(r);
+  });
   app.post<{ Params: { id: string }; Body: { nombre?: string; contenidoBase64?: string; mimeType?: string } }>("/gastos/:id/adjuntos", async (req, reply) => {
     const b = req.body ?? {};
     if (!b.nombre || !b.contenidoBase64) return reply.code(400).send({ error: "Faltan nombre o contenidoBase64" });

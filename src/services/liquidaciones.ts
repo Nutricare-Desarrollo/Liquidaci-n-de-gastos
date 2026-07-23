@@ -3,7 +3,7 @@
 //  Aprobacion en DOS etapas con orden forzado (aprobador, luego conta).
 // =====================================================================
 import type { Db } from "../db/client.js";
-import type { FinancePort, UsuariosPort } from "../ports/index.js";
+import type { FinancePort, StoragePort, UsuariosPort } from "../ports/index.js";
 import { validarEnvioInforme, validarGasto } from "../domain/validaciones.js";
 import { postearInforme } from "./posteoFO.js";
 import { cargarInforme, marcarPosteado } from "../db/posteoRepo.js";
@@ -184,4 +184,21 @@ export async function reiniciarDatosPrueba(db: Db): Promise<{ ok: boolean; factu
     await db.factura.update({ where: { id: String(f["id"]) }, data: { estado: "SIN_CAPTURA" } });
   }
   return { ok: true, facturasReseteadas: facturas.length };
+}
+
+// Adjuntar documento al ENCABEZADO de la liquidacion (Contabilidad).
+export async function subirAdjuntoLiquidacion(db: Db, storage: StoragePort, id: string, a: {
+  nombre: string; contenidoBase64: string; mimeType: string;
+}): Promise<{ ok: boolean; error?: string; adjuntos?: Array<{ nombre: string; url: string; tipo: string }> }> {
+  const l = (await db.liquidacion.findUnique({ where: { id } })) as Rec | null;
+  if (!l) return { ok: false, error: "No existe la liquidacion." };
+  const url = await storage.guardar({
+    contenido: Buffer.from(a.contenidoBase64, "base64"),
+    ruta: `liquidaciones/${id}/${Date.now()}-${a.nombre}`,
+    mimeType: a.mimeType,
+  });
+  const adjuntos = Array.isArray(l["adjuntos"]) ? (l["adjuntos"] as Array<{ nombre: string; url: string; tipo: string }>) : [];
+  adjuntos.push({ nombre: a.nombre, url, tipo: a.mimeType });
+  await db.liquidacion.update({ where: { id }, data: { adjuntos } });
+  return { ok: true, adjuntos };
 }
