@@ -41,7 +41,16 @@ export function buildServer(deps: Deps): FastifyInstance {
   const contaRole = deps.config?.auth.contaRole ?? "Contabilidad";
   const rolDe = (roles: string[]): "admin" | "conta" | "estandar" =>
     roles.includes(adminRole) ? "admin" : roles.includes(contaRole) ? "conta" : "estandar";
-  const publica = (url: string) => url === "/health" || url.startsWith("/health?") || url.includes("/resultado-aprobacion");
+  const publica = (url: string): boolean => {
+    const path = url.split("?")[0] ?? url;
+    // Endpoints publicos de la API.
+    if (path === "/health" || path.startsWith("/health") || path.includes("/resultado-aprobacion")) return true;
+    // Frontend estatico + SPA: deben cargar SIN token (el login MSAL corre en el navegador).
+    if (path === "/" || path === "/index.html") return true;
+    if (path.startsWith("/assets/")) return true;
+    if (/\.[a-z0-9]+$/i.test(path)) return true; // .js .css .png .ico .svg .json .woff .map ...
+    return false;
+  };
 
   app.addHook("preHandler", async (req, reply) => {
     if (req.method === "OPTIONS" || publica(req.url)) return;
