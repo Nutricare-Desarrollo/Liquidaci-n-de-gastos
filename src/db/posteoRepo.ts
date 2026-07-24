@@ -4,6 +4,8 @@ import type { UsuariosPort } from "../ports/index.js";
 import type { InformeParaPostear } from "../services/posteoFO.js";
 import type { Empresa, MetodoPago, Moneda, SituacionFiscal } from "../domain/types.js";
 import { situacionFromDb } from "./map.js";
+import { metodoPago } from "../domain/metodoPago.js";
+import { propositoDeClave } from "../domain/proposito.js";
 
 /** Arma el InformeParaPostear leyendo la liquidacion con sus gastos. */
 export async function cargarInforme(db: Db, liquidacionId: string, usuarios?: UsuariosPort): Promise<InformeParaPostear | null> {
@@ -25,6 +27,8 @@ export async function cargarInforme(db: Db, liquidacionId: string, usuarios?: Us
     personnelNumber = u?.personnelNumber ?? "";
   }
 
+  const metodoFallback = metodoPago(propositoDeClave(String(liq["proposito"])), String(liq["moneda"]) as Moneda);
+
   const gastos = (await db.gasto.findMany({
     where: { liquidacionId },
     include: { categoria: true },
@@ -45,7 +49,7 @@ export async function cargarInforme(db: Db, liquidacionId: string, usuarios?: Us
       costType: String((g["categoria"] as Record<string, unknown> | undefined)?.["codigo"] ?? ""),
       amount: Number(g["montoTotal"]),
       currency: String(g["moneda"]) as Moneda,
-      payMethod: String(g["metodoPago"]) as MetodoPago,
+      payMethod: (String(g["metodoPago"] ?? "").trim() || metodoFallback) as MetodoPago,
       transDate: (g["fecha"] as Date)?.toISOString?.() ?? String(g["fecha"]),
       description: String(g["comerciante"] ?? ""),
       taxGroup: situacionFromDb(g["situacionFiscal"] as "IVA" | "EXENTO" | "NO_SUJETO" | "SIN_DEFINIR"),

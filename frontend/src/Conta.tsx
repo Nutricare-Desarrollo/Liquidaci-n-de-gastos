@@ -65,6 +65,7 @@ export function Admin({ cat, initialLiqId, demo, vista, setVista, sesion, puedeC
 function LiquidacionesList({ cat, onOpen, sesion }: { cat: Catalogos; onOpen: (id: string) => void; sesion?: Sesion | null }) {
   const [rows, setRows] = useState<Liquidacion[]>([]);
   const [estado, setEstado] = useState("");
+  const [q, setQ] = useState("");
   const [crear, setCrear] = useState(false);
   const [msg, setMsg] = useState<{ t: "ok" | "err"; x: string } | null>(null);
   const [empId, setEmpId] = useState(
@@ -92,6 +93,7 @@ function LiquidacionesList({ cat, onOpen, sesion }: { cat: Catalogos; onOpen: (i
       <div className="listbar">
         <h2>Liquidaciones activo</h2><span className="caret">v</span>
         <div className="toolbar">
+          <input placeholder="Buscar..." value={q} onChange={(e) => setQ(e.target.value)} style={{ width: 200 }} />
           <button className="primary" onClick={() => setCrear(!crear)}>+ Nueva liquidacion</button>
           <AsyncButton className="ghost" onClick={async () => {
             if (!confirm("Esto borra liquidaciones, gastos y capturas, y deja las facturas sin cruzar. Continuar?")) return;
@@ -140,7 +142,13 @@ function LiquidacionesList({ cat, onOpen, sesion }: { cat: Catalogos; onOpen: (i
         <table>
           <thead><tr><th>Name</th><th>Empleado</th><th>Fecha de creacion</th><th>Correo empleado</th><th>Moneda</th><th>Centro costo</th><th>Estado</th><th>Proposito</th><th className="num">Monto</th><th>Reporte FO</th></tr></thead>
           <tbody>
-            {[...rows].sort((a, b) => String(b.createdAt ?? "").localeCompare(String(a.createdAt ?? ""))).map((l) => (
+            {[...rows].filter((l) => {
+              const s = q.trim().toLowerCase();
+              if (!s) return true;
+              const nombre = cat.usuarios.find((u) => (u.email ?? "").toLowerCase() === (l.correoEmpleado ?? "").toLowerCase())?.nombre ?? "";
+              const centro = cat.centrosCosto.find((c) => c.id === l.centroCostoId)?.name ?? "";
+              return [l.name, nombre, l.correoEmpleado, l.moneda, centro, l.estado, propo(l.proposito), l.montoInforme, l.numeroReporteFO].join(" ").toLowerCase().includes(s);
+            }).sort((a, b) => String(b.createdAt ?? "").localeCompare(String(a.createdAt ?? ""))).map((l) => (
               <tr key={l.id} onClick={() => onOpen(l.id)}>
                 <td className="pill-link">{l.name}</td>
                 <td>{cat.usuarios.find((u) => (u.email ?? "").toLowerCase() === (l.correoEmpleado ?? "").toLowerCase())?.nombre ?? "-"}</td>
@@ -714,14 +722,14 @@ function FacturasView({ prefillClave, onConsumePrefill }: { prefillClave?: strin
     } catch (e) { setMsg({ t: "err", x: describe(e) }); }
   }
 
-  const filtradas = rows.filter((r) => !filtro || (r.consecutivo ?? "").includes(filtro) || (r.emisorNombre ?? "").toLowerCase().includes(filtro.toLowerCase()) || r.clave.includes(filtro));
+  const filtradas = rows.filter((r) => coincideTexto(r, filtro));
 
   return (
     <>
       <div className="listbar"><h2>Facturas</h2><span className="caret">v</span>
         <div className="toolbar">
           <button className="primary" onClick={() => setCrear(!crear)}>+ Factura manual</button>
-          <input placeholder="Filtrar por # / emisor / clave" value={filtro} onChange={(e) => setFiltro(e.target.value)} style={{ width: 260 }} />
+          <input placeholder="Buscar..." value={filtro} onChange={(e) => setFiltro(e.target.value)} style={{ width: 260 }} />
         </div>
       </div>
       {msg && <div className={`msg ${msg.t}`}>{msg.x}</div>}
@@ -783,6 +791,7 @@ function CapturasView({ cat, onCrearFactura }: { cat: Catalogos; onCrearFactura:
   const [convId, setConvId] = useState<string | null>(null);
   const [cv, setCv] = useState({ monto: "", fecha: "", comerciante: "", categoriaId: "", situacionFiscal: "EXENTO", liquidacionId: "", centroCostoId: "", numeroFactura: "" });
   const [msg, setMsg] = useState<{ t: "ok" | "err"; x: string } | null>(null);
+  const [q, setQ] = useState("");
 
   const cargar = () => api.capturas().then(setRows).catch(() => setRows([]));
   useEffect(() => { cargar(); api.listar().then(setLiqs).catch(() => {}); }, []);
@@ -810,13 +819,15 @@ function CapturasView({ cat, onCrearFactura }: { cat: Catalogos; onCrearFactura:
 
   return (
     <>
-      <div className="listbar"><h2>Capturas activas</h2><span className="caret">v</span></div>
+      <div className="listbar"><h2>Capturas activas</h2><span className="caret">v</span>
+        <div className="toolbar"><input placeholder="Buscar..." value={q} onChange={(e) => setQ(e.target.value)} style={{ width: 220 }} /></div>
+      </div>
       {msg && <div className={`msg ${msg.t}`}>{msg.x}</div>}
       <div className="grid">
         <table>
           <thead><tr><th>Name</th><th>Correo empleado</th><th>Estado</th><th>Clave</th><th></th></tr></thead>
           <tbody>
-            {rows.map((c, i) => {
+            {rows.filter((c) => coincideTexto(c, q)).map((c, i) => {
               const id = String(c["id"] ?? i);
               const estado = String(c["estado"] ?? "");
               const clave = claveDeCaptura(c);
@@ -1005,21 +1016,32 @@ function TarifasKmView() {
 
 function GenericList({ titulo, cargar, cols }: { titulo: string; cargar: () => Promise<Record<string, unknown>[]>; cols: string[]; }) {
   const [rows, setRows] = useState<Record<string, unknown>[]>([]);
+  const [q, setQ] = useState("");
   useEffect(() => { cargar().then(setRows).catch(() => setRows([])); }, [titulo]);
+  const visibles = rows.filter((r) => coincideTexto(r, q));
   return (
     <>
-      <div className="listbar"><h2>{titulo}</h2><span className="caret">v</span></div>
+      <div className="listbar"><h2>{titulo}</h2><span className="caret">v</span>
+        <div className="toolbar"><input placeholder="Buscar..." value={q} onChange={(e) => setQ(e.target.value)} style={{ width: 220 }} /></div>
+      </div>
       <div className="grid">
         <table>
           <thead><tr>{cols.map((c) => <th key={c}>{c}</th>)}</tr></thead>
           <tbody>
-            {rows.map((r, i) => (<tr key={i}>{cols.map((c) => <td key={c}>{cell(r[c])}</td>)}</tr>))}
-            {rows.length === 0 && <tr><td colSpan={cols.length}>Sin registros.</td></tr>}
+            {visibles.map((r, i) => (<tr key={i}>{cols.map((c) => <td key={c}>{cell(r[c])}</td>)}</tr>))}
+            {visibles.length === 0 && <tr><td colSpan={cols.length}>Sin registros.</td></tr>}
           </tbody>
         </table>
       </div>
     </>
   );
+}
+
+// Busqueda simple: true si el texto aparece en cualquier valor de la fila.
+function coincideTexto(row: unknown, q: string): boolean {
+  const s = q.trim().toLowerCase();
+  if (!s) return true;
+  try { return JSON.stringify(row ?? "").toLowerCase().includes(s); } catch { return true; }
 }
 
 function Field({ label, v }: { label: string; v?: string | number | null }) {
