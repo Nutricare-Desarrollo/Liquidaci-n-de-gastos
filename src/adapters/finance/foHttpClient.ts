@@ -70,6 +70,8 @@ export class FoHttpClient implements FinancePort {
         AdditionalInfo: l.additionalInfo ?? "",
       })),
     };
+    // Diagnostico: que metodo de pago mandamos por linea (categoria:metodo).
+    console.log(`[FO-REQ] payMethods -> ${requestObj.Lines.map((l) => `${l.CostType}:${l.PayMethod || "(vacio)"}`).join(", ")}`);
     // El servicio X++ recibe el request como string JSON (evita el bug de List<JObject>).
     const body = { _requestJson: JSON.stringify(requestObj) };
 
