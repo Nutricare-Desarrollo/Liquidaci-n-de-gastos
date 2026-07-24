@@ -30,6 +30,7 @@ export interface InformeParaPostear {
     costCenter?: string;
     departamento?: string;
     unidadNegocio?: string;
+    additionalInfo?: string;
   }>;
 }
 
@@ -74,6 +75,7 @@ export async function postearInforme(
     costCenter: g.costCenter,
     departamento: g.departamento,
     unidadNegocio: g.unidadNegocio,
+    additionalInfo: g.additionalInfo,
   }));
 
   const reporte: ReporteGastoFO = {

@@ -66,6 +66,7 @@ export interface LineaReporteFO {
   costCenter?: string; // dimension C (centro de costo) -> DefaultDimension
   departamento?: string; // dimension A
   unidadNegocio?: string; // dimension B
+  additionalInfo?: string; // informacion adicional -> TrvExpTrans.AdditionalInformation
 }
 
 export interface ReporteGastoFO {

@@ -57,6 +57,7 @@ export async function cargarInforme(db: Db, liquidacionId: string, usuarios?: Us
       costCenter: g["centroCostoId"] ? (String(ccPorId.get(String(g["centroCostoId"]))?.["operatingUnitNumber"] ?? "") || undefined) : undefined,
       departamento: g["centroCostoId"] ? (String(ccPorId.get(String(g["centroCostoId"]))?.["departamento"] ?? "") || undefined) : undefined,
       unidadNegocio: g["centroCostoId"] ? (String(ccPorId.get(String(g["centroCostoId"]))?.["unidadNegocio"] ?? "") || undefined) : undefined,
+      additionalInfo: g["informacionAdicional"] != null ? String(g["informacionAdicional"]) : undefined,
     })),
   };
 }

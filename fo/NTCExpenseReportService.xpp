@@ -28,6 +28,7 @@ public final class NTCExpenseReportLineContract
     str     costCenter;
     str     departamento;
     str     unidadNegocio;
+    str     additionalInfo;
 
     [DataMemberAttribute('CostType')]
     public str parmCostType(str _v = costType) { costType = _v; return costType; }
@@ -73,6 +74,9 @@ public final class NTCExpenseReportLineContract
 
     [DataMemberAttribute('UnidadNegocio')]
     public str parmUnidadNegocio(str _v = unidadNegocio) { unidadNegocio = _v; return unidadNegocio; }
+
+    [DataMemberAttribute('AdditionalInfo')]
+    public str parmAdditionalInfo(str _v = additionalInfo) { additionalInfo = _v; return additionalInfo; }
 }
 
 // ---------------------------------------------------------------------
@@ -296,6 +300,7 @@ public final class NTCExpenseReportService
                     trvExpTrans.ZoneCode      = line.parmZoneCode();     // KILOMETRAJE
                     trvExpTrans.KMOwnCar      = line.parmKMOwnCar();     // KILOMETRAJE (decimal)
                     trvExpTrans.DefaultDimension = NTCExpenseReportService::ntcDimDefault(line.parmDepartamento(), line.parmUnidadNegocio(), line.parmCostCenter()); // dimensiones A/B/C
+                    trvExpTrans.AdditionalInformation = line.parmAdditionalInfo();  // informacion adicional / justificacion
                     trvExpTrans.TaxIncluded   = NoYes::Yes;
                     trvExpTrans.insert();
                     numLineas++;

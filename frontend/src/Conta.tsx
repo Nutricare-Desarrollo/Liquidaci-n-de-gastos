@@ -138,12 +138,16 @@ function LiquidacionesList({ cat, onOpen, sesion }: { cat: Catalogos; onOpen: (i
       )}
       <div className="grid">
         <table>
-          <thead><tr><th>Name</th><th>Fecha de creacion</th><th>Correo empleado</th><th>Moneda</th><th>Estado</th><th>Proposito</th><th className="num">Monto</th><th>Reporte FO</th></tr></thead>
+          <thead><tr><th>Name</th><th>Empleado</th><th>Fecha de creacion</th><th>Correo empleado</th><th>Moneda</th><th>Centro costo</th><th>Estado</th><th>Proposito</th><th className="num">Monto</th><th>Reporte FO</th></tr></thead>
           <tbody>
             {[...rows].sort((a, b) => String(b.createdAt ?? "").localeCompare(String(a.createdAt ?? ""))).map((l) => (
               <tr key={l.id} onClick={() => onOpen(l.id)}>
-                <td className="pill-link">{l.name}</td><td>{fdate(l.createdAt)}</td><td>{l.correoEmpleado}</td>
-                <td>{l.moneda}</td><td><span className={`badge estado-${l.estado}`}>{l.estado}</span></td>
+                <td className="pill-link">{l.name}</td>
+                <td>{cat.usuarios.find((u) => (u.email ?? "").toLowerCase() === (l.correoEmpleado ?? "").toLowerCase())?.nombre ?? "-"}</td>
+                <td>{fdate(l.createdAt)}</td><td>{l.correoEmpleado}</td>
+                <td>{l.moneda}</td>
+                <td>{cat.centrosCosto.find((c) => c.id === l.centroCostoId)?.name ?? "-"}</td>
+                <td><span className={`badge estado-${l.estado}`}>{l.estado}</span></td>
                 <td>{propo(l.proposito)}</td><td className="num">{fmt(l.montoInforme)}</td><td>{l.numeroReporteFO ?? "-"}</td>
               </tr>
             ))}
@@ -172,6 +176,7 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
   const [sZona, setSZona] = useState("GAM"); const [sKm, setSKm] = useState("");
   const [sLitros, setSLitros] = useState(""); const [sTipoGas, setSTipoGas] = useState("");
   const [sFile, setSFile] = useState<File | null>(null);
+  const [sNumFactura, setSNumFactura] = useState("");
 
   const cargar = () => api.detalle(id).then(setLiq).catch(() => setMsg({ t: "err", x: "No se pudo cargar." }));
   const cargarFacturas = () => api.facturasSinCruzar().then(setFacturas).catch(() => {});
@@ -208,7 +213,7 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
     await accion(async () => {
       const r = await api.crearGastoSimplificado(id, {
         monto: Number(sMonto) || 0, fecha: sFecha, comerciante: sComer, categoriaId: catId,
-        situacionFiscal: sSit, centroCostoId: sCc || null,
+        situacionFiscal: sSit, centroCostoId: sCc || null, numeroFactura: sNumFactura || undefined,
         ...(esKmCat ? { zona: sZona, kilometros: Number(sKm) || 0, tipoComprobante: "KILOMETRAJE" } : {}),
         ...(esCombSel ? { litros: Number(sLitros), tipoGasolina: sTipoGas } : {}),
       });
@@ -218,7 +223,7 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
         await api.subirAdjunto(gid, { nombre: sFile.name, contenidoBase64, mimeType: sFile.type || "application/octet-stream" });
       }
     }, esKmCat ? "Gasto de kilometraje agregado." : "Gasto agregado.");
-    setSMonto(""); setSFecha(""); setSComer(""); setSCc(""); setCatId(""); setSKm(""); setSLitros(""); setSTipoGas(""); setSFile(null); setModo("");
+    setSMonto(""); setSFecha(""); setSComer(""); setSCc(""); setCatId(""); setSKm(""); setSLitros(""); setSTipoGas(""); setSFile(null); setSNumFactura(""); setModo("");
   }
   async function subirDoc() {
     if (!docFile) return;
@@ -358,6 +363,7 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
                 <select value={sSit} onChange={(e) => setSSit(e.target.value)}>
                   <option value="IVA">IVA</option><option value="EXENTO">EXENTO</option><option value="NO SUJETO">NO SUJETO</option>
                 </select></div>
+              <div className="field"><label>Numero de factura</label><input value={sNumFactura} onChange={(e) => setSNumFactura(e.target.value)} placeholder="Consecutivo / comprobante" /></div>
               <div className="field"><label>Centro de costo</label>
                 <select value={sCc} onChange={(e) => setSCc(e.target.value)}>
                   <option value="">(del informe)</option>
@@ -392,20 +398,24 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
 
         <div className="grid">
           <table>
-            <thead><tr><th>Fecha</th><th>Comerciante</th><th>Categoria</th><th>Tipo</th><th>Situacion</th><th className="num">Monto</th><th>Alerta</th></tr></thead>
+            <thead><tr><th>Fecha</th><th>Comerciante</th><th>Categoria</th><th>Centro costo</th><th>Tipo</th><th>Cruce</th><th>Nº factura</th><th>Justificacion</th><th>Situacion</th><th className="num">Monto</th><th>Alerta</th></tr></thead>
             <tbody>
               {(liq.gastos ?? []).map((g) => (
                 <tr key={g.id} onClick={() => onGasto(g.id)}>
                   <td>{fdate(g.fecha)}</td>
                   <td className="pill-link">{g.comerciante}{g.gastoOrigenId ? " (division)" : ""}</td>
                   <td>{g.categoria?.nombre ?? "-"}</td>
+                  <td>{cat.centrosCosto.find((c) => c.id === g.centroCostoId)?.name ?? "-"}</td>
                   <td>{tipoComp(g.tipoComprobante)}</td>
+                  <td>{g.facturaId ? <span className="badge estado-APROBADA">Cruzada</span> : <span className="badge">Manual</span>}</td>
+                  <td>{g.numeroFactura || "-"}</td>
+                  <td>{g.informacionAdicional || "-"}</td>
                   <td>{g.situacionFiscal}</td>
                   <td className="num">{fmt(g.montoTotal)} {g.moneda}</td>
                   <td>{g.excedeLimite ? <span className="alerta">EXCEDE</span> : "OK"}</td>
                 </tr>
               ))}
-              {(liq.gastos ?? []).length === 0 && <tr><td colSpan={7}>Sin gastos.</td></tr>}
+              {(liq.gastos ?? []).length === 0 && <tr><td colSpan={11}>Sin gastos.</td></tr>}
             </tbody>
           </table>
         </div>

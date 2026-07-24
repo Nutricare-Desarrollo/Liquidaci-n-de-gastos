@@ -67,6 +67,7 @@ export class FoHttpClient implements FinancePort {
         CostCenter: l.costCenter ?? "",
         Departamento: l.departamento ?? "",
         UnidadNegocio: l.unidadNegocio ?? "",
+        AdditionalInfo: l.additionalInfo ?? "",
       })),
     };
     // El servicio X++ recibe el request como string JSON (evita el bug de List<JObject>).
