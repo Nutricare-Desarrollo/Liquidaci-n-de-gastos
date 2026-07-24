@@ -27,7 +27,8 @@ export async function cargarInforme(db: Db, liquidacionId: string, usuarios?: Us
     personnelNumber = u?.personnelNumber ?? "";
   }
 
-  const metodoFallback = metodoPago(propositoDeClave(String(liq["proposito"])), String(liq["moneda"]) as Moneda);
+  // Metodo de pago determinístico por el propósito+moneda del informe (todas las lineas igual).
+  const metodoInforme = metodoPago(propositoDeClave(String(liq["proposito"])), String(liq["moneda"]) as Moneda);
 
   const gastos = (await db.gasto.findMany({
     where: { liquidacionId },
@@ -49,7 +50,7 @@ export async function cargarInforme(db: Db, liquidacionId: string, usuarios?: Us
       costType: String((g["categoria"] as Record<string, unknown> | undefined)?.["codigo"] ?? ""),
       amount: Number(g["montoTotal"]),
       currency: String(g["moneda"]) as Moneda,
-      payMethod: (String(g["metodoPago"] ?? "").trim() || metodoFallback) as MetodoPago,
+      payMethod: metodoInforme,
       transDate: (g["fecha"] as Date)?.toISOString?.() ?? String(g["fecha"]),
       description: String(g["comerciante"] ?? ""),
       taxGroup: situacionFromDb(g["situacionFiscal"] as "IVA" | "EXENTO" | "NO_SUJETO" | "SIN_DEFINIR"),

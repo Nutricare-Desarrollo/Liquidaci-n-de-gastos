@@ -90,7 +90,7 @@ export class FoHttpClient implements FinancePort {
       });
     } catch (e) {
       const msg = (e as Error).name === "AbortError"
-        ? `FO no respondio dentro de ${timeoutMs / 1000}s (timeout).`
+        ? `FO no respondio dentro de ${timeoutMs / 1000}s (timeout). Puede que el reporte SI se haya creado en FO; reintenta el posteo en un momento (es idempotente por ExternalId, no duplica).`
         : `No se pudo contactar a FO: ${(e as Error).message}`;
       return { success: false, message: msg };
     } finally {
