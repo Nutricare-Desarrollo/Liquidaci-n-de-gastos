@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { PROPOSITOS } from "./proposito.js";
+import { PROPOSITOS, labelProposito } from "./proposito.js";
 import { Combo } from "./Combo.js";
 import { api, fotoDemo, type Catalogos, type Liquidacion, type Sesion } from "./api.js";
 import { getFotoUrl } from "./auth.js";
@@ -14,6 +14,7 @@ export function MobileCaptura({ cat, sesion, selfApproval }: { cat: Catalogos; s
   const [empresa, setEmpresa] = useState("ntc");
   const [tipo, setTipo] = useState<"electronica" | "regimen">("electronica");
   const [nueva, setNueva] = useState(true);
+  const [subvista, setSubvista] = useState<"captura" | "mias">("captura");
   const [proposito, setProposito] = useState("TARJETA_CORPORATIVA");
   const [moneda, setMoneda] = useState("CRC");
   const [aprobadorId, setAprobadorId] = useState(cat.usuarios[1]?.id ?? cat.usuarios[0]?.id ?? "");
@@ -117,6 +118,25 @@ export function MobileCaptura({ cat, sesion, selfApproval }: { cat: Catalogos; s
             <div className="av">{fotoUrl ? <img src={fotoUrl} alt="" /> : iniciales}</div>
             <div><b>Hola, {empleado?.nombre ?? "empleado"}</b></div>
           </div>
+          <div style={{ display: "flex", gap: 6, margin: "8px 0" }}>
+            <button className="btn-block" style={{ margin: 0, background: subvista === "captura" ? "var(--brand)" : "#b9c4d0" }} onClick={() => setSubvista("captura")}>Nueva captura</button>
+            <button className="btn-block" style={{ margin: 0, background: subvista === "mias" ? "var(--brand)" : "#b9c4d0" }} onClick={() => { setSubvista("mias"); api.listar().then(setLiqs).catch(() => {}); }}>Mis liquidaciones</button>
+          </div>
+          {subvista === "mias" && (
+            <div style={{ marginTop: 6 }}>
+              {liqs.length === 0 && <p><small className="mono">Aun no tenes liquidaciones.</small></p>}
+              {liqs.map((l) => (
+                <div key={l.id} style={{ padding: "8px 0", borderBottom: "1px solid var(--line)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <b>{l.name}</b>
+                    <span className={`badge estado-${l.estado}`}>{l.estado}</span>
+                  </div>
+                  <small className="mono">{labelProposito(l.proposito)} &middot; {l.moneda} &middot; {Number(l.montoInforme ?? 0).toLocaleString("es-CR")} &middot; {l.createdAt ? new Date(l.createdAt).toLocaleDateString("es-CR") : ""}</small>
+                </div>
+              ))}
+            </div>
+          )}
+          {subvista === "captura" && (<>
           <label className="mini-label">Tipo de comprobante</label>
           <select value={tipo} onChange={(e) => setTipo(e.target.value as "electronica" | "regimen")}>
             <option value="electronica">Factura electronica (con clave)</option>
@@ -168,6 +188,7 @@ export function MobileCaptura({ cat, sesion, selfApproval }: { cat: Catalogos; s
             value={categoriaId} onChange={setCategoriaId} placeholder="-- elegir categoria --" />
           {msg && <div className={`msg ${msg.t}`}>{msg.x}</div>}
           <button className="btn-block" disabled={enviando} onClick={enviar}>{enviando && <span className="spinner" />}{enviando ? "Enviando..." : "Enviar comprobante"}</button>
+          </>)}
         </div>
         <div className="ph-foot">Pedi siempre la factura a nombre de Nutricare (cedula juridica).</div>
       </div>

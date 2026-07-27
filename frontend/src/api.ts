@@ -26,8 +26,8 @@ export class ApiError extends Error {
 }
 
 export interface Usuario { id: string; email: string; nombre?: string; personnelNumber?: string }
-export interface Categoria { id: string; codigo: string; nombre: string; taxItemGroup: string; empresa: string }
-export interface CentroCosto { id: string; operatingUnitNumber: string; name: string }
+export interface Categoria { id: string; codigo: string; nombre: string; taxItemGroup: string; empresa: string; activo?: boolean; expenseType?: string }
+export interface CentroCosto { id: string; operatingUnitNumber: string; name: string; activo?: boolean; departamento?: string | null; unidadNegocio?: string | null }
 export interface GrupoImpuesto { id: string; name: string }
 export interface Catalogos { categorias: Categoria[]; centrosCosto: CentroCosto[]; gruposImpuesto: GrupoImpuesto[]; usuarios: Usuario[] }
 
@@ -96,6 +96,10 @@ export const api = {
   actualizarReglaMonto: (id: string, b: Record<string, unknown>) => req<{ ok: boolean }>(`/reglas-monto/${id}`, { method: "PATCH", body: JSON.stringify(b) }),
   tarifasKm: () => req<TarifaKm[]>("/tarifas-km"),
   actualizarTarifaKm: (id: string, b: Record<string, unknown>) => req<{ ok: boolean }>(`/tarifas-km/${id}`, { method: "PATCH", body: JSON.stringify(b) }),
+  categoriasAdmin: () => req<Categoria[]>("/categorias"),
+  actualizarCategoria: (id: string, b: Record<string, unknown>) => req<{ ok: boolean }>(`/categorias/${id}`, { method: "PATCH", body: JSON.stringify(b) }),
+  centrosAdmin: () => req<CentroCosto[]>("/centros"),
+  actualizarCentro: (id: string, b: Record<string, unknown>) => req<{ ok: boolean }>(`/centros/${id}`, { method: "PATCH", body: JSON.stringify(b) }),
   reset: () => req<{ ok: boolean; facturasReseteadas: number }>("/admin/reset", { method: "POST" }),
 };
 

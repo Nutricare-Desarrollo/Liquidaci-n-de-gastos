@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { PROPOSITOS, labelProposito, categoriasPermitidas, esKilometraje, esAnticipos } from "./proposito.js";
 import { Combo } from "./Combo.js";
-import type { TarifaKm } from "./api.js";
+import type { TarifaKm, Categoria, CentroCosto } from "./api.js";
 import { api, type Catalogos, type Factura, type FacturaSinCruzar, type Gasto, type Liquidacion, type ReglaMonto, type Sesion } from "./api.js";
 import { UsuarioPicker } from "./UsuarioPicker.js";
 import { AsyncButton } from "./AsyncButton.js";
 import { BrandLogo } from "./BrandLogo.js";
 
-type Seccion = "liquidaciones" | "gastos" | "capturas" | "facturas" | "reglas" | "tarifas";
+type Seccion = "liquidaciones" | "gastos" | "capturas" | "facturas" | "reglas" | "tarifas" | "categorias" | "centros";
 
 function rolLabel(rol?: string): string { return rol === "admin" ? "Administrador" : rol === "conta" ? "Contabilidad" : "Usuario"; }
 
@@ -33,6 +33,8 @@ export function Admin({ cat, initialLiqId, demo, vista, setVista, sesion, puedeC
           <div className="grp">Configuracion</div>
           <a className={seccion === "reglas" ? "active" : ""} onClick={() => nav("reglas")}>Regla de montos</a>
           <a className={seccion === "tarifas" ? "active" : ""} onClick={() => nav("tarifas")}>Tarifas KM</a>
+          <a className={seccion === "categorias" ? "active" : ""} onClick={() => nav("categorias")}>Categorías</a>
+          <a className={seccion === "centros" ? "active" : ""} onClick={() => nav("centros")}>Centros de costo</a>
         </nav>
         <div className="side-foot">
           {sesion && <div className="user-box"><b>{sesion.nombre ?? sesion.email}</b><small className="mono">{rolLabel(sesion.rol)}</small></div>}
@@ -57,6 +59,8 @@ export function Admin({ cat, initialLiqId, demo, vista, setVista, sesion, puedeC
         {seccion === "facturas" && <FacturasView prefillClave={facturaPrefill} onConsumePrefill={() => setFacturaPrefill(null)} />}
         {seccion === "reglas" && <ReglasView cat={cat} />}
         {seccion === "tarifas" && <TarifasKmView />}
+        {seccion === "categorias" && <CategoriasView />}
+        {seccion === "centros" && <CentrosView />}
       </main>
     </div>
   );
@@ -1010,6 +1014,76 @@ function TarifasKmView() {
           </tbody>
         </table>
       </div>
+    </>
+  );
+}
+
+function CategoriasView() {
+  const [rows, setRows] = useState<Categoria[]>([]);
+  const [q, setQ] = useState("");
+  const [msg, setMsg] = useState<{ t: "ok" | "err"; x: string } | null>(null);
+  const cargar = () => api.categoriasAdmin().then(setRows).catch(() => setRows([]));
+  useEffect(() => { cargar(); }, []);
+  async function toggle(c: Categoria) {
+    try { await api.actualizarCategoria(c.id, { activo: !c.activo }); cargar(); }
+    catch (e) { setMsg({ t: "err", x: describe(e) }); }
+  }
+  const visibles = rows.filter((r) => coincideTexto(r, q));
+  return (
+    <>
+      <div className="listbar"><h2>Categorías</h2><span className="caret">v</span>
+        <div className="toolbar"><input placeholder="Buscar..." value={q} onChange={(e) => setQ(e.target.value)} style={{ width: 220 }} /></div>
+      </div>
+      <p><small className="mono">Las inactivas no aparecen en el selector de gastos. Se puede reactivar en cualquier momento.</small></p>
+      {msg && <div className={`msg ${msg.t}`}>{msg.x}</div>}
+      <div className="grid"><table>
+        <thead><tr><th>Código</th><th>Nombre</th><th>Empresa</th><th>Tipo</th><th>Activa</th><th></th></tr></thead>
+        <tbody>
+          {visibles.map((c) => (
+            <tr key={c.id}>
+              <td>{c.codigo}</td><td>{c.nombre}</td><td>{c.empresa?.toUpperCase()}</td><td>{c.expenseType ?? "-"}</td>
+              <td><span className={`badge estado-${c.activo ? "APROBADA" : "DEVUELTA"}`}>{c.activo ? "Sí" : "No"}</span></td>
+              <td><button className="ghost" onClick={() => toggle(c)}>{c.activo ? "Desactivar" : "Activar"}</button></td>
+            </tr>
+          ))}
+          {visibles.length === 0 && <tr><td colSpan={6}>Sin categorías.</td></tr>}
+        </tbody>
+      </table></div>
+    </>
+  );
+}
+
+function CentrosView() {
+  const [rows, setRows] = useState<CentroCosto[]>([]);
+  const [q, setQ] = useState("");
+  const [msg, setMsg] = useState<{ t: "ok" | "err"; x: string } | null>(null);
+  const cargar = () => api.centrosAdmin().then(setRows).catch(() => setRows([]));
+  useEffect(() => { cargar(); }, []);
+  async function toggle(c: CentroCosto) {
+    try { await api.actualizarCentro(c.id, { activo: !c.activo }); cargar(); }
+    catch (e) { setMsg({ t: "err", x: describe(e) }); }
+  }
+  const visibles = rows.filter((r) => coincideTexto(r, q));
+  return (
+    <>
+      <div className="listbar"><h2>Centros de costo</h2><span className="caret">v</span>
+        <div className="toolbar"><input placeholder="Buscar..." value={q} onChange={(e) => setQ(e.target.value)} style={{ width: 220 }} /></div>
+      </div>
+      <p><small className="mono">A (departamento) y B (unidad de negocio) se derivan del código. Los inactivos no aparecen en el selector.</small></p>
+      {msg && <div className={`msg ${msg.t}`}>{msg.x}</div>}
+      <div className="grid"><table>
+        <thead><tr><th>Código</th><th>Nombre</th><th>Depto (A)</th><th>Unidad (B)</th><th>Activo</th><th></th></tr></thead>
+        <tbody>
+          {visibles.map((c) => (
+            <tr key={c.id}>
+              <td>{c.operatingUnitNumber}</td><td>{c.name}</td><td>{c.departamento ?? "-"}</td><td>{c.unidadNegocio ?? "-"}</td>
+              <td><span className={`badge estado-${c.activo ? "APROBADA" : "DEVUELTA"}`}>{c.activo ? "Sí" : "No"}</span></td>
+              <td><button className="ghost" onClick={() => toggle(c)}>{c.activo ? "Desactivar" : "Activar"}</button></td>
+            </tr>
+          ))}
+          {visibles.length === 0 && <tr><td colSpan={6}>Sin centros.</td></tr>}
+        </tbody>
+      </table></div>
     </>
   );
 }

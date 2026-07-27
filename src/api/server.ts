@@ -370,6 +370,29 @@ export function buildServer(deps: Deps): FastifyInstance {
     await deps.db.tarifaKm.update({ where: { id: req.params.id }, data });
     return reply.send({ ok: true });
   });
+  // ---- Mantenimiento de CATEGORIAS (conta): todas + activar/desactivar/renombrar ----
+  app.get("/categorias", async (req, reply) => guard(req, reply, "conta") ? deps.db.categoria.findMany() : undefined);
+  app.patch<{ Params: { id: string }; Body: { activo?: boolean; nombre?: string } }>("/categorias/:id", async (req, reply) => {
+    if (!guard(req, reply, "conta")) return;
+    const b = req.body ?? {};
+    const data: Record<string, unknown> = {};
+    if (b.activo !== undefined) data["activo"] = b.activo;
+    if (b.nombre !== undefined) data["nombre"] = b.nombre;
+    await deps.db.categoria.update({ where: { id: req.params.id }, data });
+    return reply.send({ ok: true });
+  });
+
+  // ---- Mantenimiento de CENTROS DE COSTO (conta): todos + activar/desactivar ----
+  app.get("/centros", async (req, reply) => guard(req, reply, "conta") ? deps.db.centroCosto.findMany() : undefined);
+  app.patch<{ Params: { id: string }; Body: { activo?: boolean } }>("/centros/:id", async (req, reply) => {
+    if (!guard(req, reply, "conta")) return;
+    const b = req.body ?? {};
+    const data: Record<string, unknown> = {};
+    if (b.activo !== undefined) data["activo"] = b.activo;
+    await deps.db.centroCosto.update({ where: { id: req.params.id }, data });
+    return reply.send({ ok: true });
+  });
+
   app.get("/colas", async (req, reply) => guard(req, reply, "conta") ? liq.colas(deps.db) : undefined);
 
   // Reinicio de datos de prueba (para demos repetibles). Desactivar con ALLOW_RESET=0.
