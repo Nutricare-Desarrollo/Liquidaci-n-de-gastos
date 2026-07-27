@@ -84,7 +84,7 @@ export function App() {
           <MobileCaptura cat={cat} sesion={sesion} selfApproval={selfApproval} />
         </>
       ) : (
-        <Admin cat={cat} initialLiqId={initialLiq} demo={demo} vista={vista} setVista={setVista} sesion={sesion} puedeConta={puedeConta} onLogout={authEnabled ? doLogout : undefined} />
+        <Admin cat={cat} initialLiqId={initialLiq} demo={demo} vista={vista} setVista={setVista} sesion={sesion} puedeConta={puedeConta} onLogout={authEnabled ? doLogout : undefined} recargarCat={cargar} />
       )}
     </>
   );

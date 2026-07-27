@@ -11,7 +11,7 @@ type Seccion = "liquidaciones" | "gastos" | "capturas" | "facturas" | "reglas" |
 
 function rolLabel(rol?: string): string { return rol === "admin" ? "Administrador" : rol === "conta" ? "Contabilidad" : "Usuario"; }
 
-export function Admin({ cat, initialLiqId, demo, vista, setVista, sesion, puedeConta, onLogout }: { cat: Catalogos; initialLiqId?: string | null; demo?: boolean; vista?: string; setVista?: (v: "captura" | "conta") => void; sesion?: Sesion | null; puedeConta?: boolean; onLogout?: () => void }) {
+export function Admin({ cat, initialLiqId, demo, vista, setVista, sesion, puedeConta, onLogout, recargarCat }: { cat: Catalogos; initialLiqId?: string | null; demo?: boolean; vista?: string; setVista?: (v: "captura" | "conta") => void; sesion?: Sesion | null; puedeConta?: boolean; onLogout?: () => void; recargarCat?: () => void }) {
   const [seccion, setSeccion] = useState<Seccion>("liquidaciones");
   const [liqId, setLiqId] = useState<string | null>(initialLiqId ?? null);
   const [gastoId, setGastoId] = useState<string | null>(null);
@@ -59,8 +59,8 @@ export function Admin({ cat, initialLiqId, demo, vista, setVista, sesion, puedeC
         {seccion === "facturas" && <FacturasView prefillClave={facturaPrefill} onConsumePrefill={() => setFacturaPrefill(null)} />}
         {seccion === "reglas" && <ReglasView cat={cat} />}
         {seccion === "tarifas" && <TarifasKmView />}
-        {seccion === "categorias" && <CategoriasView />}
-        {seccion === "centros" && <CentrosView />}
+        {seccion === "categorias" && <CategoriasView recargarCat={recargarCat} />}
+        {seccion === "centros" && <CentrosView recargarCat={recargarCat} />}
       </main>
     </div>
   );
@@ -1018,14 +1018,14 @@ function TarifasKmView() {
   );
 }
 
-function CategoriasView() {
+function CategoriasView({ recargarCat }: { recargarCat?: () => void }) {
   const [rows, setRows] = useState<Categoria[]>([]);
   const [q, setQ] = useState("");
   const [msg, setMsg] = useState<{ t: "ok" | "err"; x: string } | null>(null);
   const cargar = () => api.categoriasAdmin().then(setRows).catch(() => setRows([]));
   useEffect(() => { cargar(); }, []);
   async function toggle(c: Categoria) {
-    try { await api.actualizarCategoria(c.id, { activo: !c.activo }); cargar(); }
+    try { await api.actualizarCategoria(c.id, { activo: !c.activo }); cargar(); recargarCat?.(); }
     catch (e) { setMsg({ t: "err", x: describe(e) }); }
   }
   const visibles = rows.filter((r) => coincideTexto(r, q));
@@ -1053,14 +1053,14 @@ function CategoriasView() {
   );
 }
 
-function CentrosView() {
+function CentrosView({ recargarCat }: { recargarCat?: () => void }) {
   const [rows, setRows] = useState<CentroCosto[]>([]);
   const [q, setQ] = useState("");
   const [msg, setMsg] = useState<{ t: "ok" | "err"; x: string } | null>(null);
   const cargar = () => api.centrosAdmin().then(setRows).catch(() => setRows([]));
   useEffect(() => { cargar(); }, []);
   async function toggle(c: CentroCosto) {
-    try { await api.actualizarCentro(c.id, { activo: !c.activo }); cargar(); }
+    try { await api.actualizarCentro(c.id, { activo: !c.activo }); cargar(); recargarCat?.(); }
     catch (e) { setMsg({ t: "err", x: describe(e) }); }
   }
   const visibles = rows.filter((r) => coincideTexto(r, q));
