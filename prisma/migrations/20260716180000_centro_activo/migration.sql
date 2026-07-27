@@ -1,0 +1,1 @@
+ALTER TABLE "CentroCosto" ADD COLUMN "activo" BOOLEAN NOT NULL DEFAULT true;

@@ -78,7 +78,7 @@ export function buildServer(deps: Deps): FastifyInstance {
 
   app.get("/catalogos", async () => ({
     categorias: await deps.db.categoria.findMany({ where: { activo: true } }),
-    centrosCosto: await deps.db.centroCosto.findMany(),
+    centrosCosto: await deps.db.centroCosto.findMany({ where: { activo: true } }),
     gruposImpuesto: await deps.db.grupoImpuesto.findMany(),
     usuarios: await deps.usuarios.listar(),
   }));

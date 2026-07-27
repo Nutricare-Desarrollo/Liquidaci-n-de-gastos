@@ -225,6 +225,7 @@ model CentroCosto {
   name                String
   departamento        String? // dimension A (A_Departamento)
   unidadNegocio       String? // dimension B (B_UnidaddeNegocio)
+  activo              Boolean       @default(true)
   liquidaciones       Liquidacion[]
   gastos              Gasto[]
 }
