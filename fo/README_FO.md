@@ -36,6 +36,48 @@ Agregá a tu modelo las clases de `NTCExpenseReportService.xpp`:
 
    (esta es exactamente la ruta por defecto de `FO_SERVICE_PATH`).
 
+### 3.b Agregar la operación `rejectExpenseReport` (re-posteo, punto 12)
+
+El re-posteo (crear informe nuevo + **rechazar el anterior**) usa un método nuevo de la
+**misma clase** `NTCExpenseReportService`. Solo hay que exponerlo como **segunda operación**
+del Service que ya existe (no se crea otro Service ni otro Service Group):
+
+1. **Build del modelo** primero, para que la clase compile con el método nuevo
+   `rejectExpenseReport` y el contrato `NTCExpenseReportRejectContract`
+   (ambos ya están en `NTCExpenseReportService.xpp`).
+2. En Visual Studio, abrí el elemento **Service** `NTCExpenseReportService` (AOT → *Services*,
+   o desde tu proyecto). En el diseñador, click derecho sobre **Service Operations →
+   New Service Operation**.
+3. En la operación nueva poné:
+   - **Name**: `rejectExpenseReport`
+   - **Method** (Method Name): `rejectExpenseReport`
+   - (Class queda como `NTCExpenseReportService`, igual que la operación existente.)
+4. Guardá. El **Service Group** `NTCExpenseReportServiceGroup` ya contiene el Service, así que
+   **no hay que tocarlo**; solo se agregó una operación al Service.
+5. **Rebuild** del proyecto/modelo. Si el endpoint no aparece de una, refrescá los metadatos del
+   servicio: en un dev box cloud-hosted, `iisreset` (o reiniciar el entorno) fuerza la recarga.
+6. El endpoint nuevo queda en:
+
+   ```
+   POST {FO_BASE_URL}/api/services/NTCExpenseReportServiceGroup/NTCExpenseReportService/rejectExpenseReport
+   ```
+
+   (ruta por defecto de `FO_REJECT_SERVICE_PATH`).
+
+**Notas**
+- El método es `public` (igual que `createExpenseReport`); **no** requiere `SysEntryPointAttribute`
+  si el `create` tampoco lo tenía.
+- Recibe `_requestJson` con `{ Company, ExternalId, ExpenseReportNumber }` (mismo estilo que el create).
+- Busca por `NTCExternalId` y, si no, por `ExpNumber`; **cancela** el informe anterior con
+  `TrvExpTable.ApprovalStatus = TrvAppStatus::Cancelled` para que no quede aprobado junto al nuevo.
+  (Valores del enum en *Data Types → Base Enums → TrvAppStatus*: Approved, Cancelled, Create,
+  Ledger, Matched, None, Pending, Ready, Returned.)
+
+### Cómo probar la operación
+- Con el `NTCExpenseReportTestJob` como referencia, o con cualquier cliente REST autenticado:
+  `POST .../rejectExpenseReport` con body `{ "_requestJson": "{\"Company\":\"NTC\",\"ExternalId\":\"<liqId>\",\"ExpenseReportNumber\":\"000123\"}" }`.
+- Respuesta esperada: `{ "Success": true, "ExpenseReportNumber": "000123", "Message": "... RECHAZADO." }`.
+
 ## 4. Autenticación (cuenta de servicio)
 
 El backend llama con **OAuth2 client_credentials**. Podés reutilizar el mismo registro de app

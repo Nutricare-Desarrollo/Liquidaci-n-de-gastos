@@ -134,6 +134,7 @@ describe("validaciones", () => {
 describe("posteo FO: anti-duplicado (pendiente del traspaso)", () => {
   const fakeFinance = {
     crearReporteGasto: async () => ({ success: true, message: "ok", expenseReportNumber: "EXP-1" }),
+    rechazarReporteGasto: async () => ({ success: true, message: "rechazado" }),
   };
   const base = {
     id: "LIQ-1",

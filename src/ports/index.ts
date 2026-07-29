@@ -85,6 +85,14 @@ export interface RespuestaFO {
   headerRecId?: number;
 }
 
+export interface RechazoReporteFO {
+  company: Empresa;
+  externalId: string; // ExternalId del informe a rechazar
+  expenseReportNumber?: string; // nº de reporte FO (fallback de busqueda)
+}
+
 export interface FinancePort {
   crearReporteGasto(reporte: ReporteGastoFO): Promise<RespuestaFO>;
+  // Item 12: marca RECHAZADO en FO el informe anterior al re-postear.
+  rechazarReporteGasto(rechazo: RechazoReporteFO): Promise<RespuestaFO>;
 }

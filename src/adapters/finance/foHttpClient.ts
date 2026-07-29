@@ -13,7 +13,7 @@
 //  postear la PRIMERA linea y avisa. Cuando el X++ soporte N lineas,
 //  solo cambia el payload; la interfaz FinancePort no cambia.
 // =====================================================================
-import type { FinancePort, ReporteGastoFO, RespuestaFO } from "../../ports/index.js";
+import type { FinancePort, ReporteGastoFO, RechazoReporteFO, RespuestaFO } from "../../ports/index.js";
 
 /** FO (FormJsonSerializer) espera fechas como "/Date(ms)/", no ISO. */
 function foDate(iso: string): string {
@@ -23,7 +23,8 @@ function foDate(iso: string): string {
 
 export interface FoHttpConfig {
   baseUrl: string; // p.ej. https://miorg.operations.dynamics.com
-  servicePath: string; // ruta del custom service que envuelve NTCExpenseReportService
+  servicePath: string; // ruta del custom service que envuelve NTCExpenseReportService.createExpenseReport
+  rejectServicePath?: string; // ruta de la operacion rejectExpenseReport (default: deriva de servicePath)
   getAccessToken: () => Promise<string>; // OAuth2 client_credentials (cuenta de servicio)
   fetchImpl?: typeof fetch;
   timeoutMs?: number; // corta la llamada si FO no responde (default 120s)
@@ -121,5 +122,47 @@ export class FoHttpClient implements FinancePort {
       expenseReportNumber: numero,
       headerRecId: data.HeaderRecId,
     };
+  }
+
+  // Item 12: marca RECHAZADO el informe anterior en FO (por ExternalId o nº de reporte).
+  async rechazarReporteGasto(rechazo: RechazoReporteFO): Promise<RespuestaFO> {
+    const doFetch = this.cfg.fetchImpl ?? fetch;
+    const token = await this.cfg.getAccessToken();
+    const path = this.cfg.rejectServicePath
+      ?? this.cfg.servicePath.replace(/createExpenseReport$/, "rejectExpenseReport");
+    const requestObj = {
+      Company: rechazo.company.toUpperCase(),
+      ExternalId: rechazo.externalId,
+      ExpenseReportNumber: rechazo.expenseReportNumber ?? "",
+    };
+    const body = { _requestJson: JSON.stringify(requestObj) };
+
+    const timeoutMs = this.cfg.timeoutMs ?? 120_000;
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    let res: Awaited<ReturnType<typeof doFetch>>;
+    try {
+      res = await doFetch(`${this.cfg.baseUrl}${path}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(body),
+        signal: ctrl.signal,
+      });
+    } catch (e) {
+      const msg = (e as Error).name === "AbortError"
+        ? `FO no respondio dentro de ${timeoutMs / 1000}s al rechazar el informe.`
+        : `No se pudo contactar a FO: ${(e as Error).message}`;
+      return { success: false, message: msg };
+    } finally {
+      clearTimeout(timer);
+    }
+
+    const raw = await res.text().catch(() => "");
+    console.log(`[FO-REJECT] status=${res.status} body=${raw.slice(0, 1000)}`);
+    if (!res.ok) return { success: false, message: `FO respondio ${res.status}: ${raw.slice(0, 500)}` };
+    let data: { Success?: boolean; Message?: string; ExpenseReportNumber?: string } = {};
+    try { data = raw ? JSON.parse(raw) : {}; } catch { /* no-JSON */ }
+    if (!data.Success) return { success: false, message: data.Message || `Respuesta inesperada de FO: ${raw.slice(0, 500)}` };
+    return { success: true, message: data.Message ?? "", expenseReportNumber: data.ExpenseReportNumber };
   }
 }

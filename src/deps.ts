@@ -66,7 +66,7 @@ export function buildDeps(): Deps {
 
   // Finance (D365 FO) - se deja de ultimo
   const finance: FinancePort = (tokens && config.fo.baseUrl && config.fo.scope)
-    ? (modos.push("fo=real"), new FoHttpClient({ baseUrl: config.fo.baseUrl, servicePath: config.fo.servicePath, getAccessToken: () => tokens.getToken(config.fo.scope), timeoutMs: config.fo.timeoutMs }))
+    ? (modos.push("fo=real"), new FoHttpClient({ baseUrl: config.fo.baseUrl, servicePath: config.fo.servicePath, rejectServicePath: config.fo.rejectServicePath, getAccessToken: () => tokens.getToken(config.fo.scope), timeoutMs: config.fo.timeoutMs }))
     : (modos.push("fo=FAKE"), new FakeFinance());
 
   const auth: AuthPort = config.auth.enabled && config.auth.tenantId && config.auth.apiAudience

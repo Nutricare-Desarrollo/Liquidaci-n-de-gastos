@@ -35,6 +35,10 @@ export function MobileCaptura({ cat, sesion, selfApproval }: { cat: Catalogos; s
   const cats = cat.categorias.filter((c) => c.empresa === empresa);
   const aprobadores = selfApproval ? cat.usuarios : cat.usuarios.filter((u) => u.id !== empleado?.id);
   useEffect(() => { if (aprobadorId === empleado?.id || !aprobadores.some((u) => u.id === aprobadorId)) setAprobadorId(aprobadores[0]?.id ?? ""); }, [empleado?.id]);
+  useEffect(() => {
+    const validos = cat.centrosCosto.filter((c) => !c.empresa || c.empresa === empresa);
+    if (!validos.some((c) => c.id === centroCostoId)) setCentroCostoId(validos[0]?.id ?? "");
+  }, [empresa]);
 
   async function enviar() {
     setMsg(null);
@@ -171,7 +175,7 @@ export function MobileCaptura({ cat, sesion, selfApproval }: { cat: Catalogos; s
               <UsuarioPicker usuarios={aprobadores} value={aprobadorId} onChange={setAprobadorId} />
               <label className="mini-label">Selecciona el centro de costo</label>
               <select value={centroCostoId} onChange={(e) => setCentroCostoId(e.target.value)}>
-                {cat.centrosCosto.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                {cat.centrosCosto.filter((c) => !c.empresa || c.empresa === empresa).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </>
           ) : (
@@ -179,7 +183,7 @@ export function MobileCaptura({ cat, sesion, selfApproval }: { cat: Catalogos; s
               <label className="mini-label">Liquidacion existente</label>
               <select value={liqExistente} onChange={(e) => setLiqExistente(e.target.value)}>
                 <option value="">-- elegir --</option>
-                {liqs.map((l) => <option key={l.id} value={l.id}>{l.name} ({l.moneda} - {l.estado})</option>)}
+                {liqs.filter((l) => ["BORRADOR", "DEVUELTA"].includes(l.estado)).map((l) => <option key={l.id} value={l.id}>{l.name} ({l.moneda} - {l.estado})</option>)}
               </select>
             </>
           )}

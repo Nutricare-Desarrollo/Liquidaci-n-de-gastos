@@ -11,6 +11,11 @@ export interface GastoValidable {
   // En divisiones y regimen simplificado no se exigen litros/tipo (el dato
   // de combustible vive en el gasto original / no aplica sin factura).
   omitirCombustible?: boolean;
+  // Obligatorios (nº factura + adjunto). Solo se exigen al enviar el informe.
+  exigirObligatorios?: boolean;
+  proposito?: string | null;
+  tieneAdjunto?: boolean;
+  numeroFactura?: string | null;
 }
 
 export function validarGasto(g: GastoValidable): string[] {
@@ -24,6 +29,19 @@ export function validarGasto(g: GastoValidable): string[] {
 
   if (g.excedeLimite && !(g.informacionAdicional ?? "").trim()) {
     errores.push("Excede limite sin informacion adicional (justificacion).");
+  }
+
+  // Nº de factura + adjunto: obligatorios en todas las categorias, EXCEPTO:
+  //  - Anticipos: ninguno obligatorio.
+  //  - Kilometraje: solo el adjunto (no lleva nº de factura).
+  if (g.exigirObligatorios) {
+    const esAnticipo = g.proposito === "ANTICIPOS" || g.categoriaCodigo === "Anticipo_Empleados";
+    const esKilometraje = g.proposito === "KILOMETRAJE";
+    if (!esAnticipo) {
+      if (!g.tieneAdjunto) errores.push("Falta el adjunto (comprobante) del gasto.");
+      if (!esKilometraje && !(g.numeroFactura ?? "").trim())
+        errores.push("Falta el numero de factura del gasto.");
+    }
   }
 
   return errores;

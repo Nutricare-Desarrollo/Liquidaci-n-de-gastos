@@ -272,6 +272,24 @@ export function buildServer(deps: Deps): FastifyInstance {
     const r = await liq.aprobarConta(deps.db, req.params.id, deps.finance, deps.usuarios);
     return r.ok ? reply.send(r) : reply.code(422).send(r);
   });
+  // Reconciliacion manual del reporte FO tras un timeout (item 13).
+  app.post<{ Params: { id: string }; Body: { numeroReporteFO?: string } }>("/liquidaciones/:id/reconciliar-fo", async (req, reply) => {
+    if (!guard(req, reply, "conta")) return;
+    const r = await liq.reconciliarPosteo(deps.db, req.params.id, req.body?.numeroReporteFO ?? "");
+    return r.ok ? reply.send(r) : reply.code(422).send(r);
+  });
+  // Clonar una liquidacion + gastos (solo info, item 5).
+  app.post<{ Params: { id: string } }>("/liquidaciones/:id/clonar", async (req, reply) => {
+    if (!guard(req, reply, "conta")) return;
+    const r = await liq.clonarLiquidacion(deps.db, req.params.id);
+    return r.ok ? reply.code(201).send(r) : reply.code(422).send(r);
+  });
+  // Re-postear a FO: informe nuevo + rechazo del anterior (item 12).
+  app.post<{ Params: { id: string } }>("/liquidaciones/:id/repostear", async (req, reply) => {
+    if (!guard(req, reply, "conta")) return;
+    const r = await liq.repostearInforme(deps.db, req.params.id, deps.finance, deps.usuarios);
+    return r.ok ? reply.send(r) : reply.code(422).send(r);
+  });
 
   // Crear gasto manual desde una factura no cruzada.
   app.post<{ Params: { id: string }; Body: { facturaId?: string; categoriaId?: string } }>("/liquidaciones/:id/gastos", async (req, reply) => {
@@ -307,7 +325,51 @@ export function buildServer(deps: Deps): FastifyInstance {
     return r.ok ? reply.code(201).send(r) : reply.code(422).send(r);
   });
 
-  app.patch<{ Params: { id: string }; Body: GastoPatch }>("/gastos/:id", async (req) => liq.actualizarGasto(deps.db, req.params.id, req.body ?? {}));
+  app.patch<{ Params: { id: string }; Body: GastoPatch }>("/gastos/:id", async (req, reply) => {
+    // Permisos de edicion de gasto (incluye montos):
+    //  - Contabilidad/admin: siempre.
+    //  - Estandar: solo su propia liquidacion y en estado BORRADOR o DEVUELTA.
+    const rol = req.sesion?.rol ?? "estandar";
+    if (rol !== "conta" && rol !== "admin") {
+      const g = (await deps.db.gasto.findUnique({ where: { id: req.params.id } })) as Record<string, unknown> | null;
+      if (!g) return reply.code(404).send({ error: "El gasto no existe." });
+      const l = (await deps.db.liquidacion.findUnique({ where: { id: String(g["liquidacionId"]) } })) as Record<string, unknown> | null;
+      const esPropia = l && String(l["empleadoId"] ?? "") === req.sesion?.id;
+      const editable = l && ["BORRADOR", "DEVUELTA"].includes(String(l["estado"]));
+      if (!esPropia || !editable) return reply.code(403).send({ error: "Solo contabilidad puede editar, o el dueño mientras la liquidacion esta en borrador/devuelta." });
+    }
+    return liq.actualizarGasto(deps.db, req.params.id, req.body ?? {});
+  });
+
+  // Permiso para desligar/asociar: conta/admin siempre; estandar solo su propia liquidacion editable.
+  const puedeGestionarLiq = async (req: FastifyRequest, liqId: string | null): Promise<boolean> => {
+    const rol = req.sesion?.rol ?? "estandar";
+    if (rol === "conta" || rol === "admin") return true;
+    if (!liqId) return false;
+    const l = (await deps.db.liquidacion.findUnique({ where: { id: liqId } })) as Record<string, unknown> | null;
+    return !!l && String(l["empleadoId"] ?? "") === req.sesion?.id && ["BORRADOR", "DEVUELTA"].includes(String(l["estado"]));
+  };
+
+  // Desligar un gasto de su liquidacion (item 8) -> queda LIBRE.
+  app.post<{ Params: { id: string } }>("/gastos/:id/desligar", async (req, reply) => {
+    const g = (await deps.db.gasto.findUnique({ where: { id: req.params.id } })) as Record<string, unknown> | null;
+    if (!g) return reply.code(404).send({ error: "El gasto no existe." });
+    if (!(await puedeGestionarLiq(req, (g["liquidacionId"] as string | null) ?? null)))
+      return reply.code(403).send({ error: "Solo contabilidad, o el dueño mientras la liquidacion esta en borrador/devuelta." });
+    const r = await liq.desligarGasto(deps.db, req.params.id);
+    return r.ok ? reply.send(r) : reply.code(422).send(r);
+  });
+  // Asociar un gasto LIBRE a una liquidacion (item 8).
+  app.post<{ Params: { id: string }; Body: { liquidacionId?: string } }>("/gastos/:id/asociar", async (req, reply) => {
+    const liqId = req.body?.liquidacionId;
+    if (!liqId) return reply.code(400).send({ error: "Falta liquidacionId." });
+    if (!(await puedeGestionarLiq(req, liqId)))
+      return reply.code(403).send({ error: "Solo contabilidad, o el dueño mientras la liquidacion esta en borrador/devuelta." });
+    const r = await liq.asociarGasto(deps.db, req.params.id, liqId);
+    return r.ok ? reply.send(r) : reply.code(422).send(r);
+  });
+  // Listado de gastos libres (para reasignar) — conta.
+  app.get("/gastos/libres", async (req, reply) => guard(req, reply, "conta") ? liq.listarGastosLibres(deps.db) : undefined);
 
   // Adjuntar imagen/PDF a un gasto (para casos sin PDF de Hacienda, o el PDF del correo).
   app.post<{ Params: { id: string }; Body: { nombre?: string; contenidoBase64?: string; mimeType?: string } }>("/liquidaciones/:id/adjuntos", async (req, reply) => {
@@ -384,11 +446,12 @@ export function buildServer(deps: Deps): FastifyInstance {
 
   // ---- Mantenimiento de CENTROS DE COSTO (conta): todos + activar/desactivar ----
   app.get("/centros", async (req, reply) => guard(req, reply, "conta") ? deps.db.centroCosto.findMany() : undefined);
-  app.patch<{ Params: { id: string }; Body: { activo?: boolean } }>("/centros/:id", async (req, reply) => {
+  app.patch<{ Params: { id: string }; Body: { activo?: boolean; empresa?: string | null } }>("/centros/:id", async (req, reply) => {
     if (!guard(req, reply, "conta")) return;
     const b = req.body ?? {};
     const data: Record<string, unknown> = {};
     if (b.activo !== undefined) data["activo"] = b.activo;
+    if (b.empresa !== undefined) data["empresa"] = b.empresa === "" ? null : b.empresa; // "" = ambas (null)
     await deps.db.centroCosto.update({ where: { id: req.params.id }, data });
     return reply.send({ ok: true });
   });
@@ -444,5 +507,5 @@ export function buildServer(deps: Deps): FastifyInstance {
 
 interface CrearCapturaBody { correoEmpleado: string; imagenBase64: string; mimeType?: string; categoriaId?: string; liquidacionId?: string; esRegimen?: boolean; }
 interface CrearLiqBody { empleadoId: string; correoEmpleado?: string; empresa: string; proposito: string; moneda: string; centroCostoId?: string; aprobadorId?: string; }
-interface GastoPatch { centroCostoId?: string | null; grupoImpuesto?: string; informacionAdicional?: string; litros?: number | null; tipoGasolina?: string | null; categoriaId?: string; numeroFactura?: string; zona?: string | null; kilometros?: number | null; }
+interface GastoPatch { centroCostoId?: string | null; grupoImpuesto?: string; informacionAdicional?: string; litros?: number | null; tipoGasolina?: string | null; categoriaId?: string; numeroFactura?: string; zona?: string | null; kilometros?: number | null; montoTotal?: number; }
 interface GastoSimpBody { monto?: number; fecha?: string; comerciante?: string; categoriaId?: string; situacionFiscal?: SituacionFiscal; centroCostoId?: string | null; numeroFactura?: string; zona?: string; kilometros?: number; tipoComprobante?: string; litros?: number; tipoGasolina?: string; }

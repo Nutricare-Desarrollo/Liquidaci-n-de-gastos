@@ -27,7 +27,7 @@ export class ApiError extends Error {
 
 export interface Usuario { id: string; email: string; nombre?: string; personnelNumber?: string }
 export interface Categoria { id: string; codigo: string; nombre: string; taxItemGroup: string; empresa: string; activo?: boolean; expenseType?: string }
-export interface CentroCosto { id: string; operatingUnitNumber: string; name: string; activo?: boolean; departamento?: string | null; unidadNegocio?: string | null }
+export interface CentroCosto { id: string; operatingUnitNumber: string; name: string; activo?: boolean; departamento?: string | null; unidadNegocio?: string | null; empresa?: string | null }
 export interface GrupoImpuesto { id: string; name: string }
 export interface Catalogos { categorias: Categoria[]; centrosCosto: CentroCosto[]; gruposImpuesto: GrupoImpuesto[]; usuarios: Usuario[] }
 
@@ -37,6 +37,7 @@ export interface Gasto {
   grupoImpuesto: string; comerciante?: string; numeroFactura?: string | null; centroCostoId?: string | null; facturaId?: string | null;
   excedeLimite?: boolean; alerta?: string | null; informacionAdicional?: string | null;
   fecha?: string; urlPdf?: string | null; tipoComprobante?: string; gastoOrigenId?: string | null;
+  origen?: string | null; estadoGasto?: string; liquidacionId?: string | null;
   adjuntos?: Array<{ nombre: string; url: string; tipo: string }>;
   categoria?: Categoria | null;
   factura?: Factura | null;
@@ -78,6 +79,12 @@ export const api = {
   aprobar: (id: string, comentario?: string) => req<{ ok: boolean }>(`/liquidaciones/${id}/aprobar`, { method: "POST", body: JSON.stringify({ comentario }) }),
   devolver: (id: string, comentario: string) => req<{ ok: boolean }>(`/liquidaciones/${id}/devolver`, { method: "POST", body: JSON.stringify({ comentario }) }),
   aprobarConta: (id: string) => req<{ ok: boolean; mensaje: string; numeroReporteFO?: string }>(`/liquidaciones/${id}/aprobar-conta`, { method: "POST" }),
+  reconciliarFO: (id: string, numeroReporteFO: string) => req<{ ok: boolean; mensaje: string; numeroReporteFO?: string }>(`/liquidaciones/${id}/reconciliar-fo`, { method: "POST", body: JSON.stringify({ numeroReporteFO }) }),
+  clonarLiquidacion: (id: string) => req<{ ok: boolean; error?: string; id?: string; name?: string }>(`/liquidaciones/${id}/clonar`, { method: "POST" }),
+  repostear: (id: string) => req<{ ok: boolean; mensaje: string; numeroReporteFO?: string }>(`/liquidaciones/${id}/repostear`, { method: "POST" }),
+  desligarGasto: (id: string) => req<{ ok: boolean; error?: string }>(`/gastos/${id}/desligar`, { method: "POST" }),
+  asociarGasto: (id: string, liquidacionId: string) => req<{ ok: boolean; error?: string }>(`/gastos/${id}/asociar`, { method: "POST", body: JSON.stringify({ liquidacionId }) }),
+  gastosLibres: () => req<Gasto[]>("/gastos/libres"),
   crearGastoManual: (liqId: string, facturaId: string, categoriaId: string) => req<{ ok: boolean }>(`/liquidaciones/${liqId}/gastos`, { method: "POST", body: JSON.stringify({ facturaId, categoriaId }) }),
   crearGastoSimplificado: (liqId: string, b: Record<string, unknown>) => req<{ ok: boolean }>(`/liquidaciones/${liqId}/gastos-simplificado`, { method: "POST", body: JSON.stringify(b) }),
   dividirGasto: (gastoId: string, b: Record<string, unknown>) => req<{ ok: boolean }>(`/gastos/${gastoId}/dividir`, { method: "POST", body: JSON.stringify(b) }),

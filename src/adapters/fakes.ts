@@ -2,7 +2,7 @@
 //  Adapters FALSOS para modo demo. Permiten correr todo el flujo sin
 //  Azure ni Dynamics. La conexion real (FO) se cablea al final.
 // =====================================================================
-import type { AuthPort, FinancePort, NotificacionPort, OcrPort, ReporteGastoFO, RespuestaFO, StoragePort } from "../ports/index.js";
+import type { AuthPort, FinancePort, NotificacionPort, OcrPort, ReporteGastoFO, RechazoReporteFO, RespuestaFO, StoragePort } from "../ports/index.js";
 
 // OCR falso: "lee" el contenido del archivo como texto. En demo, la foto
 // enviada es base64 de un texto que incluye la clave de 50 digitos, asi
@@ -25,6 +25,7 @@ export class FakeStorage implements StoragePort {
 export class FakeFinance implements FinancePort {
   private n = 1000;
   public recibidos: ReporteGastoFO[] = [];
+  public rechazados: RechazoReporteFO[] = [];
   async crearReporteGasto(reporte: ReporteGastoFO): Promise<RespuestaFO> {
     this.recibidos.push(reporte);
     this.n++;
@@ -34,6 +35,10 @@ export class FakeFinance implements FinancePort {
       expenseReportNumber: `EXP-DEMO-${this.n}`,
       headerRecId: this.n,
     };
+  }
+  async rechazarReporteGasto(rechazo: RechazoReporteFO): Promise<RespuestaFO> {
+    this.rechazados.push(rechazo);
+    return { success: true, message: `[DEMO] Informe ${rechazo.externalId} marcado RECHAZADO (sin Dynamics).` };
   }
 }
 

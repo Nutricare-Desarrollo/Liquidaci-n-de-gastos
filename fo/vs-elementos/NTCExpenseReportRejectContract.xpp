@@ -1,0 +1,16 @@
+[DataContractAttribute]
+public final class NTCExpenseReportRejectContract
+{
+    str company;
+    str externalId;
+    str expenseReportNumber;
+
+    [DataMemberAttribute('Company')]
+    public str parmCompany(str _v = company) { company = _v; return company; }
+
+    [DataMemberAttribute('ExternalId')]
+    public str parmExternalId(str _v = externalId) { externalId = _v; return externalId; }
+
+    [DataMemberAttribute('ExpenseReportNumber')]
+    public str parmExpenseReportNumber(str _v = expenseReportNumber) { expenseReportNumber = _v; return expenseReportNumber; }
+}

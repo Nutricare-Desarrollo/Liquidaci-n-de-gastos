@@ -62,6 +62,11 @@ enum EstadoLiquidacion {
   ERROR_POSTEO
 }
 
+enum EstadoGasto {
+  ASOCIADO
+  LIBRE
+}
+
 enum EstadoCaptura {
   PENDIENTE_OCR
   PENDIENTE_CRUCE
@@ -129,6 +134,7 @@ model Factura {
   cantidad               Decimal?        @db.Decimal(18, 5) // = litros en combustible
   detalle                String?
   urlPdf                 String?
+  origen                 String?         @default("XML") // XML (ingesta) | MANUAL
   estado                 EstadoFactura   @default(SIN_CAPTURA)
   capturas               Captura[]
   gastos                 Gasto[]
@@ -152,6 +158,7 @@ model Liquidacion {
   estado         EstadoLiquidacion @default(BORRADOR)
   montoInforme   Decimal           @default(0) @db.Decimal(18, 5)
   numeroReporteFO String? // se llena al postear — clave anti-duplicado
+  versionFO       Int      @default(1) // version del informe FO (re-posteo: v2, v3...) para el ExternalId
   comentarioAprobacion String?
   comentarioConta      String?
   capturas       Captura[]
@@ -167,8 +174,9 @@ model Liquidacion {
 model Gasto {
   id              String          @id @default(cuid())
   name            String          @unique // GAS-xxxxx
-  liquidacion     Liquidacion     @relation(fields: [liquidacionId], references: [id])
-  liquidacionId   String
+  liquidacion     Liquidacion?    @relation(fields: [liquidacionId], references: [id])
+  liquidacionId   String?
+  estadoGasto     EstadoGasto     @default(ASOCIADO) // ASOCIADO a una liquidacion / LIBRE (desligado)
   factura         Factura?         @relation(fields: [facturaId], references: [id])
   facturaId       String?
   capturaId       String?
@@ -179,6 +187,7 @@ model Gasto {
   categoriaId     String
   comerciante     String? // heredado de factura
   numeroFactura   String? // consecutivo de la factura (o nro. del comprobante de regimen)
+  origen          String?         @default("MANUAL") // XML (heredado de factura) | MANUAL
   centroCosto     CentroCosto?    @relation(fields: [centroCostoId], references: [id])
   centroCostoId   String?
   metodoPago      String // calculado
@@ -225,6 +234,7 @@ model CentroCosto {
   name                String
   departamento        String? // dimension A (A_Departamento)
   unidadNegocio       String? // dimension B (B_UnidaddeNegocio)
+  empresa             Empresa? // NTC / FEH — null = disponible para ambas
   activo              Boolean       @default(true)
   liquidaciones       Liquidacion[]
   gastos              Gasto[]

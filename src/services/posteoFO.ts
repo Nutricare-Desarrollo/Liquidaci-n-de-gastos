@@ -9,6 +9,7 @@ import type { Empresa, MetodoPago, Moneda, SituacionFiscal } from "../domain/typ
 
 export interface InformeParaPostear {
   id: string;
+  externalId?: string; // ExternalId a usar (default = id). Re-posteo: id#v2, id#v3...
   numeroReporteFO: string | null; // si ya tiene -> ya se posteo
   empresa: Empresa;
   personnelNumber: string; // NTC-xxxx
@@ -83,7 +84,7 @@ export async function postearInforme(
     personnelNumber: informe.personnelNumber,
     purpose: informe.purpose,
     description: informe.descripcion,
-    externalId: informe.id,
+    externalId: informe.externalId ?? informe.id,
     lineas,
   };
 

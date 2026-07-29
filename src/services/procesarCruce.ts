@@ -81,6 +81,7 @@ export async function crearGastoDesdeFactura(db: Db, opts: {
       montoTotal: g.montoTotal, moneda: monedaToDb(g.moneda), fecha: new Date(g.fecha),
       categoriaId, comerciante: g.comerciante, centroCostoId: g.centroCostoId,
       numeroFactura: String(factura["consecutivo"] ?? ""),
+      origen: (factura["origen"] as string | null) ?? "XML", // hereda el origen de la factura
       metodoPago: g.metodoPago, situacionFiscal: situacionToDb(g.situacionFiscal),
       grupoImpuesto: g.grupoImpuesto, litros: g.litros,
       tipoGasolina: g.tipoGasolina !== null ? TIPO_GAS_A_DB[g.tipoGasolina as TipoGasolina] : null,

@@ -54,6 +54,7 @@ export async function dividirGasto(db: Db, gastoId: string, opts: {
       categoriaId, comerciante: orig["comerciante"],
       centroCostoId: opts.centroCostoId ?? ((orig["centroCostoId"] as string | null) ?? null),
       numeroFactura: (orig["numeroFactura"] as string | null) ?? null,
+      origen: (orig["origen"] as string | null) ?? "MANUAL", // hereda del gasto original
       informacionAdicional: (orig["informacionAdicional"] as string | null) ?? null,
       metodoPago: orig["metodoPago"], situacionFiscal: orig["situacionFiscal"],
       grupoImpuesto: cat ? String(cat["taxItemGroup"]) : orig["grupoImpuesto"],
@@ -119,6 +120,7 @@ export async function crearGastoSimplificado(db: Db, liquidacionId: string, opts
       liquidacionId, facturaId: null, capturaId: opts.capturaId ?? null,
       adjuntos: opts.adjunto ? [opts.adjunto] : undefined,
       numeroFactura: opts.numeroFactura ?? null,
+      origen: "MANUAL",
       montoTotal: montoFinal, moneda: monedaToDb(moneda), fecha: new Date(opts.fecha),
       categoriaId: opts.categoriaId, comerciante: opts.comerciante,
       centroCostoId: opts.centroCostoId ?? (liq["centroCostoId"] as string | null) ?? null,

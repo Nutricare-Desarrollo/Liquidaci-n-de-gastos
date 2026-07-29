@@ -15,9 +15,12 @@ export interface FacturaManualInput {
 }
 
 export async function crearFacturaManual(db: Db, d: FacturaManualInput): Promise<{ ok: boolean; error?: string }> {
-  const clave = (d.clave ?? "").replace(/\s/g, "");
-  if (!clave) return { ok: false, error: "La clave es obligatoria." };
+  const consecutivo = (d.consecutivo ?? "").trim();
+  if (!consecutivo) return { ok: false, error: "El consecutivo (nº de factura) es obligatorio." };
   if (!(Number(d.totalComprobante) > 0)) return { ok: false, error: "El total debe ser mayor que 0." };
+  // La clave es opcional; si no viene, se genera una placeholder unica (la clave es @unique).
+  let clave = (d.clave ?? "").replace(/\s/g, "");
+  if (!clave) clave = `MANUAL-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
   const existe = (await db.factura.findUnique({ where: { clave } })) as Rec | null;
   if (existe) return { ok: false, error: "Ya existe una factura con esa clave." };
   await db.factura.create({
@@ -29,7 +32,7 @@ export async function crearFacturaManual(db: Db, d: FacturaManualInput): Promise
       totalImpuesto: Number(d.totalImpuesto ?? 0), totalGravado: Number(d.totalGravado ?? 0),
       totalExento: Number(d.totalExento ?? 0), totalNoSujeto: Number(d.totalNoSujeto ?? 0),
       moneda: monedaToDb(d.moneda), situacionFiscal: situacionToDb(d.situacionFiscal),
-      cantidad: d.cantidad ?? 0, detalle: d.detalle ?? "", urlPdf: null, estado: "SIN_CAPTURA",
+      cantidad: d.cantidad ?? 0, detalle: d.detalle ?? "", urlPdf: null, origen: "MANUAL", estado: "SIN_CAPTURA",
     },
   });
   return { ok: true };
