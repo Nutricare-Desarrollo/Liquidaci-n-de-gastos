@@ -95,6 +95,22 @@ export async function clonarLiquidacion(db: Db, id: string): Promise<{ ok: boole
   return { ok: true, id: String(nueva["id"]), name: String(nueva["name"]) };
 }
 
+// Eliminar un gasto: borra sus divisiones, recalcula el total de la liquidacion
+// y libera la factura asociada (vuelve a disponible para re-cruzar).
+export async function eliminarGasto(db: Db, id: string): Promise<{ ok: boolean; error?: string }> {
+  const g = (await db.gasto.findUnique({ where: { id } })) as Rec | null;
+  if (!g) return { ok: false, error: "El gasto no existe." };
+  const liqId = g["liquidacionId"] as string | null;
+  const facturaId = g["facturaId"] as string | null;
+  // Borrar divisiones (hijas) primero para no romper la relacion.
+  await db.gasto.deleteMany({ where: { gastoOrigenId: id } });
+  const r = await db.gasto.deleteMany({ where: { id } });
+  // Liberar la factura asociada (queda disponible para volver a cruzar).
+  if (facturaId) await db.factura.update({ where: { id: facturaId }, data: { estado: "SIN_CAPTURA" } });
+  if (liqId) await recalcularMonto(db, liqId);
+  return r.count > 0 ? { ok: true } : { ok: false, error: "No se pudo eliminar el gasto." };
+}
+
 // Item 8: desligar un gasto de su liquidacion -> queda LIBRE para reasignar.
 export async function desligarGasto(db: Db, id: string): Promise<{ ok: boolean; error?: string }> {
   const g = (await db.gasto.findUnique({ where: { id } })) as Rec | null;

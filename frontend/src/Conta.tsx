@@ -568,6 +568,9 @@ function GastoForm({ liqId, gastoId, cat, onBack, sesion }: { liqId: string; gas
         {puedeEditarMonto && g.estadoGasto !== "LIBRE" && (
           <AsyncButton className="ghost" onClick={async () => { const r = await api.desligarGasto(gastoId); if (r.ok) { onBack(); } else { setMsg({ t: "err", x: r.error ?? "No se pudo desligar." }); } }} loadingText="Desligando...">Desligar de la liquidacion</AsyncButton>
         )}
+        {puedeEditarMonto && (
+          <AsyncButton className="ghost" onClick={async () => { if (!window.confirm("¿Eliminar este gasto? Se borran sus divisiones y se recalcula el total. Esta accion no se puede deshacer.")) return; try { const r = await api.eliminarGasto(gastoId); if (r.ok) onBack(); else setMsg({ t: "err", x: r.error ?? "No se pudo eliminar." }); } catch (e) { setMsg({ t: "err", x: describe(e) }); } }} loadingText="Eliminando...">Eliminar gasto</AsyncButton>
+        )}
       </div>
       {msg && <div className={`msg ${msg.t}`}>{msg.x}</div>}
       <div className="section">

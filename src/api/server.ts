@@ -372,6 +372,15 @@ export function buildServer(deps: Deps): FastifyInstance {
   });
   // Listado de gastos libres (para reasignar) — conta.
   app.get("/gastos/libres", async (req, reply) => guard(req, reply, "conta") ? liq.listarGastosLibres(deps.db) : undefined);
+  // Eliminar un gasto (con sus divisiones). Mismo permiso que desligar.
+  app.delete<{ Params: { id: string } }>("/gastos/:id", async (req, reply) => {
+    const g = (await deps.db.gasto.findUnique({ where: { id: req.params.id } })) as Record<string, unknown> | null;
+    if (!g) return reply.code(404).send({ error: "El gasto no existe." });
+    if (!(await puedeGestionarLiq(req, (g["liquidacionId"] as string | null) ?? null)))
+      return reply.code(403).send({ error: "Solo contabilidad, o el dueño mientras la liquidacion esta en borrador/devuelta." });
+    const r = await liq.eliminarGasto(deps.db, req.params.id);
+    return r.ok ? reply.send(r) : reply.code(422).send(r);
+  });
 
   // Adjuntar imagen/PDF a un gasto (para casos sin PDF de Hacienda, o el PDF del correo).
   app.post<{ Params: { id: string }; Body: { nombre?: string; contenidoBase64?: string; mimeType?: string } }>("/liquidaciones/:id/adjuntos", async (req, reply) => {

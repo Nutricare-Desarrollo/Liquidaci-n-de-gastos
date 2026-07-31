@@ -85,6 +85,7 @@ export const api = {
   desligarGasto: (id: string) => req<{ ok: boolean; error?: string }>(`/gastos/${id}/desligar`, { method: "POST" }),
   asociarGasto: (id: string, liquidacionId: string) => req<{ ok: boolean; error?: string }>(`/gastos/${id}/asociar`, { method: "POST", body: JSON.stringify({ liquidacionId }) }),
   gastosLibres: () => req<Gasto[]>("/gastos/libres"),
+  eliminarGasto: (id: string) => req<{ ok: boolean; error?: string }>(`/gastos/${id}`, { method: "DELETE" }),
   crearGastoManual: (liqId: string, facturaId: string, categoriaId: string) => req<{ ok: boolean }>(`/liquidaciones/${liqId}/gastos`, { method: "POST", body: JSON.stringify({ facturaId, categoriaId }) }),
   crearGastoSimplificado: (liqId: string, b: Record<string, unknown>) => req<{ ok: boolean }>(`/liquidaciones/${liqId}/gastos-simplificado`, { method: "POST", body: JSON.stringify(b) }),
   dividirGasto: (gastoId: string, b: Record<string, unknown>) => req<{ ok: boolean }>(`/gastos/${gastoId}/dividir`, { method: "POST", body: JSON.stringify(b) }),
