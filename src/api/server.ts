@@ -108,8 +108,21 @@ export function buildServer(deps: Deps): FastifyInstance {
     const binario = decodeBase64(b.imagenBase64);
     const imagenUrl = await deps.storage.guardar({ contenido: binario, ruta: `capturas/${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`, mimeType: b.mimeType ?? "image/jpeg" });
 
-    // Regimen simplificado: no hay clave que leer -> se salta el OCR y queda pendiente de convertir.
+    // Regimen simplificado: no hay clave que leer -> se salta el OCR.
     if (b.esRegimen) {
+      // Si el empleado lleno los datos en el movil, se crea el GASTO directo
+      // en la liquidacion (con la foto adjunta). Ya no queda pendiente para Conta.
+      if (b.monto && b.fecha && b.comerciante && b.categoriaId && b.liquidacionId) {
+        const r = await crearGastoSimplificado(deps.db, b.liquidacionId, {
+          monto: Number(b.monto), fecha: b.fecha, comerciante: b.comerciante, categoriaId: b.categoriaId,
+          situacionFiscal: (b.situacionFiscal ?? "EXENTO") as SituacionFiscal,
+          centroCostoId: b.centroCostoId ?? null, numeroFactura: b.numeroFactura,
+          adjunto: { nombre: "Comprobante (foto)", url: imagenUrl, tipo: b.mimeType ?? "image/jpeg" },
+          tipoComprobante: "REGIMEN_SIMPLIFICADO",
+        });
+        return r.ok ? reply.code(201).send({ ok: true, gastoId: r.gastoId, gastoCreado: true }) : reply.code(422).send(r);
+      }
+      // Sin datos: queda como captura pendiente (Conta la convierte).
       const cap = await deps.db.captura.create({
         data: { name: `CAP-${Date.now()}`, imagenUrl, contenidoOcr: "", confianza: 0, correoEmpleado: b.correoEmpleado, categoriaId: b.categoriaId ?? null, liquidacionId: b.liquidacionId ?? null, estado: "PENDIENTE_REGIMEN" },
       });
@@ -529,7 +542,9 @@ export function buildServer(deps: Deps): FastifyInstance {
   return app;
 }
 
-interface CrearCapturaBody { correoEmpleado: string; imagenBase64: string; mimeType?: string; categoriaId?: string; liquidacionId?: string; esRegimen?: boolean; }
+interface CrearCapturaBody { correoEmpleado: string; imagenBase64: string; mimeType?: string; categoriaId?: string; liquidacionId?: string; esRegimen?: boolean;
+  // Regimen desde el movil: si el empleado llena estos datos, se crea el gasto directo.
+  monto?: number; fecha?: string; comerciante?: string; situacionFiscal?: string; centroCostoId?: string | null; numeroFactura?: string; }
 interface CrearLiqBody { empleadoId: string; correoEmpleado?: string; empresa: string; proposito: string; moneda: string; centroCostoId?: string; aprobadorId?: string; }
 interface GastoPatch { centroCostoId?: string | null; grupoImpuesto?: string; informacionAdicional?: string; litros?: number | null; tipoGasolina?: string | null; categoriaId?: string; numeroFactura?: string; zona?: string | null; kilometros?: number | null; montoTotal?: number; }
 interface GastoSimpBody { monto?: number; fecha?: string; comerciante?: string; categoriaId?: string; situacionFiscal?: SituacionFiscal; centroCostoId?: string | null; numeroFactura?: string; zona?: string; kilometros?: number; tipoComprobante?: string; litros?: number; tipoGasolina?: string; }

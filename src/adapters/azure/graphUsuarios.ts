@@ -17,12 +17,14 @@ export class GraphUsuarios implements UsuariosPort {
     });
     if (!res.ok) throw new Error(`Graph users ${res.status}: ${await res.text().catch(() => "")}`);
     const data = (await res.json()) as { value: Array<{ id: string; displayName?: string; mail?: string; userPrincipalName?: string; employeeId?: string; userType?: string }> };
-    const dominio = this.cfg.dominio.toLowerCase();
+    // USUARIOS_DOMINIO puede traer varios dominios separados por coma
+    // (ej. "nutricare.co.cr,farmacia.co.cr") para incluir a Farmacia/FEH.
+    const dominios = this.cfg.dominio.toLowerCase().split(",").map((d) => d.trim()).filter(Boolean);
     return data.value
       .filter((u) => (u.userType ?? "Member") !== "Guest")
       .map((u) => ({ id: u.id, email: (u.mail ?? u.userPrincipalName ?? "").toLowerCase(), nombre: u.displayName, personnelNumber: u.employeeId }))
       .filter((u) => u.email)
-      .filter((u) => !dominio || u.email.endsWith("@" + dominio))
+      .filter((u) => dominios.length === 0 || dominios.some((d) => u.email.endsWith("@" + d)))
       .filter((u) => !this.cfg.excluir.some((x) => u.email.includes(x) || (u.nombre ?? "").toLowerCase().includes(x)))
       .sort((a, b) => (a.nombre ?? "").localeCompare(b.nombre ?? ""));
   }

@@ -74,6 +74,15 @@ export async function crearGastoDesdeFactura(db: Db, opts: {
     categoria, gruposImpuestoDisponibles: grupos.map((x) => String(x["name"])), reglas,
   });
 
+  // Comprobante: PDF de la factura si existe; si no, la foto de la captura.
+  // Ademas se adjunta la foto para que el gasto "hale" el comprobante.
+  let imagenCaptura: string | null = null;
+  if (capturaId) {
+    const cap = (await db.captura.findUnique({ where: { id: capturaId } })) as Rec | null;
+    imagenCaptura = (cap?.["imagenUrl"] as string | null) ?? null;
+  }
+  const adjuntos = imagenCaptura ? [{ nombre: "Comprobante (foto)", url: imagenCaptura, tipo: "image" }] : undefined;
+
   await db.gasto.create({
     data: {
       name: `GAS-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
@@ -85,7 +94,9 @@ export async function crearGastoDesdeFactura(db: Db, opts: {
       metodoPago: g.metodoPago, situacionFiscal: situacionToDb(g.situacionFiscal),
       grupoImpuesto: g.grupoImpuesto, litros: g.litros,
       tipoGasolina: g.tipoGasolina !== null ? TIPO_GAS_A_DB[g.tipoGasolina as TipoGasolina] : null,
-      excedeLimite: g.excedeLimite, alerta: g.alerta, urlPdf: g.urlPdf,
+      excedeLimite: g.excedeLimite, alerta: g.alerta,
+      urlPdf: g.urlPdf ?? imagenCaptura, // factura PDF o, en su defecto, la foto
+      adjuntos,
     },
   });
 

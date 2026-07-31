@@ -36,7 +36,9 @@ export function loadConfig(): AppConfig {
     graph: { mailboxUserId: opt("GRAPH_MAILBOX_USER_ID") },
     fo: { baseUrl: opt("FO_BASE_URL"), servicePath: opt("FO_SERVICE_PATH", "/api/services/NTCExpenseReportServiceGroup/NTCExpenseReportService/createExpenseReport"), rejectServicePath: opt("FO_REJECT_SERVICE_PATH", "/api/services/NTCExpenseReportServiceGroup/NTCExpenseReportService/rejectExpenseReport"), scope: opt("FO_SCOPE"), timeoutMs: Number(opt("FO_TIMEOUT_MS", "120000")) },
     notificacion: { approvalsFlowUrl: opt("APPROVALS_FLOW_URL"), callbackSecret: opt("APPROVALS_CALLBACK_SECRET") },
-    app: { baseUrl: opt("APP_BASE_URL", "http://127.0.0.1:5173") },
+    // Base para los enlaces del approval. Si no se define APP_BASE_URL, en Azure
+    // se usa el hostname del App Service (WEBSITE_HOSTNAME); en local, localhost.
+    app: { baseUrl: opt("APP_BASE_URL") || (process.env["WEBSITE_HOSTNAME"] ? `https://${process.env["WEBSITE_HOSTNAME"]}` : "http://127.0.0.1:5173") },
     auth: {
       enabled: opt("AUTH_ENABLED") === "1",
       tenantId: opt("AZURE_TENANT_ID"),

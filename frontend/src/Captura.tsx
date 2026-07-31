@@ -24,6 +24,12 @@ export function MobileCaptura({ cat, sesion, selfApproval }: { cat: Catalogos; s
   const [liqs, setLiqs] = useState<Liquidacion[]>([]);
   const [fotoFile, setFotoFile] = useState<File | null>(null);
   const [xml, setXml] = useState("");
+  // Regimen simplificado (datos que llena el empleado en el telefono)
+  const [rMonto, setRMonto] = useState("");
+  const [rFecha, setRFecha] = useState("");
+  const [rComer, setRComer] = useState("");
+  const [rSit, setRSit] = useState("EXENTO");
+  const [rNumFac, setRNumFac] = useState("");
   const [enviando, setEnviando] = useState(false);
   const [msg, setMsg] = useState<{ t: "ok" | "err"; x: string } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -44,6 +50,7 @@ export function MobileCaptura({ cat, sesion, selfApproval }: { cat: Catalogos; s
     setMsg(null);
     if (!categoriaId) return setMsg({ t: "err", x: "Elegi la categoria del gasto." });
     if (tipo === "regimen" && !fotoFile) return setMsg({ t: "err", x: "Subi la foto del comprobante (regimen simplificado)." });
+    if (tipo === "regimen" && (!(Number(rMonto) > 0) || !rFecha || !rComer.trim())) return setMsg({ t: "err", x: "Completa monto, fecha y comerciante del gasto de regimen." });
     if (tipo === "electronica" && !fotoFile && !xml.trim()) return setMsg({ t: "err", x: "Subi una foto del comprobante o pega el XML." });
     if (nueva && !aprobadorId) return setMsg({ t: "err", x: "Elegi un aprobador (distinto a vos)." });
     setEnviando(true);
@@ -60,12 +67,14 @@ export function MobileCaptura({ cat, sesion, selfApproval }: { cat: Catalogos; s
       }
       if (!liqId) throw new Error("Elegi o crea una liquidacion.");
 
-      // Regimen simplificado: sube la foto SIN OCR ni cruce; contabilidad la convierte en gasto.
+      // Regimen simplificado: el empleado llena los datos y se crea el GASTO directo
+      // en la liquidacion, con la foto adjunta (sin OCR ni cruce).
       if (tipo === "regimen") {
         const img = await fileToImagen(fotoFile!);
-        await api.crearCaptura({ correoEmpleado: empleado?.email, imagenBase64: img.base64, mimeType: img.mimeType, categoriaId, liquidacionId: liqId, esRegimen: true });
-        setMsg({ t: "ok", x: `Comprobante de regimen enviado a la liquidacion ${liqName}. Contabilidad lo convertira en gasto.` });
-        setFotoFile(null);
+        await api.crearCaptura({ correoEmpleado: empleado?.email, imagenBase64: img.base64, mimeType: img.mimeType, categoriaId, liquidacionId: liqId, esRegimen: true,
+          monto: Number(rMonto), fecha: rFecha, comerciante: rComer, situacionFiscal: rSit, numeroFactura: rNumFac || undefined });
+        setMsg({ t: "ok", x: `Gasto de regimen creado en la liquidacion ${liqName}.` });
+        setFotoFile(null); setRMonto(""); setRFecha(""); setRComer(""); setRNumFac("");
         api.listar().then(setLiqs).catch(() => {});
         return;
       }
@@ -156,6 +165,22 @@ export function MobileCaptura({ cat, sesion, selfApproval }: { cat: Catalogos; s
           {tipo === "electronica" && <>
             <label className="mini-label">(opcional) Pega el XML de la factura para la prueba</label>
             <textarea rows={3} value={xml} onChange={(e) => setXml(e.target.value)} placeholder="<FacturaElectronica>...</FacturaElectronica>" />
+          </>}
+          {tipo === "regimen" && <>
+            <label className="mini-label">Monto</label>
+            <input type="number" inputMode="decimal" value={rMonto} onChange={(e) => setRMonto(e.target.value)} placeholder="0.00" />
+            <label className="mini-label">Fecha</label>
+            <input type="date" value={rFecha} onChange={(e) => setRFecha(e.target.value)} />
+            <label className="mini-label">Comerciante</label>
+            <input value={rComer} onChange={(e) => setRComer(e.target.value)} placeholder="Nombre del comercio" />
+            <label className="mini-label">Situacion fiscal</label>
+            <select value={rSit} onChange={(e) => setRSit(e.target.value)}>
+              <option value="EXENTO">EXENTO</option>
+              <option value="IVA">IVA</option>
+              <option value="NO SUJETO">NO SUJETO</option>
+            </select>
+            <label className="mini-label">Nº de comprobante (opcional)</label>
+            <input value={rNumFac} onChange={(e) => setRNumFac(e.target.value)} placeholder="Nº de factura/recibo" />
           </>}
           <div className="toggle-row">
             <span>Crear nueva liquidacion</span>
