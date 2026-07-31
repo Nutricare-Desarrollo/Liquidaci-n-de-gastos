@@ -783,13 +783,19 @@ function FacturasView({ prefillClave, onConsumePrefill }: { prefillClave?: strin
     setMsg(null);
     if (!window.confirm(`¿Eliminar la factura ${fac.consecutivo || fac.clave || fac.id}? Esta accion no se puede deshacer.`)) return;
     try {
-      let r = await api.eliminarFactura(fac.id);
-      if (!r.ok && /gasto\(s\) asociado/.test(r.error ?? "")) {
-        if (!window.confirm(`${r.error}\n\n¿Eliminar la factura Y esos gastos igualmente? (recalcula el total de sus liquidaciones)`)) return;
-        r = await api.eliminarFactura(fac.id, true);
-      }
-      if (r.ok) { setMsg({ t: "ok", x: `Factura eliminada${r.gastosEliminados ? ` (y ${r.gastosEliminados} gasto/s)` : ""}.` }); cargar(); }
-      else setMsg({ t: "err", x: r.error ?? "No se pudo eliminar." });
+      await api.eliminarFactura(fac.id);
+      setMsg({ t: "ok", x: "Factura eliminada." }); cargar();
+      return;
+    } catch (e) {
+      const msg = describe(e);
+      // Si el backend bloqueo por gastos asociados, ofrecer forzar.
+      if (!/gasto\(s\) asociado/.test(msg)) return setMsg({ t: "err", x: msg });
+      if (!window.confirm(`${msg}\n\n¿Eliminar la factura Y esos gastos igualmente? (recalcula el total de sus liquidaciones)`)) return;
+    }
+    try {
+      const r2 = await api.eliminarFactura(fac.id, true);
+      setMsg({ t: "ok", x: `Factura eliminada${r2.gastosEliminados ? ` (y ${r2.gastosEliminados} gasto/s)` : ""}.` });
+      cargar();
     } catch (e) { setMsg({ t: "err", x: describe(e) }); }
   }
 
