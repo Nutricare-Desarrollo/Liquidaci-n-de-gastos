@@ -415,6 +415,13 @@ export function buildServer(deps: Deps): FastifyInstance {
     return r.ok ? reply.send(r) : reply.code(422).send(r);
   });
   app.get("/capturas", async (req, reply) => guard(req, reply, "conta") ? deps.db.captura.findMany() : undefined);
+  app.delete<{ Params: { id: string } }>("/capturas/:id", async (req, reply) => {
+    if (!guard(req, reply, "conta")) return;
+    const c = (await deps.db.captura.findUnique({ where: { id: req.params.id } })) as Record<string, unknown> | null;
+    if (!c) return reply.code(404).send({ error: "La captura no existe." });
+    const r = await deps.db.captura.deleteMany({ where: { id: req.params.id } });
+    return r.count > 0 ? reply.send({ ok: true }) : reply.code(422).send({ ok: false, error: "No se pudo eliminar la captura." });
+  });
   app.get("/gastos", async (req, reply) => guard(req, reply, "conta") ? deps.db.gasto.findMany({ include: { categoria: true } }) : undefined);
   app.get("/reglas-monto", async (req, reply) => guard(req, reply, "conta") ? deps.db.reglaMonto.findMany() : undefined);
   app.post<{ Body: { categoriaCodigo?: string; montoMaxCRC?: number; montoMaxUSD?: number; activo?: boolean } }>("/reglas-monto", async (req, reply) => {

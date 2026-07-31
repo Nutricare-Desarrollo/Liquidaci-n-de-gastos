@@ -917,6 +917,11 @@ function CapturasView({ cat, onCrearFactura }: { cat: Catalogos; onCrearFactura:
     try { await api.marcarRegimen(id); setMsg({ t: "ok", x: "Captura marcada como regimen." }); cargar(); }
     catch (e) { setMsg({ t: "err", x: describe(e) }); }
   }
+  async function eliminarCap(id: string, name: string) {
+    if (!window.confirm(`¿Eliminar la captura ${name}? Esta accion no se puede deshacer.`)) return;
+    try { await api.eliminarCaptura(id); setMsg({ t: "ok", x: "Captura eliminada." }); cargar(); }
+    catch (e) { setMsg({ t: "err", x: describe(e) }); }
+  }
 
   const empresaSel = liqs.find((l) => l.id === cv.liquidacionId)?.empresa;
   const catsConv = cat.categorias.filter((c) => !empresaSel || c.empresa === empresaSel);
@@ -948,6 +953,7 @@ function CapturasView({ cat, onCrearFactura }: { cat: Catalogos; onCrearFactura:
                       {regimen && <button className="ghost" onClick={() => abrirConvertir(c)}>Convertir a gasto</button>}
                       {!cruzada && !regimen && clave && <button className="ghost" onClick={() => onCrearFactura(clave)}>Crear factura</button>}
                       {!cruzada && !regimen && <button className="ghost" onClick={() => marcar(id)}>Marcar regimen</button>}
+                      <button className="ghost" onClick={() => eliminarCap(id, String(c["name"] ?? ""))}>Eliminar</button>
                     </div>
                   </td>
                 </tr>

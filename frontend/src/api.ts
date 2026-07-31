@@ -99,6 +99,7 @@ export const api = {
   actualizarFactura: (id: string, b: Record<string, unknown>) => req<{ ok: boolean }>(`/facturas/${id}`, { method: "PATCH", body: JSON.stringify(b) }),
   eliminarFactura: (id: string, force = false) => req<{ ok: boolean; error?: string; gastosEliminados?: number }>(`/facturas/${id}${force ? "?force=1" : ""}`, { method: "DELETE" }),
   capturas: () => req<Record<string, unknown>[]>("/capturas"),
+  eliminarCaptura: (id: string) => req<{ ok: boolean; error?: string }>(`/capturas/${id}`, { method: "DELETE" }),
   gastos: () => req<Record<string, unknown>[]>("/gastos"),
   reglasMonto: () => req<ReglaMonto[]>("/reglas-monto"),
   crearReglaMonto: (b: Record<string, unknown>) => req<{ ok: boolean }>("/reglas-monto", { method: "POST", body: JSON.stringify(b) }),
