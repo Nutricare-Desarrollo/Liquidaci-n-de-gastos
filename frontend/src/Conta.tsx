@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PROPOSITOS, labelProposito, categoriasPermitidas, esKilometraje, esAnticipos } from "./proposito.js";
 import { Combo } from "./Combo.js";
 import type { TarifaKm, Categoria, CentroCosto } from "./api.js";
@@ -739,6 +739,8 @@ function FacturasView({ prefillClave, onConsumePrefill }: { prefillClave?: strin
   const [filtro, setFiltro] = useState("");
   const [f, setF] = useState({ clave: "", consecutivo: "", emisorNombre: "", total: "", situacionFiscal: "EXENTO", moneda: "CRC", fecha: "", detalle: "" });
   const [ef, setEf] = useState({ total: "", situacionFiscal: "EXENTO" });
+  const [cargandoXml, setCargandoXml] = useState(false);
+  const xmlRef = useRef<HTMLInputElement>(null);
 
   const cargar = () => api.facturas().then(setRows).catch(() => setRows([]));
   useEffect(() => { cargar(); }, []);
@@ -779,6 +781,26 @@ function FacturasView({ prefillClave, onConsumePrefill }: { prefillClave?: strin
     } catch (e) { setMsg({ t: "err", x: describe(e) }); }
   }
 
+  async function cargarXml(files: FileList | null) {
+    if (!files || files.length === 0) return;
+    setMsg(null); setCargandoXml(true);
+    let ing = 0, dup = 0, ign = 0; const errs: string[] = [];
+    for (const file of Array.from(files)) {
+      try {
+        const xml = await file.text();
+        const r = await api.ingestarXml(xml);
+        if (r.status === "ingestada") ing++;
+        else if (r.status === "duplicada") dup++;
+        else ign++;
+      } catch (e) { errs.push(`${file.name}: ${describe(e)}`); }
+    }
+    setCargandoXml(false);
+    if (xmlRef.current) xmlRef.current.value = "";
+    const partes = [`${ing} ingestada(s)`, dup ? `${dup} duplicada(s)` : "", ign ? `${ign} ignorada(s)` : ""].filter(Boolean);
+    setMsg({ t: errs.length ? "err" : "ok", x: `${partes.join(", ")}${errs.length ? ` | errores: ${errs.join(" ; ")}` : ""}.` });
+    cargar();
+  }
+
   async function eliminarFac(fac: Factura) {
     setMsg(null);
     if (!window.confirm(`¿Eliminar la factura ${fac.consecutivo || fac.clave || fac.id}? Esta accion no se puede deshacer.`)) return;
@@ -806,6 +828,8 @@ function FacturasView({ prefillClave, onConsumePrefill }: { prefillClave?: strin
       <div className="listbar"><h2>Facturas</h2><span className="caret">v</span>
         <div className="toolbar">
           <button className="primary" onClick={() => setCrear(!crear)}>+ Factura manual</button>
+          <button className="ghost" disabled={cargandoXml} onClick={() => xmlRef.current?.click()}>{cargandoXml ? "Cargando..." : "Cargar XML"}</button>
+          <input ref={xmlRef} type="file" accept=".xml,text/xml,application/xml" multiple style={{ display: "none" }} onChange={(e) => cargarXml(e.target.files)} />
           <input placeholder="Buscar..." value={filtro} onChange={(e) => setFiltro(e.target.value)} style={{ width: 260 }} />
         </div>
       </div>
