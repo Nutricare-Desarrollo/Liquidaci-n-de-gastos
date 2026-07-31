@@ -397,9 +397,10 @@ export function buildServer(deps: Deps): FastifyInstance {
     const r = await actualizarFactura(deps.db, req.params.id, req.body ?? {});
     return r.ok ? reply.send(r) : reply.code(422).send(r);
   });
-  app.delete<{ Params: { id: string } }>("/facturas/:id", async (req, reply) => {
+  app.delete<{ Params: { id: string }; Querystring: { force?: string } }>("/facturas/:id", async (req, reply) => {
     if (!guard(req, reply, "conta")) return;
-    const r = await eliminarFactura(deps.db, req.params.id);
+    const force = req.query?.force === "1" || req.query?.force === "true";
+    const r = await eliminarFactura(deps.db, req.params.id, force);
     return r.ok ? reply.send(r) : reply.code(422).send(r);
   });
   app.get("/capturas", async (req, reply) => guard(req, reply, "conta") ? deps.db.captura.findMany() : undefined);

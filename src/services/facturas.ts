@@ -38,18 +38,42 @@ export async function crearFacturaManual(db: Db, d: FacturaManualInput): Promise
   return { ok: true };
 }
 
-// Eliminar una factura. Se bloquea si tiene gastos asociados (cruzada): primero
-// hay que desligar/eliminar esos gastos. Las capturas vinculadas se desvinculan.
-export async function eliminarFactura(db: Db, id: string): Promise<{ ok: boolean; error?: string }> {
+// Eliminar una factura. Por defecto se bloquea si tiene gastos asociados
+// (cruzada). Con force=true, elimina TAMBIEN esos gastos (y sus divisiones),
+// recalcula el total de las liquidaciones afectadas y desvincula las capturas.
+export async function eliminarFactura(db: Db, id: string, force = false): Promise<{ ok: boolean; error?: string; gastosEliminados?: number }> {
   const f = (await db.factura.findUnique({ where: { id } })) as Rec | null;
   if (!f) return { ok: false, error: "La factura no existe." };
   const gastos = (await db.gasto.findMany({ where: { facturaId: id } })) as Rec[];
-  if (gastos.length > 0)
-    return { ok: false, error: `No se puede eliminar: la factura tiene ${gastos.length} gasto(s) asociado(s). Desliga o elimina esos gastos primero.` };
+  if (gastos.length > 0 && !force)
+    return { ok: false, error: `No se puede eliminar: la factura tiene ${gastos.length} gasto(s) asociado(s). Desliga esos gastos primero, o usa "Forzar".` };
+
+  const liqs = new Set<string>();
+  let gastosEliminados = 0;
+  if (gastos.length > 0) {
+    // Borrar hijos (divisiones) primero y luego padres, para no romper la relacion.
+    const hijos = gastos.filter((g) => g["gastoOrigenId"]);
+    const padres = gastos.filter((g) => !g["gastoOrigenId"]);
+    for (const g of [...hijos, ...padres]) {
+      const liqId = g["liquidacionId"] as string | null;
+      if (liqId) liqs.add(liqId);
+      const r = await db.gasto.deleteMany({ where: { id: String(g["id"]) } });
+      gastosEliminados += r.count;
+    }
+  }
+
   // Desvincular capturas que la referencien (evita romper la relacion).
   await db.captura.updateMany({ where: { facturaId: id }, data: { facturaId: null } });
   const r = await db.factura.deleteMany({ where: { id } });
-  return r.count > 0 ? { ok: true } : { ok: false, error: "No se pudo eliminar la factura." };
+
+  // Recalcular el total de las liquidaciones afectadas.
+  for (const liqId of liqs) {
+    const gs = (await db.gasto.findMany({ where: { liquidacionId: liqId } })) as Rec[];
+    const total = gs.reduce((acc, x) => acc + Number(x["montoTotal"] ?? 0), 0);
+    await db.liquidacion.update({ where: { id: liqId }, data: { montoInforme: total } });
+  }
+
+  return r.count > 0 ? { ok: true, gastosEliminados } : { ok: false, error: "No se pudo eliminar la factura." };
 }
 
 export async function actualizarFactura(db: Db, id: string, patch: Partial<FacturaManualInput>): Promise<{ ok: boolean; error?: string }> {
