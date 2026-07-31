@@ -62,8 +62,8 @@ export function MobileCaptura({ cat, sesion, selfApproval }: { cat: Catalogos; s
 
       // Regimen simplificado: sube la foto SIN OCR ni cruce; contabilidad la convierte en gasto.
       if (tipo === "regimen") {
-        const imagenBase64 = await fileToBase64(fotoFile!);
-        await api.crearCaptura({ correoEmpleado: empleado?.email, imagenBase64, mimeType: fotoFile!.type || "image/jpeg", categoriaId, liquidacionId: liqId, esRegimen: true });
+        const img = await fileToImagen(fotoFile!);
+        await api.crearCaptura({ correoEmpleado: empleado?.email, imagenBase64: img.base64, mimeType: img.mimeType, categoriaId, liquidacionId: liqId, esRegimen: true });
         setMsg({ t: "ok", x: `Comprobante de regimen enviado a la liquidacion ${liqName}. Contabilidad lo convertira en gasto.` });
         setFotoFile(null);
         api.listar().then(setLiqs).catch(() => {});
@@ -82,8 +82,9 @@ export function MobileCaptura({ cat, sesion, selfApproval }: { cat: Catalogos; s
       let imagenBase64: string;
       let mimeType = "image/jpeg";
       if (fotoFile) {
-        imagenBase64 = await fileToBase64(fotoFile);
-        mimeType = fotoFile.type || "image/jpeg";
+        const img = await fileToImagen(fotoFile);
+        imagenBase64 = img.base64;
+        mimeType = img.mimeType;
       } else {
         if (!claveXml) throw new Error("Subi una foto o pega un XML con clave valida.");
         imagenBase64 = fotoDemo(`FACTURA ELECTRONICA\nClave: ${claveXml.replace(/(.{5})/g, "$1 ")}`);
@@ -198,6 +199,40 @@ export function MobileCaptura({ cat, sesion, selfApproval }: { cat: Catalogos; s
       </div>
     </div>
   );
+}
+
+// Comprime/reduce la foto antes de enviarla (celulares sacan fotos de varios MB).
+// Reescala a max 1600px y JPEG calidad 0.7. Si no es imagen rasterizable, envia el archivo tal cual.
+async function fileToImagen(file: File): Promise<{ base64: string; mimeType: string }> {
+  if (!file.type.startsWith("image/")) {
+    return { base64: await fileToBase64(file), mimeType: file.type || "application/octet-stream" };
+  }
+  try {
+    const url = URL.createObjectURL(file);
+    const img = await new Promise<HTMLImageElement>((res, rej) => {
+      const i = new Image();
+      i.onload = () => res(i);
+      i.onerror = () => rej(new Error("no se pudo leer la imagen"));
+      i.src = url;
+    });
+    const maxDim = 1600;
+    let w = img.width, h = img.height;
+    if (w > maxDim || h > maxDim) {
+      const scale = maxDim / Math.max(w, h);
+      w = Math.round(w * scale); h = Math.round(h * scale);
+    }
+    const canvas = document.createElement("canvas");
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("sin canvas");
+    ctx.drawImage(img, 0, 0, w, h);
+    URL.revokeObjectURL(url);
+    const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
+    return { base64: dataUrl.slice(dataUrl.indexOf(",") + 1), mimeType: "image/jpeg" };
+  } catch {
+    // Fallback: si algo falla (ej. HEIC), envia el archivo original.
+    return { base64: await fileToBase64(file), mimeType: file.type || "image/jpeg" };
+  }
 }
 
 function fileToBase64(file: File): Promise<string> {

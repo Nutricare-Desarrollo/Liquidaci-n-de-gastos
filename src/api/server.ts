@@ -20,7 +20,9 @@ declare module "fastify" {
 }
 
 export function buildServer(deps: Deps): FastifyInstance {
-  const app = Fastify({ logger: true });
+  // bodyLimit alto: las fotos de comprobantes llegan como base64 en el body
+  // (el default de Fastify es 1 MB, que una foto de celular supera -> 502/413).
+  const app = Fastify({ logger: true, bodyLimit: 25 * 1024 * 1024 });
 
   app.addContentTypeParser("application/json", { parseAs: "string" }, (_req, body, done) => {
     const s = typeof body === "string" ? body.trim() : "";
