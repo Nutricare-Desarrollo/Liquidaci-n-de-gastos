@@ -1,0 +1,71 @@
+// =====================================================================
+//  Job de prueba: postear un informe de gastos SIN usar el boton del modulo.
+//  Replica lo que hace el service: validatePost + TrvPost::post + estado Ledger.
+//
+//  Uso:
+//   - Si dejas expNumber = '' toma automaticamente el ULTIMO informe Aprobado.
+//   - Si pones un numero, postea ese.
+//   - Si no encuentra ninguno, LISTA los informes que hay (con su estado)
+//     para que veas cual usar.
+//
+//  Como correrlo: en VS "Set as Startup Object" -> Ctrl+F5,
+//  o por URL {FO_BASE_URL}/?cmp=NTC&mi=SysClassRunner&cls=NTCPostExpenseJob
+// =====================================================================
+class NTCPostExpenseJob
+{
+    public static void main(Args _args)
+    {
+        str          company   = 'NTC';   // <-- empresa (NTC / FEH)
+        TrvExpNumber expNumber  = '';      // <-- vacio = ultimo Aprobado; o pone un numero exacto
+        TrvExpTable  trvExpTable, it;
+        int          n;
+
+        changecompany(company)
+        {
+            if (expNumber)
+            {
+                trvExpTable = TrvExpTable::find(expNumber, true);
+            }
+            else
+            {
+                // Ultimo informe APROBADO (sin postear) de la empresa.
+                select firstonly forUpdate trvExpTable
+                    order by RecId desc
+                    where trvExpTable.ApprovalStatus == TrvAppStatus::Approved;
+            }
+
+            if (!trvExpTable.RecId)
+            {
+                info(strFmt("No hay informe para postear en %1. Informes existentes (ultimos 10):", company));
+                while select it order by RecId desc
+                {
+                    info(strFmt("   %1  -  %2", it.ExpNumber, enum2Str(it.ApprovalStatus)));
+                    n++;
+                    if (n >= 10)
+                        break;
+                }
+                return;
+            }
+
+            info(strFmt("Informe %1 - estado: %2", trvExpTable.ExpNumber, enum2Str(trvExpTable.ApprovalStatus)));
+
+            if (trvExpTable.validatePost())
+            {
+                TrvPost::post(trvExpTable, '', '', dateNull(), true); // genera el asiento (igual que Registrar)
+
+                // Dejar el informe en "Procesado para pago" (TrvAppStatus::Ledger).
+                trvExpTable = TrvExpTable::find(trvExpTable.ExpNumber, true);
+                ttsbegin;
+                trvExpTable.ApprovalStatus = TrvAppStatus::Ledger;
+                trvExpTable.doUpdate();
+                ttscommit;
+
+                info(strFmt("OK: informe %1 posteado y en Procesado para pago. Revisa el voucher en Contabilidad general.", trvExpTable.ExpNumber));
+            }
+            else
+            {
+                info(strFmt("validatePost fallo para %1: %2", trvExpTable.ExpNumber, infolog.text()));
+            }
+        }
+    }
+}

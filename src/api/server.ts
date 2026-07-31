@@ -9,7 +9,7 @@ import { parseFactura, FacturaIgnorableError } from "../domain/parseFactura.js";
 import { CEDULA_NUTRICARE, type SituacionFiscal } from "../domain/types.js";
 import { procesarCruce } from "../services/procesarCruce.js";
 import * as liq from "../services/liquidaciones.js";
-import { crearFacturaManual, actualizarFactura, type FacturaManualInput } from "../services/facturas.js";
+import { crearFacturaManual, actualizarFactura, eliminarFactura, type FacturaManualInput } from "../services/facturas.js";
 import { EntraTokenProvider } from "../adapters/azure/entraToken.js";
 import { dividirGasto, crearGastoSimplificado, subirAdjunto } from "../services/gastos.js";
 
@@ -395,6 +395,11 @@ export function buildServer(deps: Deps): FastifyInstance {
   app.patch<{ Params: { id: string }; Body: Partial<FacturaManualInput> }>("/facturas/:id", async (req, reply) => {
     if (!guard(req, reply, "conta")) return;
     const r = await actualizarFactura(deps.db, req.params.id, req.body ?? {});
+    return r.ok ? reply.send(r) : reply.code(422).send(r);
+  });
+  app.delete<{ Params: { id: string } }>("/facturas/:id", async (req, reply) => {
+    if (!guard(req, reply, "conta")) return;
+    const r = await eliminarFactura(deps.db, req.params.id);
     return r.ok ? reply.send(r) : reply.code(422).send(r);
   });
   app.get("/capturas", async (req, reply) => guard(req, reply, "conta") ? deps.db.captura.findMany() : undefined);

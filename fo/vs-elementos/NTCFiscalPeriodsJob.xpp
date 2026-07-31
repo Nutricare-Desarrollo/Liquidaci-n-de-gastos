@@ -1,0 +1,42 @@
+// =====================================================================
+//  Job read-only: lista los periodos fiscales del ledger de la empresa,
+//  para saber que fechas tienen periodo (y evitar el error
+//  "El periodo para X no existe" al postear).
+//
+//  Correr: Set as Startup Object -> Ctrl+F5, o
+//  {FO_BASE_URL}/?cmp=NTC&mi=SysClassRunner&cls=NTCFiscalPeriodsJob
+// =====================================================================
+class NTCFiscalPeriodsJob
+{
+    public static void main(Args _args)
+    {
+        str company = 'NTC';   // <-- empresa
+
+        changecompany(company)
+        {
+            Ledger               ledger = Ledger::find(Ledger::current());
+            FiscalCalendarYear   year;
+            FiscalCalendarPeriod period;
+            int                  n = 0;
+
+            info(strFmt("Empresa %1 - FiscalCalendar (RecId): %2", company, ledger.FiscalCalendar));
+
+            while select period
+                order by period.StartDate desc
+                join year
+                where year.RecId          == period.FiscalCalendarYear
+                   && year.FiscalCalendar == ledger.FiscalCalendar
+            {
+                info(strFmt("%1  a  %2   (%3)", period.StartDate, period.EndDate, period.Name));
+                n++;
+                if (n >= 30)
+                    break;
+            }
+
+            if (!n)
+            {
+                info("No hay periodos definidos para el calendario de este ledger. Hay que crear el ano fiscal.");
+            }
+        }
+    }
+}

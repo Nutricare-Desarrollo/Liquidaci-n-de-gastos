@@ -38,6 +38,20 @@ export async function crearFacturaManual(db: Db, d: FacturaManualInput): Promise
   return { ok: true };
 }
 
+// Eliminar una factura. Se bloquea si tiene gastos asociados (cruzada): primero
+// hay que desligar/eliminar esos gastos. Las capturas vinculadas se desvinculan.
+export async function eliminarFactura(db: Db, id: string): Promise<{ ok: boolean; error?: string }> {
+  const f = (await db.factura.findUnique({ where: { id } })) as Rec | null;
+  if (!f) return { ok: false, error: "La factura no existe." };
+  const gastos = (await db.gasto.findMany({ where: { facturaId: id } })) as Rec[];
+  if (gastos.length > 0)
+    return { ok: false, error: `No se puede eliminar: la factura tiene ${gastos.length} gasto(s) asociado(s). Desliga o elimina esos gastos primero.` };
+  // Desvincular capturas que la referencien (evita romper la relacion).
+  await db.captura.updateMany({ where: { facturaId: id }, data: { facturaId: null } });
+  const r = await db.factura.deleteMany({ where: { id } });
+  return r.count > 0 ? { ok: true } : { ok: false, error: "No se pudo eliminar la factura." };
+}
+
 export async function actualizarFactura(db: Db, id: string, patch: Partial<FacturaManualInput>): Promise<{ ok: boolean; error?: string }> {
   const f = (await db.factura.findUnique({ where: { id } })) as Rec | null;
   if (!f) return { ok: false, error: "La factura no existe." };

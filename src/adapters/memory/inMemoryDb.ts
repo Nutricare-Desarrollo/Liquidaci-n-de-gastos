@@ -57,6 +57,13 @@ class InMemoryDelegate implements Delegate {
     Object.assign(r, args.data);
     return r;
   }
+  async updateMany(args: { where?: Rec; data: Rec }): Promise<{ count: number }> {
+    let count = 0;
+    for (const r of this.store) {
+      if (matchWhere(r, args.where)) { Object.assign(r, args.data); count++; }
+    }
+    return { count };
+  }
   async count(args?: unknown): Promise<number> {
     const where = (args as { where?: Rec } | undefined)?.where;
     return this.store.filter((x) => matchWhere(x, where)).length;

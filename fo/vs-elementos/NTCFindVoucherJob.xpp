@@ -1,0 +1,37 @@
+// =====================================================================
+//  Job read-only: dice si un voucher ya llego al General Ledger o sigue
+//  pendiente en el subledger. Sirve para diagnosticar el caso
+//  "el numero se asigno pero el asiento no se ve en el diario".
+//
+//  Correr: Set as Startup Object -> Ctrl+F5, o
+//  {FO_BASE_URL}/?cmp=NTC&mi=SysClassRunner&cls=NTCFindVoucherJob
+// =====================================================================
+class NTCFindVoucherJob
+{
+    public static void main(Args _args)
+    {
+        str company = 'NTC';                 // <-- empresa
+        str voucher = 'GTO-000007197';       // <-- voucher a buscar
+
+        changecompany(company)
+        {
+            GeneralJournalEntry gje;
+            int n = 0;
+
+            while select gje
+                where gje.SubledgerVoucher == voucher
+            {
+                info(strFmt("EN GENERAL LEDGER: voucher %1, fecha contable %2, RecId %3",
+                    gje.SubledgerVoucher, gje.AccountingDate, gje.RecId));
+                n++;
+            }
+
+            if (!n)
+            {
+                info(strFmt("El voucher %1 NO esta en GeneralJournalEntry.", voucher));
+                info("=> Muy probablemente esta en el subledger, pendiente de transferir al mayor.");
+                info("   Corre 'Transferir asientos de subledger al libro mayor' o revisa Batch transfer rules.");
+            }
+        }
+    }
+}

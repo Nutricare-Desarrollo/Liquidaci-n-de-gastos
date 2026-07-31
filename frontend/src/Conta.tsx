@@ -779,6 +779,16 @@ function FacturasView({ prefillClave, onConsumePrefill }: { prefillClave?: strin
     } catch (e) { setMsg({ t: "err", x: describe(e) }); }
   }
 
+  async function eliminarFac(fac: Factura) {
+    setMsg(null);
+    if (!window.confirm(`¿Eliminar la factura ${fac.consecutivo || fac.clave || fac.id}? Esta accion no se puede deshacer.`)) return;
+    try {
+      const r = await api.eliminarFactura(fac.id);
+      if (r.ok) { setMsg({ t: "ok", x: "Factura eliminada." }); cargar(); }
+      else setMsg({ t: "err", x: r.error ?? "No se pudo eliminar." });
+    } catch (e) { setMsg({ t: "err", x: describe(e) }); }
+  }
+
   const filtradas = rows.filter((r) => coincideTexto(r, filtro));
 
   return (
@@ -814,7 +824,7 @@ function FacturasView({ prefillClave, onConsumePrefill }: { prefillClave?: strin
               <td className="pill-link">{r.consecutivo || "-"}</td><td>{r.emisorNombre}</td>
               <td className="num">{fmt(r.totalComprobante)}</td><td>{r.moneda}</td><td>{r.situacionFiscal}</td>
               <td><span className={`badge estado-${r.estado === "CRUZADA" ? "POSTEADA" : "BORRADOR"}`}>{r.estado}</span></td>
-              <td>{r.estado !== "CRUZADA" && <button className="ghost" onClick={() => abrirEditar(r)}>Editar montos</button>}</td>
+              <td>{r.estado !== "CRUZADA" && <><button className="ghost" onClick={() => abrirEditar(r)}>Editar montos</button> <button className="ghost" onClick={() => eliminarFac(r)}>Eliminar</button></>}</td>
             </tr>
           ))}
           {filtradas.length === 0 && <tr><td colSpan={7}>Sin facturas.</td></tr>}

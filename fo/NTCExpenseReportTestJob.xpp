@@ -30,20 +30,22 @@ class NTCExpenseReportTestJob
         request.parmPersonnelNumber('NTC-0377');            // worker real de ntc
         request.parmPurpose('TARJETA CORPORATIVA');
         request.parmDescription('Prueba tipo de cambio + kilometraje');
-        request.parmExternalId('LIQ-TEST-DIM-001');        // cambia el sufijo para re-probar limpio
+        request.parmExternalId('LIQ-TEST-DIM-005');        // cambia el sufijo para re-probar limpio (usa uno que NO exista)
 
         // ----- Linea 1: CRC (control) -----
         l1.parmCostType('ALMUERZO_CENA');
         l1.parmAmount(12000.00);
         l1.parmCurrency('CRC');
         l1.parmPayMethod('TARJET_COR');
-        l1.parmTransDate(str2Date('19/06/2026', 123));      // dia/mes/anio
+        l1.parmTransDate(today());                          // fecha de hoy (periodo fiscal abierto)
         l1.parmDescription('Almuerzo');
         l1.parmTaxGroup('IVA');
         l1.parmTaxItemGroup('IVA 13%');
         l1.parmReceiptNumber('00100001010000000123');
         l1.parmMerchant('Soda Central');
         l1.parmCostCenter('100302'); // centro de costo REAL (Finanzas) - cambialo por el que quieras probar
+        l1.parmDepartamento('10');    // A = primeros 2 digitos del centro de costo
+        l1.parmUnidadNegocio('1003'); // B = primeros 4 digitos del centro de costo
         lines.addEnd(l1);
 
         // ----- Linea 2: USD -> verificar colonizacion (AmountMST != AmountCurr) -----
@@ -51,13 +53,15 @@ class NTCExpenseReportTestJob
         l2.parmAmount(100.00);                              // 100 USD
         l2.parmCurrency('USD');
         l2.parmPayMethod('TARJET_DOL');
-        l2.parmTransDate(str2Date('19/06/2026', 123));
+        l2.parmTransDate(today());
         l2.parmDescription('Cena en gira (USD)');
         l2.parmTaxGroup('EXENTO');
         l2.parmTaxItemGroup('EXENTO');
         l2.parmReceiptNumber('INV-USD-777');
         l2.parmMerchant('Hotel Aeropuerto');
         l2.parmCostCenter('100302');
+        l2.parmDepartamento('10');
+        l2.parmUnidadNegocio('1003');
         lines.addEnd(l2);
 
         // ----- Linea 3: KILOMETRAJE -> ZoneCode + KMOwnCar -----
@@ -65,13 +69,15 @@ class NTCExpenseReportTestJob
         l3.parmAmount(15000.00);
         l3.parmCurrency('CRC');
         l3.parmPayMethod('FONDO_PERS');
-        l3.parmTransDate(str2Date('20/06/2026', 123));
+        l3.parmTransDate(today());
         l3.parmDescription('Gira zona GAM');
         l3.parmTaxGroup('EXENTO');
         l3.parmTaxItemGroup('EXENTO');
         l3.parmZoneCode('GAM');
         l3.parmKMOwnCar(120.5);                             // decimal
         l3.parmCostCenter('100302');
+        l3.parmDepartamento('10');
+        l3.parmUnidadNegocio('1003');
         lines.addEnd(l3);
 
         request.parmLines(lines);
