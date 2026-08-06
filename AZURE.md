@@ -1,5 +1,11 @@
 # Despliegue en Azure App Service
 
+## Referencia rápida (recursos)
+- **Suscripción:** `Azure - Nutricare` → `669deb59-15c4-465a-8c35-0fbe12d83c3c`
+- **Resource group:** `rg-nutricare-liquidacion`
+- **App Service:** `nutricare-liquidacion` (URL: `https://nutricare-liquidacion.azurewebsites.net`)
+- Fijar contexto: `az account set --subscription "669deb59-15c4-465a-8c35-0fbe12d83c3c"`
+
 Arquitectura: **un solo App Service** (Node, Linux). El backend sirve también el
 frontend ya compilado (`frontend/dist`). Despliegue automático con **GitHub Actions**
 al hacer push a `main` (workflow en `.github/workflows/azure-deploy.yml`).

@@ -39,7 +39,8 @@ export function MobileCaptura({ cat, sesion, selfApproval }: { cat: Catalogos; s
   useEffect(() => { getFotoUrl().then(setFotoUrl).catch(() => setFotoUrl(null)); }, []);
   const iniciales = (empleado?.nombre ?? "").split(" ").filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase() || "NN";
   const cats = cat.categorias.filter((c) => c.empresa === empresa);
-  const aprobadores = selfApproval ? cat.usuarios : cat.usuarios.filter((u) => u.id !== empleado?.id);
+  const aprobadores = (selfApproval ? cat.usuarios : cat.usuarios.filter((u) => u.id !== empleado?.id))
+    .filter((u) => !u.empresa || u.empresa === empresa);
   useEffect(() => { if (aprobadorId === empleado?.id || !aprobadores.some((u) => u.id === aprobadorId)) setAprobadorId(aprobadores[0]?.id ?? ""); }, [empleado?.id]);
   useEffect(() => {
     const validos = cat.centrosCosto.filter((c) => !c.empresa || c.empresa === empresa);

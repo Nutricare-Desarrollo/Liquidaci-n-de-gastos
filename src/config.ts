@@ -18,8 +18,20 @@ export interface AppConfig {
   notificacion: { approvalsFlowUrl: string; callbackSecret: string };
   app: { baseUrl: string };
   auth: { enabled: boolean; tenantId: string; apiAudience: string; adminRole: string; contaRole: string; devRoles: string[] };
-  usuarios: { dominio: string; excluir: string[] };
+  usuarios: { dominio: string; excluir: string[]; empresaDominios: Record<string, string> };
   permitirAutoaprobacion: boolean;
+}
+
+// "ntc:nutricare.co.cr;feh:farmacia.co.cr,otra.co.cr" -> { "nutricare.co.cr": "ntc", ... }
+function parseEmpresaDominios(raw: string): Record<string, string> {
+  const map: Record<string, string> = {};
+  for (const part of raw.split(";").map((s) => s.trim()).filter(Boolean)) {
+    const idx = part.indexOf(":");
+    if (idx < 0) continue;
+    const empresa = part.slice(0, idx).trim().toLowerCase();
+    for (const d of part.slice(idx + 1).split(",").map((s) => s.trim().toLowerCase()).filter(Boolean)) map[d] = empresa;
+  }
+  return map;
 }
 
 export function loadConfig(): AppConfig {
@@ -50,6 +62,9 @@ export function loadConfig(): AppConfig {
     usuarios: {
       dominio: opt("USUARIOS_DOMINIO", "nutricare.co.cr"),
       excluir: opt("USUARIOS_EXCLUIR", "").split(",").map((x) => x.trim().toLowerCase()).filter(Boolean),
+      // Mapea dominio de correo -> empresa (ntc/feh) para filtrar colaboradores.
+      // Formato: "ntc:nutricare.co.cr;feh:farmacia.co.cr,otra.co.cr"
+      empresaDominios: parseEmpresaDominios(opt("EMPRESA_DOMINIOS", "")),
     },
     permitirAutoaprobacion: opt("ALLOW_SELF_APPROVAL") === "1",
   };

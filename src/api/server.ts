@@ -78,12 +78,21 @@ export function buildServer(deps: Deps): FastifyInstance {
   app.get("/health", async () => ({ ok: true, demo: deps.demo, auth: authOn, selfApproval: !!deps.config?.permitirAutoaprobacion, servicios: deps.modos ?? [] }));
   app.get("/me", async (req) => req.sesion ?? null);
 
-  app.get("/catalogos", async () => ({
-    categorias: await deps.db.categoria.findMany({ where: { activo: true } }),
-    centrosCosto: await deps.db.centroCosto.findMany({ where: { activo: true } }),
-    gruposImpuesto: await deps.db.grupoImpuesto.findMany(),
-    usuarios: await deps.usuarios.listar(),
-  }));
+  app.get("/catalogos", async () => {
+    // Etiquetar cada colaborador con su empresa (ntc/feh) segun el dominio del correo,
+    // para poder filtrar el selector por empresa (Farmacia = FEH).
+    const empMap = deps.config?.usuarios.empresaDominios ?? {};
+    const usuarios = (await deps.usuarios.listar()).map((u) => {
+      const dom = (u.email.split("@")[1] ?? "").toLowerCase();
+      return { ...u, empresa: empMap[dom] };
+    });
+    return {
+      categorias: await deps.db.categoria.findMany({ where: { activo: true } }),
+      centrosCosto: await deps.db.centroCosto.findMany({ where: { activo: true } }),
+      gruposImpuesto: await deps.db.grupoImpuesto.findMany(),
+      usuarios,
+    };
+  });
 
   app.post("/jobs/ingesta-correo", async () => deps.correo.poll());
   app.post("/jobs/cruce", async () => procesarCruce(deps.db));

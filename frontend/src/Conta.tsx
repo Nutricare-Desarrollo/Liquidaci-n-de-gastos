@@ -82,6 +82,15 @@ function LiquidacionesList({ cat, onOpen, sesion }: { cat: Catalogos; onOpen: (i
   const [aprId, setAprId] = useState(cat.usuarios[1]?.id ?? cat.usuarios[0]?.id ?? "");
   const cargar = () => api.listar(estado || undefined).then(setRows).catch(() => {});
   useEffect(() => { cargar(); }, [estado]);
+  const usuariosEmp = cat.usuarios.filter((u) => !u.empresa || u.empresa === empresa);
+  // Al cambiar de empresa, dejar centro/empleado/aprobador validos para esa empresa (Farmacia = FEH).
+  useEffect(() => {
+    const centros = cat.centrosCosto.filter((c) => !c.empresa || c.empresa === empresa);
+    if (!centros.some((c) => c.id === ccId)) setCcId(centros[0]?.id ?? "");
+    const us = cat.usuarios.filter((u) => !u.empresa || u.empresa === empresa);
+    if (!us.some((u) => u.id === empId)) setEmpId(us[0]?.id ?? "");
+    if (!us.some((u) => u.id === aprId)) setAprId(us[0]?.id ?? "");
+  }, [empresa]);
 
   async function crearLiq() {
     setMsg(null);
@@ -125,7 +134,7 @@ function LiquidacionesList({ cat, onOpen, sesion }: { cat: Catalogos; onOpen: (i
           <p><small className="mono">Para conta/asistentes que registran gastos de otras personas, sin usar la app del telefono.</small></p>
           <div className="fields">
             <div className="field"><label>Empleado</label>
-              <Combo options={cat.usuarios.map((u) => ({ value: u.id, label: u.nombre ?? u.email, hint: u.email }))}
+              <Combo options={usuariosEmp.map((u) => ({ value: u.id, label: u.nombre ?? u.email, hint: u.email }))}
                 value={empId} onChange={setEmpId} placeholder="Escribi el nombre..." /></div>
             <div className="field"><label>Empresa</label>
               <select value={empresa} onChange={(e) => setEmpresa(e.target.value)}><option value="ntc">NTC</option><option value="feh">FEH</option></select></div>
@@ -134,10 +143,10 @@ function LiquidacionesList({ cat, onOpen, sesion }: { cat: Catalogos; onOpen: (i
             <div className="field"><label>Moneda del informe</label>
               <select value={moneda} onChange={(e) => setMoneda(e.target.value)}><option value="CRC">Colones (CRC)</option><option value="USD">Dolares (USD)</option></select></div>
             <div className="field"><label>Centro de costo</label>
-              <Combo options={cat.centrosCosto.map((c) => ({ value: c.id, label: c.name }))}
+              <Combo options={cat.centrosCosto.filter((c) => !c.empresa || c.empresa === empresa).map((c) => ({ value: c.id, label: c.name }))}
                 value={ccId} onChange={setCcId} placeholder="Escribi el centro..." /></div>
             <div className="field"><label>Aprobador</label>
-              <UsuarioPicker usuarios={cat.usuarios} value={aprId} onChange={setAprId} /></div>
+              <UsuarioPicker usuarios={usuariosEmp} value={aprId} onChange={setAprId} /></div>
           </div>
           <div className="actions"><AsyncButton className="primary" onClick={crearLiq} loadingText="Creando...">Crear y abrir</AsyncButton><button className="ghost" onClick={() => setCrear(false)}>Cancelar</button></div>
         </div>
@@ -934,20 +943,27 @@ function CapturasView({ cat, onCrearFactura }: { cat: Catalogos; onCrearFactura:
       {msg && <div className={`msg ${msg.t}`}>{msg.x}</div>}
       <div className="grid">
         <table>
-          <thead><tr><th>Name</th><th>Correo empleado</th><th>Estado</th><th>Clave</th><th></th></tr></thead>
+          <thead><tr><th>Name</th><th>Empleado</th><th>Liquidacion</th><th>Categoria</th><th>Fecha</th><th>Estado</th><th>Clave</th><th>Foto</th><th></th></tr></thead>
           <tbody>
-            {rows.filter((c) => coincideTexto(c, q)).map((c, i) => {
+            {rows.filter((c) => coincideTexto(c, q) || coincideTexto({ liq: liqs.find((l) => l.id === c["liquidacionId"])?.name ?? "" }, q)).map((c, i) => {
               const id = String(c["id"] ?? i);
               const estado = String(c["estado"] ?? "");
               const clave = claveDeCaptura(c);
               const cruzada = estado === "CRUZADA";
               const regimen = estado === "PENDIENTE_REGIMEN";
+              const liqName = liqs.find((l) => l.id === c["liquidacionId"])?.name ?? "-";
+              const catName = cat.categorias.find((k) => k.id === c["categoriaId"])?.nombre ?? "-";
+              const foto = c["imagenUrl"] ? String(c["imagenUrl"]) : "";
               return (
                 <tr key={id}>
                   <td>{String(c["name"] ?? "")}</td>
                   <td>{String(c["correoEmpleado"] ?? "")}</td>
+                  <td>{liqName}</td>
+                  <td>{catName}</td>
+                  <td>{fdate(c["createdAt"] as string | undefined)}</td>
                   <td><span className={`badge ${regimen ? "estado-EN_REVISION_CONTA" : "estado-" + (cruzada ? "POSTEADA" : "ENVIADA")}`}>{regimen ? "REGIMEN" : estado}</span></td>
                   <td><small className="mono">{clave}</small></td>
+                  <td>{foto ? <a href={foto} target="_blank" rel="noreferrer">Ver</a> : "-"}</td>
                   <td>
                     <div style={{ display: "flex", gap: 6 }}>
                       {regimen && <button className="ghost" onClick={() => abrirConvertir(c)}>Convertir a gasto</button>}
@@ -959,7 +975,7 @@ function CapturasView({ cat, onCrearFactura }: { cat: Catalogos; onCrearFactura:
                 </tr>
               );
             })}
-            {rows.length === 0 && <tr><td colSpan={5}>Sin capturas.</td></tr>}
+            {rows.length === 0 && <tr><td colSpan={9}>Sin capturas.</td></tr>}
           </tbody>
         </table>
       </div>
