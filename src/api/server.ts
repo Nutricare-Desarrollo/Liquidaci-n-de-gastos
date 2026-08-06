@@ -418,7 +418,7 @@ export function buildServer(deps: Deps): FastifyInstance {
     return r.ok ? reply.code(201).send(r) : reply.code(422).send(r);
   });
 
-  app.get("/facturas", async (req, reply) => guard(req, reply, "conta") ? deps.db.factura.findMany() : undefined);
+  app.get("/facturas", async (req, reply) => guard(req, reply, "conta") ? deps.db.factura.findMany({ orderBy: { createdAt: "desc" } }) : undefined);
   app.get("/facturas/sin-cruzar", async (req, reply) => guard(req, reply, "conta") ? liq.facturasSinCruzar(deps.db) : undefined);
   app.post<{ Body: FacturaManualInput }>("/facturas", async (req, reply) => {
     if (!guard(req, reply, "conta")) return;
@@ -436,7 +436,7 @@ export function buildServer(deps: Deps): FastifyInstance {
     const r = await eliminarFactura(deps.db, req.params.id, force);
     return r.ok ? reply.send(r) : reply.code(422).send(r);
   });
-  app.get("/capturas", async (req, reply) => guard(req, reply, "conta") ? deps.db.captura.findMany() : undefined);
+  app.get("/capturas", async (req, reply) => guard(req, reply, "conta") ? deps.db.captura.findMany({ orderBy: { createdAt: "desc" } }) : undefined);
   app.delete<{ Params: { id: string } }>("/capturas/:id", async (req, reply) => {
     if (!guard(req, reply, "conta")) return;
     const c = (await deps.db.captura.findUnique({ where: { id: req.params.id } })) as Record<string, unknown> | null;
@@ -444,7 +444,7 @@ export function buildServer(deps: Deps): FastifyInstance {
     const r = await deps.db.captura.deleteMany({ where: { id: req.params.id } });
     return r.count > 0 ? reply.send({ ok: true }) : reply.code(422).send({ ok: false, error: "No se pudo eliminar la captura." });
   });
-  app.get("/gastos", async (req, reply) => guard(req, reply, "conta") ? deps.db.gasto.findMany({ include: { categoria: true } }) : undefined);
+  app.get("/gastos", async (req, reply) => guard(req, reply, "conta") ? deps.db.gasto.findMany({ include: { categoria: true }, orderBy: { createdAt: "desc" } }) : undefined);
   app.get("/reglas-monto", async (req, reply) => guard(req, reply, "conta") ? deps.db.reglaMonto.findMany() : undefined);
   app.post<{ Body: { categoriaCodigo?: string; montoMaxCRC?: number; montoMaxUSD?: number; activo?: boolean } }>("/reglas-monto", async (req, reply) => {
     if (!guard(req, reply, "conta")) return;

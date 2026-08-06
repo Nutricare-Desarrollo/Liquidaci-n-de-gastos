@@ -54,6 +54,7 @@ export interface Factura {
   id: string; clave: string; consecutivo?: string; emisorNombre?: string; emisorIdentificacion?: string;
   totalComprobante: number; totalImpuesto?: number; totalGravado?: number; totalExento?: number; totalNoSujeto?: number;
   moneda: string; situacionFiscal: string; estado: string; detalle?: string; cantidad?: number;
+  origen?: string | null; createdAt?: string;
 }
 
 export interface ReglaMonto { id: string; categoriaCodigo: string; montoMaxCRC: number; montoMaxUSD: number; activo: boolean; }

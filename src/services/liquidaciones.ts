@@ -144,7 +144,7 @@ export async function listarLiquidaciones(db: Db, estado?: string, ownerId?: str
   const where: Record<string, unknown> = {};
   if (estado) where["estado"] = estado;
   if (ownerId) where["empleadoId"] = ownerId;
-  return db.liquidacion.findMany(Object.keys(where).length ? { where } : undefined) as Promise<Rec[]>;
+  return db.liquidacion.findMany({ ...(Object.keys(where).length ? { where } : {}), orderBy: { createdAt: "desc" } }) as Promise<Rec[]>;
 }
 
 export async function obtenerConGastos(db: Db, id: string): Promise<Rec | null> {
@@ -340,7 +340,7 @@ export async function colas(db: Db): Promise<{ facturasSinCaptura: Rec[]; captur
 }
 
 export async function facturasSinCruzar(db: Db): Promise<Rec[]> {
-  return db.factura.findMany({ where: { estado: "SIN_CAPTURA", esDeLaEmpresa: true } }) as Promise<Rec[]>;
+  return db.factura.findMany({ where: { estado: "SIN_CAPTURA", esDeLaEmpresa: true }, orderBy: { createdAt: "desc" } }) as Promise<Rec[]>;
 }
 
 // Reinicio de datos de PRUEBA: borra liquidaciones/gastos/capturas y deja las

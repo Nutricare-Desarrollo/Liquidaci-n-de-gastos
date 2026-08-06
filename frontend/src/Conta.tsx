@@ -54,7 +54,7 @@ export function Admin({ cat, initialLiqId, demo, vista, setVista, sesion, puedeC
         {seccion === "liquidaciones" && liqId && gastoId && (
           <GastoForm liqId={liqId} gastoId={gastoId} cat={cat} onBack={() => setGastoId(null)} sesion={sesion} />
         )}
-        {seccion === "gastos" && <GenericList titulo="Gastos activos" cargar={api.gastos} cols={["name", "comerciante", "numeroFactura", "montoTotal", "moneda", "tipoComprobante", "situacionFiscal"]} />}
+        {seccion === "gastos" && <GenericList titulo="Gastos activos" cargar={api.gastos} cols={["createdAt", "name", "comerciante", "numeroFactura", "montoTotal", "moneda", "tipoComprobante", "situacionFiscal"]} />}
         {seccion === "capturas" && <CapturasView cat={cat} onCrearFactura={(clave) => { setFacturaPrefill(clave); setSeccion("facturas"); }} />}
         {seccion === "facturas" && <FacturasView prefillClave={facturaPrefill} onConsumePrefill={() => setFacturaPrefill(null)} />}
         {seccion === "reglas" && <ReglasView cat={cat} />}
@@ -863,17 +863,18 @@ function FacturasView({ prefillClave, onConsumePrefill }: { prefillClave?: strin
         </div>
       )}
       <div className="grid"><table>
-        <thead><tr><th># Factura</th><th>Emisor</th><th className="num">Total</th><th>Moneda</th><th>Situacion</th><th>Estado</th><th></th></tr></thead>
+        <thead><tr><th># Factura</th><th>Emisor</th><th className="num">Total</th><th>Moneda</th><th>Situacion</th><th>Estado</th><th>Creada</th><th></th></tr></thead>
         <tbody>
           {filtradas.map((r) => (
             <tr key={r.id}>
               <td className="pill-link">{r.consecutivo || "-"}</td><td>{r.emisorNombre}</td>
               <td className="num">{fmt(r.totalComprobante)}</td><td>{r.moneda}</td><td>{r.situacionFiscal}</td>
               <td><span className={`badge estado-${r.estado === "CRUZADA" ? "POSTEADA" : "BORRADOR"}`}>{r.estado}</span></td>
+              <td>{fdate(r.createdAt)}</td>
               <td>{r.estado !== "CRUZADA" && <button className="ghost" onClick={() => abrirEditar(r)}>Editar montos</button>} <button className="ghost" onClick={() => eliminarFac(r)}>Eliminar</button></td>
             </tr>
           ))}
-          {filtradas.length === 0 && <tr><td colSpan={7}>Sin facturas.</td></tr>}
+          {filtradas.length === 0 && <tr><td colSpan={8}>Sin facturas.</td></tr>}
         </tbody>
       </table></div>
       {editId && (
@@ -1233,7 +1234,7 @@ function GenericList({ titulo, cargar, cols }: { titulo: string; cargar: () => P
       </div>
       <div className="grid">
         <table>
-          <thead><tr>{cols.map((c) => <th key={c}>{c}</th>)}</tr></thead>
+          <thead><tr>{cols.map((c) => <th key={c}>{COL_LABEL[c] ?? c}</th>)}</tr></thead>
           <tbody>
             {visibles.map((r, i) => (<tr key={i}>{cols.map((c) => <td key={c}>{cell(r[c])}</td>)}</tr>))}
             {visibles.length === 0 && <tr><td colSpan={cols.length}>Sin registros.</td></tr>}
@@ -1273,8 +1274,16 @@ function cell(v: unknown): string {
   if (v === null || v === undefined) return "-";
   if (typeof v === "boolean") return v ? "Si" : "No";
   if (typeof v === "number") return v.toLocaleString("es-CR");
-  return String(v);
+  const s = String(v);
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:/.test(s)) return new Date(s).toLocaleString("es-CR"); // fecha ISO -> legible
+  return s;
 }
+
+// Etiquetas legibles para los encabezados del GenericList.
+const COL_LABEL: Record<string, string> = {
+  createdAt: "Creada", name: "Name", comerciante: "Comerciante", numeroFactura: "Nº factura",
+  montoTotal: "Monto", moneda: "Moneda", tipoComprobante: "Tipo", situacionFiscal: "Situacion",
+};
 function describe(e: unknown): string {
   const body = (e as { body?: { errores?: string[]; mensaje?: string; error?: string } })?.body;
   if (body?.errores?.length) return body.errores.join(" | ");
