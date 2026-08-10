@@ -18,7 +18,7 @@ export interface AppConfig {
   notificacion: { approvalsFlowUrl: string; callbackSecret: string };
   app: { baseUrl: string };
   auth: { enabled: boolean; tenantId: string; apiAudience: string; adminRole: string; contaRole: string; devRoles: string[] };
-  usuarios: { dominio: string; excluir: string[]; empresaDominios: Record<string, string> };
+  usuarios: { dominio: string; excluir: string[]; empresaDominios: Record<string, string>; aprobadoresGlobales: string[]; aprobadorGrupos: string[][] };
   permitirAutoaprobacion: boolean;
 }
 
@@ -65,6 +65,11 @@ export function loadConfig(): AppConfig {
       // Mapea dominio de correo -> empresa (ntc/feh) para filtrar colaboradores.
       // Formato: "ntc:nutricare.co.cr;feh:farmacia.co.cr,otra.co.cr"
       empresaDominios: parseEmpresaDominios(opt("EMPRESA_DOMINIOS", "")),
+      // Correos que pueden aprobar informes de CUALQUIER empresa (excepciones: Maricela, Marta...).
+      aprobadoresGlobales: opt("APROBADORES_GLOBALES", "").split(",").map((x) => x.trim().toLowerCase()).filter(Boolean),
+      // Grupos de aprobadores que se notifican JUNTOS (primero en responder aprueba).
+      // Formato: "a@x.com,b@x.com;c@y.com,d@y.com"
+      aprobadorGrupos: opt("APROBADOR_GRUPOS", "").split(";").map((g) => g.split(",").map((e) => e.trim().toLowerCase()).filter(Boolean)).filter((g) => g.length > 0),
     },
     permitirAutoaprobacion: opt("ALLOW_SELF_APPROVAL") === "1",
   };

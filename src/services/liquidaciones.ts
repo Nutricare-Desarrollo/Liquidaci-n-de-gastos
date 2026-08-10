@@ -157,7 +157,7 @@ export async function obtenerConGastos(db: Db, id: string): Promise<Rec | null> 
 export async function actualizarGasto(db: Db, id: string, patch: {
   centroCostoId?: string | null; grupoImpuesto?: string; informacionAdicional?: string;
   litros?: number | null; tipoGasolina?: string | null; categoriaId?: string; numeroFactura?: string;
-  zona?: string | null; kilometros?: number | null; montoTotal?: number;
+  zona?: string | null; kilometros?: number | null; montoTotal?: number; situacionFiscal?: string;
 }): Promise<{ gasto: Rec; errores: string[] }> {
   const data: Rec = { ...patch };
   if (patch.montoTotal !== undefined) data["montoTotal"] = Number(patch.montoTotal); // permitir editar el monto (items 4/9)

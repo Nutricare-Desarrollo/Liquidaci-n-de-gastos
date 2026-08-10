@@ -69,6 +69,7 @@ export function Admin({ cat, initialLiqId, demo, vista, setVista, sesion, puedeC
 function LiquidacionesList({ cat, onOpen, sesion }: { cat: Catalogos; onOpen: (id: string) => void; sesion?: Sesion | null }) {
   const [rows, setRows] = useState<Liquidacion[]>([]);
   const [estado, setEstado] = useState("");
+  const [empresaFiltro, setEmpresaFiltro] = useState("");
   const [q, setQ] = useState("");
   const [crear, setCrear] = useState(false);
   const [msg, setMsg] = useState<{ t: "ok" | "err"; x: string } | null>(null);
@@ -83,13 +84,14 @@ function LiquidacionesList({ cat, onOpen, sesion }: { cat: Catalogos; onOpen: (i
   const cargar = () => api.listar(estado || undefined).then(setRows).catch(() => {});
   useEffect(() => { cargar(); }, [estado]);
   const usuariosEmp = cat.usuarios.filter((u) => !u.empresa || u.empresa === empresa);
+  // Aprobadores: los de la empresa + los "globales" (excepciones que aprueban cualquier empresa).
+  const aprobadoresEmp = cat.usuarios.filter((u) => !u.empresa || u.empresa === empresa || u.aprobadorGlobal);
   // Al cambiar de empresa, dejar centro/empleado/aprobador validos para esa empresa (Farmacia = FEH).
   useEffect(() => {
     const centros = cat.centrosCosto.filter((c) => !c.empresa || c.empresa === empresa);
     if (!centros.some((c) => c.id === ccId)) setCcId(centros[0]?.id ?? "");
-    const us = cat.usuarios.filter((u) => !u.empresa || u.empresa === empresa);
-    if (!us.some((u) => u.id === empId)) setEmpId(us[0]?.id ?? "");
-    if (!us.some((u) => u.id === aprId)) setAprId(us[0]?.id ?? "");
+    if (!usuariosEmp.some((u) => u.id === empId)) setEmpId(usuariosEmp[0]?.id ?? "");
+    if (!aprobadoresEmp.some((u) => u.id === aprId)) setAprId(aprobadoresEmp[0]?.id ?? "");
   }, [empresa]);
 
   async function crearLiq() {
@@ -121,6 +123,11 @@ function LiquidacionesList({ cat, onOpen, sesion }: { cat: Catalogos; onOpen: (i
             try { const r = await api.cruce(); setMsg({ t: "ok", x: `Cruce ejecutado: ${r.cruzados} gasto(s) creados, ${r.sinFactura} sin factura.` }); cargar(); }
             catch (e) { setMsg({ t: "err", x: describe(e) }); }
           }}>Ejecutar cruce</AsyncButton>
+          <select value={empresaFiltro} onChange={(e) => setEmpresaFiltro(e.target.value)} style={{ width: 120 }}>
+            <option value="">Empresa: todas</option>
+            <option value="ntc">NTC</option>
+            <option value="feh">FEH</option>
+          </select>
           <select value={estado} onChange={(e) => setEstado(e.target.value)} style={{ width: 180 }}>
             <option value="">Todas</option>
             {["BORRADOR", "ENVIADA", "EN_REVISION_CONTA", "APROBADA", "POSTEADA", "DEVUELTA"].map((e) => <option key={e} value={e}>{e}</option>)}
@@ -146,16 +153,16 @@ function LiquidacionesList({ cat, onOpen, sesion }: { cat: Catalogos; onOpen: (i
               <Combo options={cat.centrosCosto.filter((c) => !c.empresa || c.empresa === empresa).map((c) => ({ value: c.id, label: c.name }))}
                 value={ccId} onChange={setCcId} placeholder="Escribi el centro..." /></div>
             <div className="field"><label>Aprobador</label>
-              <UsuarioPicker usuarios={usuariosEmp} value={aprId} onChange={setAprId} /></div>
+              <UsuarioPicker usuarios={aprobadoresEmp} value={aprId} onChange={setAprId} /></div>
           </div>
           <div className="actions"><AsyncButton className="primary" onClick={crearLiq} loadingText="Creando...">Crear y abrir</AsyncButton><button className="ghost" onClick={() => setCrear(false)}>Cancelar</button></div>
         </div>
       )}
       <div className="grid">
         <table>
-          <thead><tr><th>Name</th><th>Empleado</th><th>Fecha de creacion</th><th>Correo empleado</th><th>Moneda</th><th>Centro costo</th><th>Estado</th><th>Proposito</th><th className="num">Monto</th><th>Reporte FO</th></tr></thead>
+          <thead><tr><th>Name</th><th>Empresa</th><th>Empleado</th><th>Fecha de creacion</th><th>Correo empleado</th><th>Moneda</th><th>Centro costo</th><th>Estado</th><th>Proposito</th><th className="num">Monto</th><th>Reporte FO</th></tr></thead>
           <tbody>
-            {[...rows].filter((l) => {
+            {[...rows].filter((l) => !empresaFiltro || l.empresa === empresaFiltro).filter((l) => {
               const s = q.trim().toLowerCase();
               if (!s) return true;
               const nombre = cat.usuarios.find((u) => (u.email ?? "").toLowerCase() === (l.correoEmpleado ?? "").toLowerCase())?.nombre ?? "";
@@ -164,6 +171,7 @@ function LiquidacionesList({ cat, onOpen, sesion }: { cat: Catalogos; onOpen: (i
             }).sort((a, b) => String(b.createdAt ?? "").localeCompare(String(a.createdAt ?? ""))).map((l) => (
               <tr key={l.id} onClick={() => onOpen(l.id)}>
                 <td className="pill-link">{l.name}</td>
+                <td><span className="badge">{(l.empresa ?? "").toUpperCase()}</span></td>
                 <td>{cat.usuarios.find((u) => (u.email ?? "").toLowerCase() === (l.correoEmpleado ?? "").toLowerCase())?.nombre ?? "-"}</td>
                 <td>{fdate(l.createdAt)}</td><td>{l.correoEmpleado}</td>
                 <td>{l.moneda}</td>
@@ -310,7 +318,7 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
           {puedeEditarApr ? (
             <div className="field"><label>Centro de costo</label>
               <div className="row-inline">
-                <Combo options={cat.centrosCosto.map((c) => ({ value: c.id, label: c.name, hint: c.operatingUnitNumber }))} value={ccLiq} onChange={setCcLiq} placeholder="Escribi el centro..." />
+                <Combo options={cat.centrosCosto.filter((c) => !c.empresa || c.empresa === liq.empresa).map((c) => ({ value: c.id, label: c.name, hint: c.operatingUnitNumber }))} value={ccLiq} onChange={setCcLiq} placeholder="Escribi el centro..." />
                 <AsyncButton className="ghost" onClick={guardarCentro} disabled={ccLiq === String(liq.centroCostoId ?? "")} loadingText="Guardando...">Guardar</AsyncButton>
               </div>
             </div>
@@ -392,7 +400,7 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
               <div className="field"><label>Centro de costo</label>
                 <select value={sCc} onChange={(e) => setSCc(e.target.value)}>
                   <option value="">(del informe)</option>
-                  {cat.centrosCosto.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                  {cat.centrosCosto.filter((c) => !c.empresa || c.empresa === liq.empresa).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select></div>
               {esKmCat && (<>
                 <div className="field"><label>Zona</label>
@@ -496,7 +504,8 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
 function GastoForm({ liqId, gastoId, cat, onBack, sesion }: { liqId: string; gastoId: string; cat: Catalogos; onBack: () => void; sesion?: Sesion | null; }) {
   const [g, setG] = useState<Gasto | null>(null);
   const [estadoLiq, setEstadoLiq] = useState("");
-  const [grupo, setGrupo] = useState(""); const [ccId, setCcId] = useState(""); const [info, setInfo] = useState(""); const [catId, setCatId] = useState(""); const [numFactura, setNumFactura] = useState(""); const [montoEd, setMontoEd] = useState("");
+  const [empresaLiq, setEmpresaLiq] = useState("");
+  const [grupo, setGrupo] = useState(""); const [ccId, setCcId] = useState(""); const [info, setInfo] = useState(""); const [catId, setCatId] = useState(""); const [numFactura, setNumFactura] = useState(""); const [montoEd, setMontoEd] = useState(""); const [sitEd, setSitEd] = useState("");
   const [subiendo, setSubiendo] = useState(false);
   const [dMonto, setDMonto] = useState(""); const [dCc, setDCc] = useState(""); const [dCat, setDCat] = useState("");
   const [dividir, setDividir] = useState(false);
@@ -507,10 +516,10 @@ function GastoForm({ liqId, gastoId, cat, onBack, sesion }: { liqId: string; gas
   const [msg, setMsg] = useState<{ t: "ok" | "err"; x: string } | null>(null);
 
   const cargar = () => api.detalle(liqId).then((l) => {
-    setEstadoLiq(l.estado);
+    setEstadoLiq(l.estado); setEmpresaLiq(l.empresa ?? "");
     const found = (l.gastos ?? []).find((x) => x.id === gastoId) ?? null;
     setG(found);
-    if (found) { setGrupo(found.grupoImpuesto); setCcId(found.centroCostoId ?? ""); setInfo(found.informacionAdicional ?? ""); setLitros(found.litros != null ? String(found.litros) : ""); setTipoGas(found.tipoGasolina ?? ""); setCatId((found as { categoriaId?: string }).categoriaId ?? found.categoria?.id ?? ""); setNumFactura(found.numeroFactura ?? ""); setZonaG(found.zona ?? ""); setKmG(found.kilometros != null ? String(found.kilometros) : ""); setMontoEd(String(found.montoTotal ?? "")); }
+    if (found) { setGrupo(found.grupoImpuesto); setCcId(found.centroCostoId ?? ""); setInfo(found.informacionAdicional ?? ""); setLitros(found.litros != null ? String(found.litros) : ""); setTipoGas(found.tipoGasolina ?? ""); setCatId((found as { categoriaId?: string }).categoriaId ?? found.categoria?.id ?? ""); setNumFactura(found.numeroFactura ?? ""); setZonaG(found.zona ?? ""); setKmG(found.kilometros != null ? String(found.kilometros) : ""); setMontoEd(String(found.montoTotal ?? "")); setSitEd(found.situacionFiscal ?? ""); }
   }).catch(() => {});
   useEffect(() => { cargar(); }, [liqId, gastoId]);
   if (!g) return <div className="section">Cargando...</div>;
@@ -523,7 +532,7 @@ function GastoForm({ liqId, gastoId, cat, onBack, sesion }: { liqId: string; gas
   async function guardar() {
     setMsg(null);
     try {
-      const r = await api.actualizarGasto(gastoId, { grupoImpuesto: grupo, centroCostoId: ccId || null, informacionAdicional: info, litros: litros === "" ? null : Number(litros), tipoGasolina: tipoGas || null, categoriaId: catId || undefined, numeroFactura: numFactura, zona: zonaG || null, kilometros: kmG === "" ? null : Number(kmG), montoTotal: puedeEditarMonto && montoEd !== "" ? Number(montoEd) : undefined });
+      const r = await api.actualizarGasto(gastoId, { grupoImpuesto: grupo, centroCostoId: ccId || null, informacionAdicional: info, litros: litros === "" ? null : Number(litros), tipoGasolina: tipoGas || null, categoriaId: catId || undefined, numeroFactura: numFactura, zona: zonaG || null, kilometros: kmG === "" ? null : Number(kmG), montoTotal: puedeEditarMonto && montoEd !== "" ? Number(montoEd) : undefined, situacionFiscal: sitEd || undefined });
       setMsg(r.errores.length ? { t: "err", x: r.errores.join(" | ") } : { t: "ok", x: "Gasto guardado." });
       await cargar();
     } catch (e) { setMsg({ t: "err", x: describe(e) }); }
@@ -607,10 +616,16 @@ function GastoForm({ liqId, gastoId, cat, onBack, sesion }: { liqId: string; gas
             : <Field label="Monto total" v={`${fmt(g.montoTotal)} ${g.moneda}`} />}
           <Field label="Tipo de cambio" v="1,00" />
           <Field label="Divisa (del informe)" v={g.moneda} /><Field label="Excede limite" v={g.excedeLimite ? "Si" : "No"} />
-          <Field label="Situacion fiscal (venta)" v={g.situacionFiscal} />
+          <div className="field"><label>Situacion fiscal (venta)</label>
+            <select value={sitEd} onChange={(e) => setSitEd(e.target.value)}>
+              <option value="EXENTO">EXENTO</option>
+              <option value="IVA">IVA</option>
+              <option value="NO_SUJETO">NO SUJETO</option>
+              <option value="SIN_DEFINIR">SIN DEFINIR</option>
+            </select></div>
           <div className="field"><label>Centro costo</label>
             <select value={ccId} onChange={(e) => setCcId(e.target.value)}>
-              <option value="">-</option>{cat.centrosCosto.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}
+              <option value="">-</option>{cat.centrosCosto.filter((x) => !x.empresa || x.empresa === empresaLiq).map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}
             </select></div>
         </div>
       </div>
@@ -727,7 +742,7 @@ function GastoForm({ liqId, gastoId, cat, onBack, sesion }: { liqId: string; gas
                 <div className="field"><label>Monto a separar ({g.moneda})</label><input type="number" value={dMonto} onChange={(e) => setDMonto(e.target.value)} /></div>
                 <div className="field"><label>Centro de costo de la division</label>
                   <select value={dCc} onChange={(e) => setDCc(e.target.value)}>
-                    <option value="">-- elegir --</option>{cat.centrosCosto.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}
+                    <option value="">-- elegir --</option>{cat.centrosCosto.filter((x) => !x.empresa || x.empresa === empresaLiq).map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}
                   </select></div>
                 <div className="field"><label>Categoria (opcional)</label>
                   <select value={dCat} onChange={(e) => setDCat(e.target.value)}>
@@ -1002,7 +1017,7 @@ function CapturasView({ cat, onCrearFactura }: { cat: Catalogos; onCrearFactura:
               </select></div>
             <div className="field"><label>Centro de costo (opcional)</label>
               <select value={cv.centroCostoId} onChange={(e) => setCv({ ...cv, centroCostoId: e.target.value })}>
-                <option value="">(del informe)</option>{cat.centrosCosto.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                <option value="">(del informe)</option>{cat.centrosCosto.filter((c) => !c.empresa || !empresaSel || c.empresa === empresaSel).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select></div>
           </div>
           <div className="actions"><AsyncButton className="primary" onClick={convertir} loadingText="Convirtiendo...">Convertir a gasto</AsyncButton><button className="ghost" onClick={() => setConvId(null)}>Cancelar</button></div>

@@ -37,7 +37,7 @@ export interface AuthPort {
 export interface NotificacionPort {
   notificar(params: { paraEmail: string; titulo: string; cuerpo: string }): Promise<void>;
   /** Solicita aprobacion al aprobador seleccionado (hoy: Teams Approval al enviar). */
-  solicitarAprobacion(params: { aprobadorEmail: string; aprobadorNombre?: string; titulo: string; liquidacionId: string; liquidacionName?: string; enlace?: string }): Promise<void>;
+  solicitarAprobacion(params: { aprobadorEmail: string; aprobadorNombre?: string; aprobadoresEmails?: string[]; titulo: string; liquidacionId: string; liquidacionName?: string; enlace?: string }): Promise<void>;
 }
 
 /** Directorio de usuarios/aprobadores. Hoy: Entra (Graph). Demo: sembrados. */

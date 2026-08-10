@@ -24,7 +24,10 @@ export class TeamsAprobacionNotificacion implements NotificacionPort {
     await this.post({ tipo: "notificacion", paraEmail: params.paraEmail, titulo: params.titulo, cuerpo: params.cuerpo });
   }
 
-  async solicitarAprobacion(params: { aprobadorEmail: string; aprobadorNombre?: string; titulo: string; liquidacionId: string; liquidacionName?: string }): Promise<void> {
-    await this.post({ tipo: "aprobacion", ...params });
+  async solicitarAprobacion(params: { aprobadorEmail: string; aprobadorNombre?: string; aprobadoresEmails?: string[]; titulo: string; liquidacionId: string; liquidacionName?: string; enlace?: string }): Promise<void> {
+    // aprobadoresEmails = lista completa a notificar (primero en responder aprueba).
+    // aprobadoresCsv facilita el "Assigned to" del approval en Power Automate.
+    const emails = params.aprobadoresEmails && params.aprobadoresEmails.length ? params.aprobadoresEmails : [params.aprobadorEmail];
+    await this.post({ tipo: "aprobacion", ...params, aprobadoresEmails: emails, aprobadoresCsv: emails.join(";") });
   }
 }

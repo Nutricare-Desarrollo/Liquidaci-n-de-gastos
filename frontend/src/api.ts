@@ -25,7 +25,7 @@ export class ApiError extends Error {
   constructor(public status: number, public body: unknown) { super(`API ${status}`); }
 }
 
-export interface Usuario { id: string; email: string; nombre?: string; personnelNumber?: string; empresa?: string | null }
+export interface Usuario { id: string; email: string; nombre?: string; personnelNumber?: string; empresa?: string | null; aprobadorGlobal?: boolean }
 export interface Categoria { id: string; codigo: string; nombre: string; taxItemGroup: string; empresa: string; activo?: boolean; expenseType?: string }
 export interface CentroCosto { id: string; operatingUnitNumber: string; name: string; activo?: boolean; departamento?: string | null; unidadNegocio?: string | null; empresa?: string | null }
 export interface GrupoImpuesto { id: string; name: string }

@@ -75,6 +75,13 @@ export function buildServer(deps: Deps): FastifyInstance {
     const base = deps.config?.app.baseUrl ?? "";
     return base ? `${base.replace(/\/+$/, "")}/?liq=${id}` : undefined;
   };
+  // Devuelve la lista de correos a notificar por un aprobador: si pertenece a un
+  // grupo (ej. Maricela+Marta), se notifica a todo el grupo (primero en responder).
+  const grupoAprobadores = (email: string): string[] => {
+    const e = (email ?? "").toLowerCase();
+    const g = (deps.config?.usuarios.aprobadorGrupos ?? []).find((grp) => grp.includes(e));
+    return g && g.length ? g : (e ? [e] : []);
+  };
   app.get("/health", async () => ({ ok: true, demo: deps.demo, auth: authOn, selfApproval: !!deps.config?.permitirAutoaprobacion, servicios: deps.modos ?? [] }));
   app.get("/me", async (req) => req.sesion ?? null);
 
@@ -82,9 +89,11 @@ export function buildServer(deps: Deps): FastifyInstance {
     // Etiquetar cada colaborador con su empresa (ntc/feh) segun el dominio del correo,
     // para poder filtrar el selector por empresa (Farmacia = FEH).
     const empMap = deps.config?.usuarios.empresaDominios ?? {};
+    const globales = deps.config?.usuarios.aprobadoresGlobales ?? [];
     const usuarios = (await deps.usuarios.listar()).map((u) => {
-      const dom = (u.email.split("@")[1] ?? "").toLowerCase();
-      return { ...u, empresa: empMap[dom] };
+      const email = u.email.toLowerCase();
+      const dom = (email.split("@")[1] ?? "").toLowerCase();
+      return { ...u, empresa: empMap[dom], aprobadorGlobal: globales.includes(email) };
     });
     return {
       categorias: await deps.db.categoria.findMany({ where: { activo: true } }),
@@ -228,7 +237,7 @@ export function buildServer(deps: Deps): FastifyInstance {
         if (!apr) notifError = `No se encontro el aprobador (id ${aprId}) en el directorio.`;
         else if (!apr.email) notifError = "El aprobador no tiene correo.";
         if (apr?.email) {
-          await deps.notificacion.solicitarAprobacion({ aprobadorEmail: apr.email, aprobadorNombre: apr.nombre, titulo: `Aprobar liquidacion ${String(l?.["name"] ?? "")}`, liquidacionId: req.params.id, liquidacionName: String(l?.["name"] ?? ""), enlace: enlaceLiq(req.params.id) });
+          await deps.notificacion.solicitarAprobacion({ aprobadorEmail: apr.email, aprobadorNombre: apr.nombre, aprobadoresEmails: grupoAprobadores(apr.email), titulo: `Aprobar liquidacion ${String(l?.["name"] ?? "")}`, liquidacionId: req.params.id, liquidacionName: String(l?.["name"] ?? ""), enlace: enlaceLiq(req.params.id) });
           aprobadorNotificado = apr.nombre ?? apr.email;
         }
       }
@@ -253,7 +262,7 @@ export function buildServer(deps: Deps): FastifyInstance {
         const l = (await deps.db.liquidacion.findUnique({ where: { id: req.params.id } })) as Record<string, unknown> | null;
         const apr = (await deps.usuarios.listar()).find((u) => u.id === b.aprobadorId);
         if (apr?.email) {
-          await deps.notificacion.solicitarAprobacion({ aprobadorEmail: apr.email, aprobadorNombre: apr.nombre, titulo: `Aprobar liquidacion ${String(l?.["name"] ?? "")}`, liquidacionId: req.params.id, liquidacionName: String(l?.["name"] ?? ""), enlace: enlaceLiq(req.params.id) });
+          await deps.notificacion.solicitarAprobacion({ aprobadorEmail: apr.email, aprobadorNombre: apr.nombre, aprobadoresEmails: grupoAprobadores(apr.email), titulo: `Aprobar liquidacion ${String(l?.["name"] ?? "")}`, liquidacionId: req.params.id, liquidacionName: String(l?.["name"] ?? ""), enlace: enlaceLiq(req.params.id) });
           aprobadorNotificado = apr.nombre ?? apr.email;
         }
       } catch (e) { app.log.error(`Notificacion de aprobacion fallo: ${(e as Error).message}`); }
@@ -555,5 +564,5 @@ interface CrearCapturaBody { correoEmpleado: string; imagenBase64: string; mimeT
   // Regimen desde el movil: si el empleado llena estos datos, se crea el gasto directo.
   monto?: number; fecha?: string; comerciante?: string; situacionFiscal?: string; centroCostoId?: string | null; numeroFactura?: string; }
 interface CrearLiqBody { empleadoId: string; correoEmpleado?: string; empresa: string; proposito: string; moneda: string; centroCostoId?: string; aprobadorId?: string; }
-interface GastoPatch { centroCostoId?: string | null; grupoImpuesto?: string; informacionAdicional?: string; litros?: number | null; tipoGasolina?: string | null; categoriaId?: string; numeroFactura?: string; zona?: string | null; kilometros?: number | null; montoTotal?: number; }
+interface GastoPatch { centroCostoId?: string | null; grupoImpuesto?: string; informacionAdicional?: string; litros?: number | null; tipoGasolina?: string | null; categoriaId?: string; numeroFactura?: string; zona?: string | null; kilometros?: number | null; montoTotal?: number; situacionFiscal?: string; }
 interface GastoSimpBody { monto?: number; fecha?: string; comerciante?: string; categoriaId?: string; situacionFiscal?: SituacionFiscal; centroCostoId?: string | null; numeroFactura?: string; zona?: string; kilometros?: number; tipoComprobante?: string; litros?: number; tipoGasolina?: string; }
