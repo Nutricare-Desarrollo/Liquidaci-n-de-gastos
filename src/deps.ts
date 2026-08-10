@@ -21,7 +21,7 @@ import { FakeOcr, FakeStorage, FakeFinance, FakeNotificacion, FakeAuth } from ".
 import { ingestarCorreo, type FacturaRepo } from "./services/ingestaFactura.js";
 import type { AuthPort, FinancePort, NotificacionPort, OcrPort, StoragePort, UsuariosPort } from "./ports/index.js";
 
-export interface CorreoJob { poll(): Promise<{ procesados: number }>; }
+export interface CorreoJob { poll(): Promise<{ procesados: number; ingestadas?: number; ignoradas?: number }>; }
 
 export interface Deps {
   config?: AppConfig; demo: boolean; db: Db;
@@ -78,7 +78,7 @@ export function buildDeps(): Deps {
   let correo: CorreoJob;
   if (tokens && config.graph.mailboxUserId) {
     const g = new GraphCorreoAdapter(config.graph.mailboxUserId, tokens);
-    g.onCorreo((c) => ingestarCorreo(c, { storage, repo: facturaRepo }).then(() => undefined));
+    g.onCorreo((c) => ingestarCorreo(c, { storage, repo: facturaRepo }));
     correo = g; modos.push("correo=graph");
   } else { correo = { poll: async () => ({ procesados: 0 }) }; modos.push("correo=FAKE"); }
 

@@ -118,7 +118,7 @@ function LiquidacionesList({ cat, onOpen, sesion }: { cat: Catalogos; onOpen: (i
             catch (e) { setMsg({ t: "err", x: describe(e) }); }
           }}>Limpiar datos de prueba</AsyncButton>
           <AsyncButton className="ghost" onClick={async () => {
-            try { const r = await api.ingestaCorreo(); setMsg({ t: "ok", x: `Correo revisado: ${r.procesados} correo(s) procesados.` }); cargar(); }
+            try { const r = await api.ingestaCorreo(); setMsg({ t: "ok", x: `Correo revisado: ${r.procesados} correo(s), ${r.ingestadas ?? 0} factura(s) ingestada(s), ${r.ignoradas ?? 0} ignorada(s).` }); cargar(); }
             catch (e) { setMsg({ t: "err", x: describe(e) }); }
           }}>Revisar correo</AsyncButton>
           <AsyncButton className="ghost" onClick={async () => {

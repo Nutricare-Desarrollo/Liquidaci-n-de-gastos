@@ -17,7 +17,7 @@ app
     const pollMin = deps.config?.correoPollMin ?? 0;
     if (pollMin > 0) {
       const correr = () => deps.correo.poll()
-        .then((r) => app.log.info(`[correo] poll automatico: ${r.procesados} procesados`))
+        .then((r) => app.log.info(`[correo] poll automatico: ${r.procesados} correo(s), ${r.ingestadas ?? 0} ingestada(s), ${r.ignoradas ?? 0} ignorada(s)`))
         .catch((e) => app.log.error(`[correo] poll automatico fallo: ${(e as Error).message}`));
       app.log.info(`[correo] poll automatico cada ${pollMin} min`);
       setTimeout(correr, 15_000); // primer ciclo poco despues de arrancar

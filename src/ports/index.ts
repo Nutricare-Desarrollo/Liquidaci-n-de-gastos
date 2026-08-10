@@ -12,9 +12,10 @@ export interface OcrPort {
 }
 
 /** Correo entrante para los XML: hoy buzon M365. Afuera: inbound email / IMAP. */
+export interface ResultadoIngestaCorreo { ingestadas: number; ignoradas: number; }
 export interface CorreoEntrantePort {
   /** Emite cada correo recibido en el buzon de facturacion. */
-  onCorreo(handler: (correo: CorreoEntrante) => Promise<void>): void;
+  onCorreo(handler: (correo: CorreoEntrante) => Promise<ResultadoIngestaCorreo | void>): void;
 }
 export interface CorreoEntrante {
   asunto: string;
