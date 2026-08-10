@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { PROPOSITOS, labelProposito, categoriasPermitidas, esKilometraje, esAnticipos } from "./proposito.js";
 import { Combo } from "./Combo.js";
-import type { TarifaKm, Categoria, CentroCosto } from "./api.js";
+import type { TarifaKm, Categoria, CentroCosto, GrupoAprobacion } from "./api.js";
 import { api, type Catalogos, type Factura, type FacturaSinCruzar, type Gasto, type Liquidacion, type ReglaMonto, type Sesion } from "./api.js";
 import { UsuarioPicker } from "./UsuarioPicker.js";
 import { AsyncButton } from "./AsyncButton.js";
@@ -1241,7 +1241,7 @@ function CentrosView({ recargarCat }: { recargarCat?: () => void }) {
 
 function AprobadoresView({ cat }: { cat: Catalogos }) {
   const [globales, setGlobales] = useState<string[]>([]);
-  const [grupos, setGrupos] = useState<string[][]>([]);
+  const [grupos, setGrupos] = useState<GrupoAprobacion[]>([]);
   const [msg, setMsg] = useState<{ t: "ok" | "err"; x: string } | null>(null);
   const [addG, setAddG] = useState("");
 
@@ -1252,14 +1252,15 @@ function AprobadoresView({ cat }: { cat: Catalogos }) {
 
   const addGlobal = (email: string) => { const e = email.toLowerCase(); if (e && !globales.includes(e)) setGlobales([...globales, e]); };
   const delGlobal = (email: string) => setGlobales(globales.filter((x) => x !== email));
-  const nuevoGrupo = () => setGrupos([...grupos, []]);
+  const nuevoGrupo = () => setGrupos([...grupos, { nombre: "", miembros: [] }]);
   const delGrupo = (i: number) => setGrupos(grupos.filter((_, k) => k !== i));
-  const addMiembro = (i: number, email: string) => { const e = email.toLowerCase(); if (!e) return; setGrupos(grupos.map((g, k) => (k === i ? (g.includes(e) ? g : [...g, e]) : g))); };
-  const delMiembro = (i: number, email: string) => setGrupos(grupos.map((g, k) => (k === i ? g.filter((x) => x !== email) : g)));
+  const setNombre = (i: number, nombre: string) => setGrupos(grupos.map((g, k) => (k === i ? { ...g, nombre } : g)));
+  const addMiembro = (i: number, email: string) => { const e = email.toLowerCase(); if (!e) return; setGrupos(grupos.map((g, k) => (k === i ? (g.miembros.includes(e) ? g : { ...g, miembros: [...g.miembros, e] }) : g))); };
+  const delMiembro = (i: number, email: string) => setGrupos(grupos.map((g, k) => (k === i ? { ...g, miembros: g.miembros.filter((x) => x !== email) } : g)));
 
   async function guardar() {
     setMsg(null);
-    try { await api.guardarConfigAprobadores({ globales, grupos: grupos.filter((g) => g.length > 0) }); setMsg({ t: "ok", x: "Configuracion de aprobadores guardada." }); }
+    try { await api.guardarConfigAprobadores({ globales, grupos: grupos.filter((g) => g.miembros.length > 0) }); setMsg({ t: "ok", x: "Configuracion de aprobadores guardada." }); }
     catch (e) { setMsg({ t: "err", x: describe(e) }); }
   }
 
@@ -1283,13 +1284,13 @@ function AprobadoresView({ cat }: { cat: Catalogos }) {
         <p><small className="mono">Si el aprobador elegido está en un grupo, la aprobación le llega a todo el grupo y aprueba el primero que responda.</small></p>
         {grupos.map((g, i) => (
           <div key={i} style={{ border: "1px solid var(--line)", borderRadius: 8, padding: 10, marginBottom: 8 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-              <b>Grupo {i + 1}</b>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, marginBottom: 6 }}>
+              <input value={g.nombre} onChange={(e) => setNombre(i, e.target.value)} placeholder={`Nombre del grupo (ej. Gerencia Farmacia)`} style={{ flex: 1 }} />
               <button className="ghost" onClick={() => delGrupo(i)}>Eliminar grupo</button>
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
-              {g.map((e) => <span key={e} className="badge">{nombreDe(e)} <a style={{ cursor: "pointer" }} onClick={() => delMiembro(i, e)}>✕</a></span>)}
-              {g.length === 0 && <small className="mono">Sin miembros.</small>}
+              {g.miembros.map((e) => <span key={e} className="badge">{nombreDe(e)} <a style={{ cursor: "pointer" }} onClick={() => delMiembro(i, e)}>✕</a></span>)}
+              {g.miembros.length === 0 && <small className="mono">Sin miembros.</small>}
             </div>
             <div style={{ maxWidth: 360 }}>
               <Combo options={opciones} value="" onChange={(v) => addMiembro(i, v)} placeholder="Agregar miembro..." />

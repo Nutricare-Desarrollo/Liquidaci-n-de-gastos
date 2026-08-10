@@ -26,6 +26,7 @@ export class ApiError extends Error {
 }
 
 export interface Usuario { id: string; email: string; nombre?: string; personnelNumber?: string; empresa?: string | null; aprobadorGlobal?: boolean }
+export interface GrupoAprobacion { nombre: string; miembros: string[] }
 export interface Categoria { id: string; codigo: string; nombre: string; taxItemGroup: string; empresa: string; activo?: boolean; expenseType?: string }
 export interface CentroCosto { id: string; operatingUnitNumber: string; name: string; activo?: boolean; departamento?: string | null; unidadNegocio?: string | null; empresa?: string | null }
 export interface GrupoImpuesto { id: string; name: string }
@@ -109,8 +110,8 @@ export const api = {
   actualizarTarifaKm: (id: string, b: Record<string, unknown>) => req<{ ok: boolean }>(`/tarifas-km/${id}`, { method: "PATCH", body: JSON.stringify(b) }),
   categoriasAdmin: () => req<Categoria[]>("/categorias"),
   actualizarCategoria: (id: string, b: Record<string, unknown>) => req<{ ok: boolean }>(`/categorias/${id}`, { method: "PATCH", body: JSON.stringify(b) }),
-  getConfigAprobadores: () => req<{ globales: string[]; grupos: string[][] }>("/config/aprobadores"),
-  guardarConfigAprobadores: (b: { globales: string[]; grupos: string[][] }) => req<{ ok: boolean }>("/config/aprobadores", { method: "PUT", body: JSON.stringify(b) }),
+  getConfigAprobadores: () => req<{ globales: string[]; grupos: GrupoAprobacion[] }>("/config/aprobadores"),
+  guardarConfigAprobadores: (b: { globales: string[]; grupos: GrupoAprobacion[] }) => req<{ ok: boolean }>("/config/aprobadores", { method: "PUT", body: JSON.stringify(b) }),
   centrosAdmin: () => req<CentroCosto[]>("/centros"),
   actualizarCentro: (id: string, b: Record<string, unknown>) => req<{ ok: boolean }>(`/centros/${id}`, { method: "PATCH", body: JSON.stringify(b) }),
   reset: () => req<{ ok: boolean; facturasReseteadas: number }>("/admin/reset", { method: "POST" }),

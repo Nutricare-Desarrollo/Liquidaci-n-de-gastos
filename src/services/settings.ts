@@ -8,9 +8,10 @@ import type { Db } from "../db/client.js";
 
 type Rec = Record<string, unknown>;
 
+export interface GrupoAprobacion { nombre: string; miembros: string[]; }
 export interface ConfigAprobadores {
-  globales: string[];   // correos que aprueban informes de CUALQUIER empresa
-  grupos: string[][];   // grupos que se notifican juntos (primero en responder)
+  globales: string[];          // correos que aprueban informes de CUALQUIER empresa
+  grupos: GrupoAprobacion[];   // grupos con nombre que se notifican juntos (primero en responder)
 }
 
 const K_GLOBALES = "aprobadoresGlobales";
@@ -34,18 +35,22 @@ async function guardarJson(db: Db, clave: string, valor: unknown): Promise<void>
   else await db.configuracion.create({ data: { clave, valor: s } });
 }
 
+function normGrupo(g: GrupoAprobacion, i: number): GrupoAprobacion {
+  return { nombre: (g.nombre ?? "").trim() || `Grupo ${i + 1}`, miembros: (g.miembros ?? []).map((e) => e.trim().toLowerCase()).filter(Boolean) };
+}
+
 export async function leerAprobadores(db: Db, fallback: ConfigAprobadores): Promise<ConfigAprobadores> {
   const globales = await leerJson<string[]>(db, K_GLOBALES);
-  const grupos = await leerJson<string[][]>(db, K_GRUPOS);
+  const grupos = await leerJson<GrupoAprobacion[]>(db, K_GRUPOS);
   return {
     globales: (globales ?? fallback.globales).map((e) => e.toLowerCase()),
-    grupos: (grupos ?? fallback.grupos).map((g) => g.map((e) => e.toLowerCase())),
+    grupos: (grupos ?? fallback.grupos).map((g, i) => normGrupo(g, i)),
   };
 }
 
 export async function guardarAprobadores(db: Db, cfg: ConfigAprobadores): Promise<void> {
   const globales = (cfg.globales ?? []).map((e) => e.trim().toLowerCase()).filter(Boolean);
-  const grupos = (cfg.grupos ?? []).map((g) => g.map((e) => e.trim().toLowerCase()).filter(Boolean)).filter((g) => g.length > 0);
+  const grupos = (cfg.grupos ?? []).map((g, i) => normGrupo(g, i)).filter((g) => g.miembros.length > 0);
   await guardarJson(db, K_GLOBALES, globales);
   await guardarJson(db, K_GRUPOS, grupos);
 }

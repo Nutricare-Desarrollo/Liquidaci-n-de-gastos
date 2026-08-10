@@ -80,15 +80,15 @@ export function buildServer(deps: Deps): FastifyInstance {
   // cae a las variables de entorno como valor por defecto.
   const fallbackAprob: ConfigAprobadores = {
     globales: deps.config?.usuarios.aprobadoresGlobales ?? [],
-    grupos: deps.config?.usuarios.aprobadorGrupos ?? [],
+    grupos: (deps.config?.usuarios.aprobadorGrupos ?? []).map((m, i) => ({ nombre: `Grupo ${i + 1}`, miembros: m })),
   };
   // Lista de correos a notificar por un aprobador: si pertenece a un grupo
   // (ej. Maricela+Marta), se notifica a todo el grupo (primero en responder).
   const grupoAprobadores = async (email: string): Promise<string[]> => {
     const e = (email ?? "").toLowerCase();
     const { grupos } = await leerAprobadores(deps.db, fallbackAprob);
-    const g = grupos.find((grp) => grp.includes(e));
-    return g && g.length ? g : (e ? [e] : []);
+    const g = grupos.find((grp) => grp.miembros.includes(e));
+    return g && g.miembros.length ? g.miembros : (e ? [e] : []);
   };
   app.get("/health", async () => ({ ok: true, demo: deps.demo, auth: authOn, selfApproval: !!deps.config?.permitirAutoaprobacion, servicios: deps.modos ?? [] }));
   app.get("/me", async (req) => req.sesion ?? null);
@@ -521,7 +521,7 @@ export function buildServer(deps: Deps): FastifyInstance {
 
   // ---- Config de aprobadores (globales + grupos), editable en runtime ----
   app.get("/config/aprobadores", async (req, reply) => guard(req, reply, "conta") ? leerAprobadores(deps.db, fallbackAprob) : undefined);
-  app.put<{ Body: { globales?: string[]; grupos?: string[][] } }>("/config/aprobadores", async (req, reply) => {
+  app.put<{ Body: { globales?: string[]; grupos?: { nombre: string; miembros: string[] }[] } }>("/config/aprobadores", async (req, reply) => {
     if (!guard(req, reply, "conta")) return;
     const b = req.body ?? {};
     await guardarAprobadores(deps.db, { globales: b.globales ?? [], grupos: b.grupos ?? [] });

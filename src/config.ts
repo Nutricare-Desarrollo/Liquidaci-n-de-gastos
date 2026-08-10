@@ -20,6 +20,7 @@ export interface AppConfig {
   auth: { enabled: boolean; tenantId: string; apiAudience: string; adminRole: string; contaRole: string; devRoles: string[] };
   usuarios: { dominio: string; excluir: string[]; empresaDominios: Record<string, string>; aprobadoresGlobales: string[]; aprobadorGrupos: string[][] };
   permitirAutoaprobacion: boolean;
+  correoPollMin: number; // minutos entre polls automaticos del buzon (0 = desactivado)
 }
 
 // "ntc:nutricare.co.cr;feh:farmacia.co.cr,otra.co.cr" -> { "nutricare.co.cr": "ntc", ... }
@@ -72,5 +73,6 @@ export function loadConfig(): AppConfig {
       aprobadorGrupos: opt("APROBADOR_GRUPOS", "").split(";").map((g) => g.split(",").map((e) => e.trim().toLowerCase()).filter(Boolean)).filter((g) => g.length > 0),
     },
     permitirAutoaprobacion: opt("ALLOW_SELF_APPROVAL") === "1",
+    correoPollMin: Number(opt("CORREO_POLL_MIN", "0")),
   };
 }
