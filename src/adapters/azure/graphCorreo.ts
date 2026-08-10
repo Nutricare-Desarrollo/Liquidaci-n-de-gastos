@@ -26,10 +26,14 @@ export class GraphCorreoAdapter implements CorreoEntrantePort {
     const token = await this.tokens.getToken(GRAPH_SCOPE);
     const headers = { Authorization: `Bearer ${token}` };
 
-    const listUrl =
+    // Traer no-leidos con adjuntos, los MAS NUEVOS primero (asi no se atasca en
+    // una cola vieja) y mas por vez para drenar backlog. Si el $orderby no lo
+    // acepta Graph, se reintenta sin el.
+    const base =
       `${GRAPH}/users/${encodeURIComponent(this.mailboxUserId)}/messages` +
-      `?$filter=isRead eq false and hasAttachments eq true&$select=id,subject&$top=25`;
-    const listRes = await this.fetchImpl(listUrl, { headers });
+      `?$filter=isRead eq false and hasAttachments eq true&$select=id,subject&$top=50`;
+    let listRes = await this.fetchImpl(base + `&$orderby=receivedDateTime desc`, { headers });
+    if (!listRes.ok) listRes = await this.fetchImpl(base, { headers }); // fallback sin orderby
     if (!listRes.ok) throw new Error(`Graph list ${listRes.status}: ${await listRes.text().catch(() => "")}`);
     const list = (await listRes.json()) as { value: Array<{ id: string; subject: string }> };
 
@@ -58,12 +62,16 @@ export class GraphCorreoAdapter implements CorreoEntrantePort {
       if (r) { ingestadas += r.ingestadas; ignoradas += r.ignoradas; }
       console.log(`[correo] "${msg.subject}" adjuntos=[${adjuntos.map((a) => a.nombre).join(", ") || "ninguno"}] ingestadas=${r ? r.ingestadas : 0} ignoradas=${r ? r.ignoradas : 0}`);
 
-      // Marcar leido para no reprocesar.
-      await this.fetchImpl(`${GRAPH}/users/${encodeURIComponent(this.mailboxUserId)}/messages/${msg.id}`, {
+      // Marcar leido para no reprocesar. Si falla (ej. falta permiso Mail.ReadWrite),
+      // se avisa: sin esto se acumula una cola de no-leidos y el poll se atasca.
+      const patchRes = await this.fetchImpl(`${GRAPH}/users/${encodeURIComponent(this.mailboxUserId)}/messages/${msg.id}`, {
         method: "PATCH",
         headers: { ...headers, "Content-Type": "application/json" },
         body: JSON.stringify({ isRead: true }),
       });
+      if (!patchRes.ok) {
+        console.log(`[correo] NO se pudo marcar leido "${msg.subject}" (${patchRes.status}). ¿Falta el permiso Mail.ReadWrite en la app de Entra?`);
+      }
       procesados++;
     }
     return { procesados, ingestadas, ignoradas };
