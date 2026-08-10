@@ -72,6 +72,23 @@ export function buildServer(deps: Deps): FastifyInstance {
     return false;
   };
 
+  // Puede gestionar la liquidacion: conta/admin siempre; estandar solo la suya
+  // y en estado BORRADOR o DEVUELTA (antes de enviar).
+  const puedeGestionarLiq = async (req: FastifyRequest, liqId: string | null): Promise<boolean> => {
+    const rol = req.sesion?.rol ?? "estandar";
+    if (rol === "conta" || rol === "admin") return true;
+    if (!liqId) return false;
+    const l = (await deps.db.liquidacion.findUnique({ where: { id: liqId } })) as Record<string, unknown> | null;
+    return !!l && String(l["empleadoId"] ?? "") === req.sesion?.id && ["BORRADOR", "DEVUELTA"].includes(String(l["estado"]));
+  };
+  // Igual, pero resolviendo la liquidacion a partir de un gasto.
+  const puedeGestionarGasto = async (req: FastifyRequest, gastoId: string): Promise<{ ok: boolean; existe: boolean }> => {
+    const g = (await deps.db.gasto.findUnique({ where: { id: gastoId } })) as Record<string, unknown> | null;
+    if (!g) return { ok: false, existe: false };
+    return { ok: await puedeGestionarLiq(req, (g["liquidacionId"] as string | null) ?? null), existe: true };
+  };
+  const den403 = (reply: FastifyReply) => reply.code(403).send({ error: "Solo podes gestionar tus propias liquidaciones en borrador/devuelta (o con rol Contabilidad)." });
+
   const enlaceLiq = (id: string): string | undefined => {
     const base = deps.config?.app.baseUrl ?? "";
     return base ? `${base.replace(/\/+$/, "")}/?liq=${id}` : undefined;
@@ -131,6 +148,8 @@ export function buildServer(deps: Deps): FastifyInstance {
   app.post<{ Body: CrearCapturaBody }>("/capturas", async (req, reply) => {
     const b = req.body;
     if (!b?.imagenBase64 || !b?.correoEmpleado) return reply.code(400).send({ error: "Faltan imagenBase64 o correoEmpleado" });
+    // Si se asocia a una liquidacion, debe ser gestionable por quien llama (su propia, o conta).
+    if (b.liquidacionId && !(await puedeGestionarLiq(req, b.liquidacionId))) return den403(reply);
     const binario = decodeBase64(b.imagenBase64);
     const imagenUrl = await deps.storage.guardar({ contenido: binario, ruta: `capturas/${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`, mimeType: b.mimeType ?? "image/jpeg" });
 
@@ -231,6 +250,7 @@ export function buildServer(deps: Deps): FastifyInstance {
   });
 
   app.post<{ Params: { id: string } }>("/liquidaciones/:id/enviar", async (req, reply) => {
+    if (!(await puedeGestionarLiq(req, req.params.id))) return den403(reply);
     const r = await liq.enviarInforme(deps.db, req.params.id);
     if (!r.ok) return reply.code(422).send(r);
     // Al enviar se crea el Teams Approval para el aprobador seleccionado.
@@ -253,6 +273,7 @@ export function buildServer(deps: Deps): FastifyInstance {
     return reply.send({ ...r, aprobadorNotificado, notifError });
   });
   app.patch<{ Params: { id: string }; Body: { aprobadorId?: string; centroCostoId?: string | null } }>("/liquidaciones/:id", async (req, reply) => {
+    if (!(await puedeGestionarLiq(req, req.params.id))) return den403(reply);
     const b = req.body ?? {};
     // Centro de costo (se propaga a los gastos para la dimension financiera).
     if (b.centroCostoId !== undefined) {
@@ -325,6 +346,13 @@ export function buildServer(deps: Deps): FastifyInstance {
     const r = await liq.clonarLiquidacion(deps.db, req.params.id);
     return r.ok ? reply.code(201).send(r) : reply.code(422).send(r);
   });
+  // Eliminar una liquidacion completa. Conta/admin siempre; estandar solo la
+  // suya en borrador/devuelta. No revierte FO.
+  app.delete<{ Params: { id: string } }>("/liquidaciones/:id", async (req, reply) => {
+    if (!(await puedeGestionarLiq(req, req.params.id))) return den403(reply);
+    const r = await liq.eliminarLiquidacion(deps.db, req.params.id);
+    return r.ok ? reply.send(r) : reply.code(422).send(r);
+  });
   // Re-postear a FO: informe nuevo + rechazo del anterior (item 12).
   app.post<{ Params: { id: string } }>("/liquidaciones/:id/repostear", async (req, reply) => {
     if (!guard(req, reply, "conta")) return;
@@ -334,6 +362,7 @@ export function buildServer(deps: Deps): FastifyInstance {
 
   // Crear gasto manual desde una factura no cruzada.
   app.post<{ Params: { id: string }; Body: { facturaId?: string; categoriaId?: string } }>("/liquidaciones/:id/gastos", async (req, reply) => {
+    if (!(await puedeGestionarLiq(req, req.params.id))) return den403(reply);
     const { facturaId, categoriaId } = req.body ?? {};
     if (!facturaId || !categoriaId) return reply.code(400).send({ error: "Faltan facturaId o categoriaId" });
     const r = await liq.crearGastoManual(deps.db, req.params.id, facturaId, categoriaId);
@@ -342,6 +371,7 @@ export function buildServer(deps: Deps): FastifyInstance {
 
   // Crear gasto de Regimen Simplificado (sin factura electronica).
   app.post<{ Params: { id: string }; Body: GastoSimpBody }>("/liquidaciones/:id/gastos-simplificado", async (req, reply) => {
+    if (!(await puedeGestionarLiq(req, req.params.id))) return den403(reply);
     const b = req.body ?? {};
     // Kilometraje no manda monto ni comerciante (monto = km x tarifa); anticipos no manda comerciante.
     // Requerimos siempre fecha, categoria y situacion fiscal; el resto lo valida crearGastoSimplificado.
@@ -360,6 +390,9 @@ export function buildServer(deps: Deps): FastifyInstance {
 
   // Dividir un gasto.
   app.post<{ Params: { id: string }; Body: { monto?: number; centroCostoId?: string | null; categoriaId?: string } }>("/gastos/:id/dividir", async (req, reply) => {
+    const perm = await puedeGestionarGasto(req, req.params.id);
+    if (!perm.existe) return reply.code(404).send({ error: "El gasto no existe." });
+    if (!perm.ok) return den403(reply);
     const b = req.body ?? {};
     if (!b.monto) return reply.code(400).send({ error: "Falta monto" });
     const r = await dividirGasto(deps.db, req.params.id, { monto: Number(b.monto), centroCostoId: b.centroCostoId ?? null, categoriaId: b.categoriaId });
@@ -381,15 +414,6 @@ export function buildServer(deps: Deps): FastifyInstance {
     }
     return liq.actualizarGasto(deps.db, req.params.id, req.body ?? {});
   });
-
-  // Permiso para desligar/asociar: conta/admin siempre; estandar solo su propia liquidacion editable.
-  const puedeGestionarLiq = async (req: FastifyRequest, liqId: string | null): Promise<boolean> => {
-    const rol = req.sesion?.rol ?? "estandar";
-    if (rol === "conta" || rol === "admin") return true;
-    if (!liqId) return false;
-    const l = (await deps.db.liquidacion.findUnique({ where: { id: liqId } })) as Record<string, unknown> | null;
-    return !!l && String(l["empleadoId"] ?? "") === req.sesion?.id && ["BORRADOR", "DEVUELTA"].includes(String(l["estado"]));
-  };
 
   // Desligar un gasto de su liquidacion (item 8) -> queda LIBRE.
   app.post<{ Params: { id: string } }>("/gastos/:id/desligar", async (req, reply) => {
@@ -423,12 +447,16 @@ export function buildServer(deps: Deps): FastifyInstance {
 
   // Adjuntar imagen/PDF a un gasto (para casos sin PDF de Hacienda, o el PDF del correo).
   app.post<{ Params: { id: string }; Body: { nombre?: string; contenidoBase64?: string; mimeType?: string } }>("/liquidaciones/:id/adjuntos", async (req, reply) => {
+    if (!(await puedeGestionarLiq(req, req.params.id))) return den403(reply);
     const b = req.body ?? {};
     if (!b.nombre || !b.contenidoBase64) return reply.code(400).send({ error: "Falta el archivo (nombre/contenido)." });
     const r = await liq.subirAdjuntoLiquidacion(deps.db, deps.storage, req.params.id, { nombre: b.nombre, contenidoBase64: b.contenidoBase64, mimeType: b.mimeType ?? "application/octet-stream" });
     return r.ok ? reply.send(r) : reply.code(422).send(r);
   });
   app.post<{ Params: { id: string }; Body: { nombre?: string; contenidoBase64?: string; mimeType?: string } }>("/gastos/:id/adjuntos", async (req, reply) => {
+    const perm = await puedeGestionarGasto(req, req.params.id);
+    if (!perm.existe) return reply.code(404).send({ error: "El gasto no existe." });
+    if (!perm.ok) return den403(reply);
     const b = req.body ?? {};
     if (!b.nombre || !b.contenidoBase64) return reply.code(400).send({ error: "Faltan nombre o contenidoBase64" });
     const r = await subirAdjunto(deps.db, deps.storage, req.params.id, { nombre: b.nombre, contenidoBase64: b.contenidoBase64, mimeType: b.mimeType ?? "application/octet-stream" });
@@ -436,7 +464,9 @@ export function buildServer(deps: Deps): FastifyInstance {
   });
 
   app.get("/facturas", async (req, reply) => guard(req, reply, "conta") ? deps.db.factura.findMany({ orderBy: { createdAt: "desc" } }) : undefined);
-  app.get("/facturas/sin-cruzar", async (req, reply) => guard(req, reply, "conta") ? liq.facturasSinCruzar(deps.db) : undefined);
+  // Facturas sin cruzar: disponible para cualquier usuario autenticado (el empleado
+  // las usa en "+ Desde factura"). El listado completo de facturas sigue siendo de Conta.
+  app.get("/facturas/sin-cruzar", async () => liq.facturasSinCruzar(deps.db));
   app.post<{ Body: FacturaManualInput }>("/facturas", async (req, reply) => {
     if (!guard(req, reply, "conta")) return;
     const r = await crearFacturaManual(deps.db, req.body);

@@ -84,6 +84,7 @@ export const api = {
   reconciliarFO: (id: string, numeroReporteFO: string) => req<{ ok: boolean; mensaje: string; numeroReporteFO?: string }>(`/liquidaciones/${id}/reconciliar-fo`, { method: "POST", body: JSON.stringify({ numeroReporteFO }) }),
   clonarLiquidacion: (id: string) => req<{ ok: boolean; error?: string; id?: string; name?: string }>(`/liquidaciones/${id}/clonar`, { method: "POST" }),
   repostear: (id: string) => req<{ ok: boolean; mensaje: string; numeroReporteFO?: string }>(`/liquidaciones/${id}/repostear`, { method: "POST" }),
+  eliminarLiquidacion: (id: string) => req<{ ok: boolean; error?: string }>(`/liquidaciones/${id}`, { method: "DELETE" }),
   desligarGasto: (id: string) => req<{ ok: boolean; error?: string }>(`/gastos/${id}/desligar`, { method: "POST" }),
   asociarGasto: (id: string, liquidacionId: string) => req<{ ok: boolean; error?: string }>(`/gastos/${id}/asociar`, { method: "POST", body: JSON.stringify({ liquidacionId }) }),
   gastosLibres: () => req<Gasto[]>("/gastos/libres"),

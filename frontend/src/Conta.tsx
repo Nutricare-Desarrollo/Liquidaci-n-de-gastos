@@ -16,6 +16,7 @@ export function Admin({ cat, initialLiqId, demo, vista, setVista, sesion, puedeC
   const [liqId, setLiqId] = useState<string | null>(initialLiqId ?? null);
   const [gastoId, setGastoId] = useState<string | null>(null);
   const [facturaPrefill, setFacturaPrefill] = useState<string | null>(null);
+  const esConta = puedeConta === true; // estandar (empleado) ve una version acotada a lo suyo
   const nav = (s: Seccion) => { setSeccion(s); setLiqId(null); setGastoId(null); setFacturaPrefill(null); };
   return (
     <div className="admin">
@@ -26,16 +27,18 @@ export function Admin({ cat, initialLiqId, demo, vista, setVista, sesion, puedeC
         </div>
         <nav className="nav">
           <div className="grp">Operacion</div>
-          <a className={seccion === "liquidaciones" ? "active" : ""} onClick={() => nav("liquidaciones")}>Liquidaciones</a>
-          <a className={seccion === "gastos" ? "active" : ""} onClick={() => nav("gastos")}>Gastos</a>
-          <a className={seccion === "capturas" ? "active" : ""} onClick={() => nav("capturas")}>Capturas</a>
-          <a className={seccion === "facturas" ? "active" : ""} onClick={() => nav("facturas")}>Facturas</a>
-          <div className="grp">Configuracion</div>
-          <a className={seccion === "reglas" ? "active" : ""} onClick={() => nav("reglas")}>Regla de montos</a>
-          <a className={seccion === "tarifas" ? "active" : ""} onClick={() => nav("tarifas")}>Tarifas KM</a>
-          <a className={seccion === "categorias" ? "active" : ""} onClick={() => nav("categorias")}>Categorías</a>
-          <a className={seccion === "centros" ? "active" : ""} onClick={() => nav("centros")}>Centros de costo</a>
-          <a className={seccion === "aprobadores" ? "active" : ""} onClick={() => nav("aprobadores")}>Aprobadores</a>
+          <a className={seccion === "liquidaciones" ? "active" : ""} onClick={() => nav("liquidaciones")}>{esConta ? "Liquidaciones" : "Mis liquidaciones"}</a>
+          {esConta && <>
+            <a className={seccion === "gastos" ? "active" : ""} onClick={() => nav("gastos")}>Gastos</a>
+            <a className={seccion === "capturas" ? "active" : ""} onClick={() => nav("capturas")}>Capturas</a>
+            <a className={seccion === "facturas" ? "active" : ""} onClick={() => nav("facturas")}>Facturas</a>
+            <div className="grp">Configuracion</div>
+            <a className={seccion === "reglas" ? "active" : ""} onClick={() => nav("reglas")}>Regla de montos</a>
+            <a className={seccion === "tarifas" ? "active" : ""} onClick={() => nav("tarifas")}>Tarifas KM</a>
+            <a className={seccion === "categorias" ? "active" : ""} onClick={() => nav("categorias")}>Categorías</a>
+            <a className={seccion === "centros" ? "active" : ""} onClick={() => nav("centros")}>Centros de costo</a>
+            <a className={seccion === "aprobadores" ? "active" : ""} onClick={() => nav("aprobadores")}>Aprobadores</a>
+          </>}
         </nav>
         <div className="side-foot">
           {sesion && <div className="user-box"><b>{sesion.nombre ?? sesion.email}</b><small className="mono">{rolLabel(sesion.rol)}</small></div>}
@@ -48,9 +51,9 @@ export function Admin({ cat, initialLiqId, demo, vista, setVista, sesion, puedeC
         </div>
       </aside>
       <main className="content">
-        {seccion === "liquidaciones" && !liqId && <LiquidacionesList cat={cat} onOpen={setLiqId} sesion={sesion} />}
+        {seccion === "liquidaciones" && !liqId && <LiquidacionesList cat={cat} onOpen={setLiqId} sesion={sesion} esConta={esConta} />}
         {seccion === "liquidaciones" && liqId && !gastoId && (
-          <LiquidacionForm id={liqId} cat={cat} onBack={() => setLiqId(null)} onGasto={setGastoId} />
+          <LiquidacionForm id={liqId} cat={cat} onBack={() => setLiqId(null)} onGasto={setGastoId} esConta={esConta} />
         )}
         {seccion === "liquidaciones" && liqId && gastoId && (
           <GastoForm liqId={liqId} gastoId={gastoId} cat={cat} onBack={() => setGastoId(null)} sesion={sesion} />
@@ -68,7 +71,7 @@ export function Admin({ cat, initialLiqId, demo, vista, setVista, sesion, puedeC
   );
 }
 
-function LiquidacionesList({ cat, onOpen, sesion }: { cat: Catalogos; onOpen: (id: string) => void; sesion?: Sesion | null }) {
+function LiquidacionesList({ cat, onOpen, sesion, esConta }: { cat: Catalogos; onOpen: (id: string) => void; sesion?: Sesion | null; esConta?: boolean }) {
   const [rows, setRows] = useState<Liquidacion[]>([]);
   const [estado, setEstado] = useState("");
   const [empresaFiltro, setEmpresaFiltro] = useState("");
@@ -112,6 +115,7 @@ function LiquidacionesList({ cat, onOpen, sesion }: { cat: Catalogos; onOpen: (i
         <div className="toolbar">
           <input placeholder="Buscar..." value={q} onChange={(e) => setQ(e.target.value)} style={{ width: 200 }} />
           <button className="primary" onClick={() => setCrear(!crear)}>+ Nueva liquidacion</button>
+          {esConta && <>
           <AsyncButton className="ghost" onClick={async () => {
             if (!confirm("Esto borra liquidaciones, gastos y capturas, y deja las facturas sin cruzar. Continuar?")) return;
             try { const r = await api.reset(); setMsg({ t: "ok", x: `Datos de prueba reiniciados. ${r.facturasReseteadas} factura(s) liberadas.` }); cargar(); }
@@ -125,6 +129,7 @@ function LiquidacionesList({ cat, onOpen, sesion }: { cat: Catalogos; onOpen: (i
             try { const r = await api.cruce(); setMsg({ t: "ok", x: `Cruce ejecutado: ${r.cruzados} gasto(s) creados, ${r.sinFactura} sin factura.` }); cargar(); }
             catch (e) { setMsg({ t: "err", x: describe(e) }); }
           }}>Ejecutar cruce</AsyncButton>
+          </>}
           <select value={empresaFiltro} onChange={(e) => setEmpresaFiltro(e.target.value)} style={{ width: 120 }}>
             <option value="">Empresa: todas</option>
             <option value="ntc">NTC</option>
@@ -139,12 +144,12 @@ function LiquidacionesList({ cat, onOpen, sesion }: { cat: Catalogos; onOpen: (i
       {msg && <div className={`msg ${msg.t}`}>{msg.x}</div>}
       {crear && (
         <div className="section">
-          <h3><span className="ico">+</span> Nueva liquidacion (a nombre de un empleado)</h3>
-          <p><small className="mono">Para conta/asistentes que registran gastos de otras personas, sin usar la app del telefono.</small></p>
+          <h3><span className="ico">+</span> {esConta ? "Nueva liquidacion (a nombre de un empleado)" : "Nueva liquidacion"}</h3>
+          <p><small className="mono">{esConta ? "Para conta/asistentes que registran gastos de otras personas, sin usar la app del telefono." : "Crea una liquidacion tuya desde el escritorio (equivalente a la app del telefono)."}</small></p>
           <div className="fields">
-            <div className="field"><label>Empleado</label>
+            {esConta && <div className="field"><label>Empleado</label>
               <Combo options={usuariosEmp.map((u) => ({ value: u.id, label: u.nombre ?? u.email, hint: u.email }))}
-                value={empId} onChange={setEmpId} placeholder="Escribi el nombre..." /></div>
+                value={empId} onChange={setEmpId} placeholder="Escribi el nombre..." /></div>}
             <div className="field"><label>Empresa</label>
               <select value={empresa} onChange={(e) => setEmpresa(e.target.value)}><option value="ntc">NTC</option><option value="feh">FEH</option></select></div>
             <div className="field"><label>Proposito</label>
@@ -190,7 +195,7 @@ function LiquidacionesList({ cat, onOpen, sesion }: { cat: Catalogos; onOpen: (i
   );
 }
 
-function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalogos; onBack: () => void; onGasto: (gastoId: string) => void; }) {
+function LiquidacionForm({ id, cat, onBack, onGasto, esConta }: { id: string; cat: Catalogos; onBack: () => void; onGasto: (gastoId: string) => void; esConta?: boolean; }) {
   const [liq, setLiq] = useState<Liquidacion | null>(null);
   const [comentario, setComentario] = useState("");
   const [numFO, setNumFO] = useState("");
@@ -480,13 +485,16 @@ function LiquidacionForm({ id, cat, onBack, onGasto }: { id: string; cat: Catalo
         </div>
         <div className="actions">
           <AsyncButton className="primary" disabled={!editable} onClick={enviarInforme} loadingText="Enviando...">Enviar</AsyncButton>
+          {esConta && <>
           <AsyncButton className="primary" disabled={liq.estado !== "ENVIADA"} onClick={() => accion(() => api.aprobar(id), "Aprobado por el aprobador.")} loadingText="Aprobando...">1. Aprobar (aprobador)</AsyncButton>
           <AsyncButton className="primary" disabled={!["EN_REVISION_CONTA", "ERROR_POSTEO", "APROBADA"].includes(liq.estado)} onClick={() => accion(() => api.aprobarConta(id), "Posteado a FO.")} loadingText="Posteando...">{liq.estado === "ERROR_POSTEO" || liq.estado === "APROBADA" ? "2. Reintentar posteo FO" : "2. Aprobar conta -> postear"}</AsyncButton>
           <AsyncButton className="ghost" disabled={!(liq.estado === "ENVIADA" || liq.estado === "EN_REVISION_CONTA")} onClick={() => comentario && accion(() => api.devolver(id, comentario), "Devuelto.")} loadingText="Devolviendo...">Devolver</AsyncButton>
           <AsyncButton className="ghost" onClick={async () => { const r = await api.clonarLiquidacion(id); setMsg(r.ok ? { t: "ok", x: `Clonada como ${r.name} (borrador, sin adjuntos).` } : { t: "err", x: r.error ?? "No se pudo clonar." }); }} loadingText="Clonando...">Clonar</AsyncButton>
           <AsyncButton className="ghost" disabled={liq.estado !== "POSTEADA"} onClick={async () => { const r = await api.repostear(id); setMsg({ t: r.ok ? "ok" : "err", x: r.mensaje }); await cargar(); }} loadingText="Re-posteando...">Re-postear a FO (informe nuevo)</AsyncButton>
+          </>}
+          {(esConta || ["BORRADOR", "DEVUELTA"].includes(liq.estado)) && <AsyncButton className="ghost" onClick={async () => { if (!window.confirm(`¿Eliminar la liquidacion ${liq.name} completa (con sus gastos)? Esta accion no se puede deshacer y NO revierte nada en FO si ya se posteo.`)) return; try { const r = await api.eliminarLiquidacion(id); if (r.ok) onBack(); else setMsg({ t: "err", x: r.error ?? "No se pudo eliminar." }); } catch (e) { setMsg({ t: "err", x: describe(e) }); } }} loadingText="Eliminando...">Eliminar liquidacion</AsyncButton>}
         </div>
-        {["ERROR_POSTEO", "APROBADA"].includes(liq.estado) && (
+        {esConta && ["ERROR_POSTEO", "APROBADA"].includes(liq.estado) && (
           <div style={{ marginTop: 10, paddingTop: 10, borderTop: "1px solid var(--line)" }}>
             <p><small className="mono">Si el posteo dio timeout pero el informe SI quedo creado en Dynamics, carga aca el nº de reporte FO para marcarla POSTEADA (reconciliacion).</small></p>
             <div className="fields">

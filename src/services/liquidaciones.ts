@@ -111,6 +111,26 @@ export async function eliminarGasto(db: Db, id: string): Promise<{ ok: boolean; 
   return r.count > 0 ? { ok: true } : { ok: false, error: "No se pudo eliminar el gasto." };
 }
 
+// Eliminar una liquidacion completa: borra sus gastos (y divisiones), desvincula
+// sus capturas y libera las facturas asociadas. Uso admin/conta (limpieza).
+// OJO: no revierte nada en FO si ya fue posteada.
+export async function eliminarLiquidacion(db: Db, id: string): Promise<{ ok: boolean; error?: string }> {
+  const liq = (await db.liquidacion.findUnique({ where: { id } })) as Rec | null;
+  if (!liq) return { ok: false, error: "No existe la liquidacion." };
+  const gastos = (await db.gasto.findMany({ where: { liquidacionId: id } })) as Rec[];
+  const facturaIds = [...new Set(gastos.map((g) => g["facturaId"] as string | null).filter(Boolean) as string[])];
+  // Borrar gastos: hijos (divisiones) primero, luego padres.
+  const hijos = gastos.filter((g) => g["gastoOrigenId"]);
+  const padres = gastos.filter((g) => !g["gastoOrigenId"]);
+  for (const g of [...hijos, ...padres]) await db.gasto.deleteMany({ where: { id: String(g["id"]) } });
+  // Desvincular capturas de la liquidacion (quedan libres).
+  await db.captura.updateMany({ where: { liquidacionId: id }, data: { liquidacionId: null } });
+  const r = await db.liquidacion.deleteMany({ where: { id } });
+  // Liberar las facturas que estaban cruzadas con esta liquidacion.
+  for (const fId of facturaIds) await db.factura.update({ where: { id: fId }, data: { estado: "SIN_CAPTURA" } });
+  return r.count > 0 ? { ok: true } : { ok: false, error: "No se pudo eliminar la liquidacion." };
+}
+
 // Item 8: desligar un gasto de su liquidacion -> queda LIBRE para reasignar.
 export async function desligarGasto(db: Db, id: string): Promise<{ ok: boolean; error?: string }> {
   const g = (await db.gasto.findUnique({ where: { id } })) as Rec | null;

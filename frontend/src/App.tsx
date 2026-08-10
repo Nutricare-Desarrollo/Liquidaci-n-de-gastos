@@ -47,7 +47,7 @@ export function App() {
 
   const rol = sesion?.rol ?? "estandar";
   const puedeConta = rol === "conta" || rol === "admin";
-  useEffect(() => { if (!puedeConta && vista === "conta") setVista("captura"); }, [puedeConta, vista]);
+  // El estandar tambien accede a la vista de escritorio, pero acotada a lo suyo.
 
   if (necesitaLogin) {
     return (
@@ -77,7 +77,7 @@ export function App() {
             {sesion && <span className="user-chip">{sesion.nombre ?? sesion.email} &middot; {rolLabel(rol)}</span>}
             <div className="switch">
               <button className="active">Captura</button>
-              {puedeConta && <button onClick={() => setVista("conta")}>Contabilidad</button>}
+              <button onClick={() => setVista("conta")}>{puedeConta ? "Contabilidad" : "Mis liquidaciones"}</button>
             </div>
             {authEnabled && <button className="ghost" onClick={doLogout}>Salir</button>}
           </div>
