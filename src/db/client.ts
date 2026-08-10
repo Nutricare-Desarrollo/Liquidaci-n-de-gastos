@@ -30,6 +30,7 @@ export interface Db {
   reglaMonto: Delegate;
   tarifaKm: Delegate;
   auditoria: Delegate;
+  configuracion: Delegate;
   $disconnect(): Promise<void>;
 }
 

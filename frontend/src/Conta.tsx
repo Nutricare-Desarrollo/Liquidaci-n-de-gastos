@@ -7,7 +7,7 @@ import { UsuarioPicker } from "./UsuarioPicker.js";
 import { AsyncButton } from "./AsyncButton.js";
 import { BrandLogo } from "./BrandLogo.js";
 
-type Seccion = "liquidaciones" | "gastos" | "capturas" | "facturas" | "reglas" | "tarifas" | "categorias" | "centros";
+type Seccion = "liquidaciones" | "gastos" | "capturas" | "facturas" | "reglas" | "tarifas" | "categorias" | "centros" | "aprobadores";
 
 function rolLabel(rol?: string): string { return rol === "admin" ? "Administrador" : rol === "conta" ? "Contabilidad" : "Usuario"; }
 
@@ -35,6 +35,7 @@ export function Admin({ cat, initialLiqId, demo, vista, setVista, sesion, puedeC
           <a className={seccion === "tarifas" ? "active" : ""} onClick={() => nav("tarifas")}>Tarifas KM</a>
           <a className={seccion === "categorias" ? "active" : ""} onClick={() => nav("categorias")}>Categorías</a>
           <a className={seccion === "centros" ? "active" : ""} onClick={() => nav("centros")}>Centros de costo</a>
+          <a className={seccion === "aprobadores" ? "active" : ""} onClick={() => nav("aprobadores")}>Aprobadores</a>
         </nav>
         <div className="side-foot">
           {sesion && <div className="user-box"><b>{sesion.nombre ?? sesion.email}</b><small className="mono">{rolLabel(sesion.rol)}</small></div>}
@@ -61,6 +62,7 @@ export function Admin({ cat, initialLiqId, demo, vista, setVista, sesion, puedeC
         {seccion === "tarifas" && <TarifasKmView />}
         {seccion === "categorias" && <CategoriasView recargarCat={recargarCat} />}
         {seccion === "centros" && <CentrosView recargarCat={recargarCat} />}
+        {seccion === "aprobadores" && <AprobadoresView cat={cat} />}
       </main>
     </div>
   );
@@ -1233,6 +1235,70 @@ function CentrosView({ recargarCat }: { recargarCat?: () => void }) {
           {visibles.length === 0 && <tr><td colSpan={7}>Sin centros.</td></tr>}
         </tbody>
       </table></div>
+    </>
+  );
+}
+
+function AprobadoresView({ cat }: { cat: Catalogos }) {
+  const [globales, setGlobales] = useState<string[]>([]);
+  const [grupos, setGrupos] = useState<string[][]>([]);
+  const [msg, setMsg] = useState<{ t: "ok" | "err"; x: string } | null>(null);
+  const [addG, setAddG] = useState("");
+
+  useEffect(() => { api.getConfigAprobadores().then((c) => { setGlobales(c.globales ?? []); setGrupos(c.grupos ?? []); }).catch(() => {}); }, []);
+
+  const nombreDe = (email: string) => cat.usuarios.find((u) => (u.email ?? "").toLowerCase() === email.toLowerCase())?.nombre ?? email;
+  const opciones = cat.usuarios.filter((u) => u.email).map((u) => ({ value: (u.email ?? "").toLowerCase(), label: u.nombre ?? u.email, hint: u.email }));
+
+  const addGlobal = (email: string) => { const e = email.toLowerCase(); if (e && !globales.includes(e)) setGlobales([...globales, e]); };
+  const delGlobal = (email: string) => setGlobales(globales.filter((x) => x !== email));
+  const nuevoGrupo = () => setGrupos([...grupos, []]);
+  const delGrupo = (i: number) => setGrupos(grupos.filter((_, k) => k !== i));
+  const addMiembro = (i: number, email: string) => { const e = email.toLowerCase(); if (!e) return; setGrupos(grupos.map((g, k) => (k === i ? (g.includes(e) ? g : [...g, e]) : g))); };
+  const delMiembro = (i: number, email: string) => setGrupos(grupos.map((g, k) => (k === i ? g.filter((x) => x !== email) : g)));
+
+  async function guardar() {
+    setMsg(null);
+    try { await api.guardarConfigAprobadores({ globales, grupos: grupos.filter((g) => g.length > 0) }); setMsg({ t: "ok", x: "Configuracion de aprobadores guardada." }); }
+    catch (e) { setMsg({ t: "err", x: describe(e) }); }
+  }
+
+  return (
+    <>
+      <div className="listbar"><h2>Aprobadores</h2><span className="caret">v</span></div>
+      {msg && <div className={`msg ${msg.t}`}>{msg.x}</div>}
+      <div className="section">
+        <h3><span className="ico">*</span> Aprobadores globales</h3>
+        <p><small className="mono">Pueden aprobar informes de cualquier empresa (aparecen como aprobador aunque sean de otra empresa).</small></p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
+          {globales.map((e) => <span key={e} className="badge">{nombreDe(e)} <a style={{ cursor: "pointer" }} onClick={() => delGlobal(e)}>✕</a></span>)}
+          {globales.length === 0 && <small className="mono">Ninguno.</small>}
+        </div>
+        <div style={{ maxWidth: 360 }}>
+          <Combo options={opciones} value={addG} onChange={(v) => { addGlobal(v); setAddG(""); }} placeholder="Agregar aprobador global..." />
+        </div>
+      </div>
+      <div className="section">
+        <h3><span className="ico">*</span> Grupos (primero en responder)</h3>
+        <p><small className="mono">Si el aprobador elegido está en un grupo, la aprobación le llega a todo el grupo y aprueba el primero que responda.</small></p>
+        {grupos.map((g, i) => (
+          <div key={i} style={{ border: "1px solid var(--line)", borderRadius: 8, padding: 10, marginBottom: 8 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+              <b>Grupo {i + 1}</b>
+              <button className="ghost" onClick={() => delGrupo(i)}>Eliminar grupo</button>
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
+              {g.map((e) => <span key={e} className="badge">{nombreDe(e)} <a style={{ cursor: "pointer" }} onClick={() => delMiembro(i, e)}>✕</a></span>)}
+              {g.length === 0 && <small className="mono">Sin miembros.</small>}
+            </div>
+            <div style={{ maxWidth: 360 }}>
+              <Combo options={opciones} value="" onChange={(v) => addMiembro(i, v)} placeholder="Agregar miembro..." />
+            </div>
+          </div>
+        ))}
+        <button className="ghost" onClick={nuevoGrupo}>+ Agregar grupo</button>
+      </div>
+      <div className="actions"><AsyncButton className="primary" onClick={guardar} loadingText="Guardando...">Guardar cambios</AsyncButton></div>
     </>
   );
 }

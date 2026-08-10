@@ -275,3 +275,13 @@ model Auditoria {
 
   @@index([entidad, entidadId])
 }
+
+// ---------------------------------------------------------------------
+//  Configuracion editable en runtime (clave/valor JSON). Ej: aprobadores
+//  globales y grupos de aprobacion, sin tener que tocar variables de entorno.
+// ---------------------------------------------------------------------
+model Configuracion {
+  clave     String   @id
+  valor     String   // JSON serializado
+  updatedAt DateTime @updatedAt
+}

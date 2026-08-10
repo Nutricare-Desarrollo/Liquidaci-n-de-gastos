@@ -10,6 +10,7 @@ import { CEDULA_NUTRICARE, type SituacionFiscal } from "../domain/types.js";
 import { procesarCruce } from "../services/procesarCruce.js";
 import * as liq from "../services/liquidaciones.js";
 import { crearFacturaManual, actualizarFactura, eliminarFactura, type FacturaManualInput } from "../services/facturas.js";
+import { leerAprobadores, guardarAprobadores, type ConfigAprobadores } from "../services/settings.js";
 import { EntraTokenProvider } from "../adapters/azure/entraToken.js";
 import { dividirGasto, crearGastoSimplificado, subirAdjunto } from "../services/gastos.js";
 
@@ -75,11 +76,18 @@ export function buildServer(deps: Deps): FastifyInstance {
     const base = deps.config?.app.baseUrl ?? "";
     return base ? `${base.replace(/\/+$/, "")}/?liq=${id}` : undefined;
   };
-  // Devuelve la lista de correos a notificar por un aprobador: si pertenece a un
-  // grupo (ej. Maricela+Marta), se notifica a todo el grupo (primero en responder).
-  const grupoAprobadores = (email: string): string[] => {
+  // Config de aprobadores: se lee de la BD (editable en la app); si no hay,
+  // cae a las variables de entorno como valor por defecto.
+  const fallbackAprob: ConfigAprobadores = {
+    globales: deps.config?.usuarios.aprobadoresGlobales ?? [],
+    grupos: deps.config?.usuarios.aprobadorGrupos ?? [],
+  };
+  // Lista de correos a notificar por un aprobador: si pertenece a un grupo
+  // (ej. Maricela+Marta), se notifica a todo el grupo (primero en responder).
+  const grupoAprobadores = async (email: string): Promise<string[]> => {
     const e = (email ?? "").toLowerCase();
-    const g = (deps.config?.usuarios.aprobadorGrupos ?? []).find((grp) => grp.includes(e));
+    const { grupos } = await leerAprobadores(deps.db, fallbackAprob);
+    const g = grupos.find((grp) => grp.includes(e));
     return g && g.length ? g : (e ? [e] : []);
   };
   app.get("/health", async () => ({ ok: true, demo: deps.demo, auth: authOn, selfApproval: !!deps.config?.permitirAutoaprobacion, servicios: deps.modos ?? [] }));
@@ -89,7 +97,7 @@ export function buildServer(deps: Deps): FastifyInstance {
     // Etiquetar cada colaborador con su empresa (ntc/feh) segun el dominio del correo,
     // para poder filtrar el selector por empresa (Farmacia = FEH).
     const empMap = deps.config?.usuarios.empresaDominios ?? {};
-    const globales = deps.config?.usuarios.aprobadoresGlobales ?? [];
+    const globales = (await leerAprobadores(deps.db, fallbackAprob)).globales;
     const usuarios = (await deps.usuarios.listar()).map((u) => {
       const email = u.email.toLowerCase();
       const dom = (email.split("@")[1] ?? "").toLowerCase();
@@ -237,7 +245,7 @@ export function buildServer(deps: Deps): FastifyInstance {
         if (!apr) notifError = `No se encontro el aprobador (id ${aprId}) en el directorio.`;
         else if (!apr.email) notifError = "El aprobador no tiene correo.";
         if (apr?.email) {
-          await deps.notificacion.solicitarAprobacion({ aprobadorEmail: apr.email, aprobadorNombre: apr.nombre, aprobadoresEmails: grupoAprobadores(apr.email), titulo: `Aprobar liquidacion ${String(l?.["name"] ?? "")}`, liquidacionId: req.params.id, liquidacionName: String(l?.["name"] ?? ""), enlace: enlaceLiq(req.params.id) });
+          await deps.notificacion.solicitarAprobacion({ aprobadorEmail: apr.email, aprobadorNombre: apr.nombre, aprobadoresEmails: await grupoAprobadores(apr.email), titulo: `Aprobar liquidacion ${String(l?.["name"] ?? "")}`, liquidacionId: req.params.id, liquidacionName: String(l?.["name"] ?? ""), enlace: enlaceLiq(req.params.id) });
           aprobadorNotificado = apr.nombre ?? apr.email;
         }
       }
@@ -262,7 +270,7 @@ export function buildServer(deps: Deps): FastifyInstance {
         const l = (await deps.db.liquidacion.findUnique({ where: { id: req.params.id } })) as Record<string, unknown> | null;
         const apr = (await deps.usuarios.listar()).find((u) => u.id === b.aprobadorId);
         if (apr?.email) {
-          await deps.notificacion.solicitarAprobacion({ aprobadorEmail: apr.email, aprobadorNombre: apr.nombre, aprobadoresEmails: grupoAprobadores(apr.email), titulo: `Aprobar liquidacion ${String(l?.["name"] ?? "")}`, liquidacionId: req.params.id, liquidacionName: String(l?.["name"] ?? ""), enlace: enlaceLiq(req.params.id) });
+          await deps.notificacion.solicitarAprobacion({ aprobadorEmail: apr.email, aprobadorNombre: apr.nombre, aprobadoresEmails: await grupoAprobadores(apr.email), titulo: `Aprobar liquidacion ${String(l?.["name"] ?? "")}`, liquidacionId: req.params.id, liquidacionName: String(l?.["name"] ?? ""), enlace: enlaceLiq(req.params.id) });
           aprobadorNotificado = apr.nombre ?? apr.email;
         }
       } catch (e) { app.log.error(`Notificacion de aprobacion fallo: ${(e as Error).message}`); }
@@ -508,6 +516,15 @@ export function buildServer(deps: Deps): FastifyInstance {
     if (b.activo !== undefined) data["activo"] = b.activo;
     if (b.empresa !== undefined) data["empresa"] = b.empresa === "" ? null : b.empresa; // "" = ambas (null)
     await deps.db.centroCosto.update({ where: { id: req.params.id }, data });
+    return reply.send({ ok: true });
+  });
+
+  // ---- Config de aprobadores (globales + grupos), editable en runtime ----
+  app.get("/config/aprobadores", async (req, reply) => guard(req, reply, "conta") ? leerAprobadores(deps.db, fallbackAprob) : undefined);
+  app.put<{ Body: { globales?: string[]; grupos?: string[][] } }>("/config/aprobadores", async (req, reply) => {
+    if (!guard(req, reply, "conta")) return;
+    const b = req.body ?? {};
+    await guardarAprobadores(deps.db, { globales: b.globales ?? [], grupos: b.grupos ?? [] });
     return reply.send({ ok: true });
   });
 

@@ -91,6 +91,7 @@ export class InMemoryDb implements Db {
     reglaMonto: [] as Rec[],
     tarifaKm: [] as Rec[],
     auditoria: [] as Rec[],
+    configuracion: [] as Rec[],
   };
 
   factura = new InMemoryDelegate(this.stores.factura, { estado: "SIN_CAPTURA", esDeLaEmpresa: false });
@@ -109,6 +110,7 @@ export class InMemoryDb implements Db {
   reglaMonto = new InMemoryDelegate(this.stores.reglaMonto, { activo: true });
   tarifaKm = new InMemoryDelegate(this.stores.tarifaKm, { activo: true, montoPorKm: 0 });
   auditoria = new InMemoryDelegate(this.stores.auditoria);
+  configuracion = new InMemoryDelegate(this.stores.configuracion);
 
   async $disconnect(): Promise<void> {}
 }
