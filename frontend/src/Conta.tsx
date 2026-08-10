@@ -373,10 +373,8 @@ function LiquidacionForm({ id, cat, onBack, onGasto, esConta }: { id: string; ca
           <div className="section" style={{ background: "#f7f9fb" }}>
             <div className="fields">
               <div className="field"><label>Factura no cruzada</label>
-                <select value={facturaId} onChange={(e) => setFacturaId(e.target.value)}>
-                  <option value="">-- elegir factura --</option>
-                  {facturas.map((f) => <option key={f.id} value={f.id}>{(f.consecutivo ? f.consecutivo + " - " : "")}{f.emisorNombre} - {fmt(f.totalComprobante)} ({f.situacionFiscal})</option>)}
-                </select></div>
+                <Combo options={facturas.map((f) => ({ value: f.id, label: `${f.consecutivo ? f.consecutivo + " - " : ""}${f.emisorNombre} - ${fmt(f.totalComprobante)} (${f.situacionFiscal})`, hint: f.clave || f.consecutivo }))}
+                  value={facturaId} onChange={setFacturaId} placeholder="Busca por consecutivo, emisor o clave..." /></div>
               <div className="field"><label>Categoria</label>
                 <Combo options={cats.map((c) => ({ value: c.id, label: c.nombre, hint: c.codigo }))}
                   value={catId} onChange={setCatId} placeholder="-- elegir categoria --" /></div>
@@ -595,6 +593,9 @@ function GastoForm({ liqId, gastoId, cat, onBack, sesion }: { liqId: string; gas
         {g.excedeLimite && <span className="alerta">EXCEDE: {g.alerta}</span>}
         {puedeEditarMonto && g.estadoGasto !== "LIBRE" && (
           <AsyncButton className="ghost" onClick={async () => { const r = await api.desligarGasto(gastoId); if (r.ok) { onBack(); } else { setMsg({ t: "err", x: r.error ?? "No se pudo desligar." }); } }} loadingText="Desligando...">Desligar de la liquidacion</AsyncButton>
+        )}
+        {puedeEditarMonto && (
+          <AsyncButton className="ghost" onClick={async () => { try { const r = await api.duplicarGasto(gastoId); if (r.ok) onBack(); else setMsg({ t: "err", x: r.error ?? "No se pudo duplicar." }); } catch (e) { setMsg({ t: "err", x: describe(e) }); } }} loadingText="Duplicando...">Duplicar gasto</AsyncButton>
         )}
         {puedeEditarMonto && (
           <AsyncButton className="ghost" onClick={async () => { if (!window.confirm("¿Eliminar este gasto? Se borran sus divisiones y se recalcula el total. Esta accion no se puede deshacer.")) return; try { const r = await api.eliminarGasto(gastoId); if (r.ok) onBack(); else setMsg({ t: "err", x: r.error ?? "No se pudo eliminar." }); } catch (e) { setMsg({ t: "err", x: describe(e) }); } }} loadingText="Eliminando...">Eliminar gasto</AsyncButton>

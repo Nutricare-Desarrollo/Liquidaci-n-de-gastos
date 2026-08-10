@@ -52,7 +52,7 @@ export function MobileCaptura({ cat, sesion, selfApproval }: { cat: Catalogos; s
     if (!categoriaId) return setMsg({ t: "err", x: "Elegi la categoria del gasto." });
     if (tipo === "regimen" && !fotoFile) return setMsg({ t: "err", x: "Subi la foto del comprobante (regimen simplificado)." });
     if (tipo === "regimen" && (!(Number(rMonto) > 0) || !rFecha || !rComer.trim())) return setMsg({ t: "err", x: "Completa monto, fecha y comerciante del gasto de regimen." });
-    if (tipo === "electronica" && !fotoFile && !xml.trim()) return setMsg({ t: "err", x: "Subi una foto del comprobante o pega el XML." });
+    if (tipo === "electronica" && !fotoFile) return setMsg({ t: "err", x: "Subi la foto del comprobante." });
     if (nueva && !aprobadorId) return setMsg({ t: "err", x: "Elegi un aprobador (distinto a vos)." });
     setEnviando(true);
     try {
@@ -163,10 +163,6 @@ export function MobileCaptura({ cat, sesion, selfApproval }: { cat: Catalogos; s
           </div>
           <input ref={fileRef} type="file" accept="image/*" style={{ display: "none" }}
             onChange={(e) => setFotoFile(e.target.files?.[0] ?? null)} />
-          {tipo === "electronica" && <>
-            <label className="mini-label">(opcional) Pega el XML de la factura para la prueba</label>
-            <textarea rows={3} value={xml} onChange={(e) => setXml(e.target.value)} placeholder="<FacturaElectronica>...</FacturaElectronica>" />
-          </>}
           {tipo === "regimen" && <>
             <label className="mini-label">Monto</label>
             <input type="number" inputMode="decimal" value={rMonto} onChange={(e) => setRMonto(e.target.value)} placeholder="0.00" />

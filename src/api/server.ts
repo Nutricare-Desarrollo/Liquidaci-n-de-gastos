@@ -435,6 +435,14 @@ export function buildServer(deps: Deps): FastifyInstance {
   });
   // Listado de gastos libres (para reasignar) — conta.
   app.get("/gastos/libres", async (req, reply) => guard(req, reply, "conta") ? liq.listarGastosLibres(deps.db) : undefined);
+  // Duplicar un gasto dentro de su liquidacion. Mismo permiso que gestionar el gasto.
+  app.post<{ Params: { id: string } }>("/gastos/:id/duplicar", async (req, reply) => {
+    const perm = await puedeGestionarGasto(req, req.params.id);
+    if (!perm.existe) return reply.code(404).send({ error: "El gasto no existe." });
+    if (!perm.ok) return den403(reply);
+    const r = await liq.duplicarGasto(deps.db, req.params.id);
+    return r.ok ? reply.code(201).send(r) : reply.code(422).send(r);
+  });
   // Eliminar un gasto (con sus divisiones). Mismo permiso que desligar.
   app.delete<{ Params: { id: string } }>("/gastos/:id", async (req, reply) => {
     const g = (await deps.db.gasto.findUnique({ where: { id: req.params.id } })) as Record<string, unknown> | null;

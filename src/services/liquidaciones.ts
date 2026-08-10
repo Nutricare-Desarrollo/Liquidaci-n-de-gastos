@@ -95,6 +95,33 @@ export async function clonarLiquidacion(db: Db, id: string): Promise<{ ok: boole
   return { ok: true, id: String(nueva["id"]), name: String(nueva["name"]) };
 }
 
+// Duplicar un gasto dentro de su misma liquidacion (copia independiente:
+// sin factura/captura/division; se puede editar aparte). Recalcula el total.
+export async function duplicarGasto(db: Db, id: string): Promise<{ ok: boolean; error?: string; gastoId?: string }> {
+  const g = (await db.gasto.findUnique({ where: { id } })) as Rec | null;
+  if (!g) return { ok: false, error: "El gasto no existe." };
+  const liqId = g["liquidacionId"] as string | null;
+  const creado = (await db.gasto.create({
+    data: {
+      name: `GAS-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      liquidacionId: liqId, facturaId: null, capturaId: null, gastoOrigenId: null,
+      montoTotal: g["montoTotal"], moneda: g["moneda"], fecha: g["fecha"],
+      categoriaId: String(g["categoriaId"]), comerciante: (g["comerciante"] as string | null) ?? null,
+      numeroFactura: (g["numeroFactura"] as string | null) ?? null,
+      origen: (g["origen"] as string | null) ?? "MANUAL",
+      centroCostoId: (g["centroCostoId"] as string | null) ?? null,
+      metodoPago: String(g["metodoPago"] ?? ""), situacionFiscal: g["situacionFiscal"],
+      grupoImpuesto: String(g["grupoImpuesto"] ?? ""), tipoComprobante: g["tipoComprobante"],
+      litros: (g["litros"] as number | null) ?? null, tipoGasolina: (g["tipoGasolina"] as string | null) ?? null,
+      zona: (g["zona"] as string | null) ?? null, kilometros: (g["kilometros"] as number | null) ?? null,
+      excedeLimite: Boolean(g["excedeLimite"]), informacionAdicional: (g["informacionAdicional"] as string | null) ?? null,
+      adjuntos: (g["adjuntos"] as unknown) ?? undefined, urlPdf: (g["urlPdf"] as string | null) ?? null,
+    },
+  })) as Rec;
+  if (liqId) await recalcularMonto(db, liqId);
+  return { ok: true, gastoId: String(creado["id"]) };
+}
+
 // Eliminar un gasto: borra sus divisiones, recalcula el total de la liquidacion
 // y libera la factura asociada (vuelve a disponible para re-cruzar).
 export async function eliminarGasto(db: Db, id: string): Promise<{ ok: boolean; error?: string }> {
