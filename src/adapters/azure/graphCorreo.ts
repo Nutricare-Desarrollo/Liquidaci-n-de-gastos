@@ -14,6 +14,7 @@ export class GraphCorreoAdapter implements CorreoEntrantePort {
     private readonly mailboxUserId: string,
     private readonly tokens: EntraTokenProvider,
     private readonly fetchImpl: typeof fetch = fetch,
+    private readonly desde?: string, // ISO (ej. "2026-08-10"): solo correos recibidos desde esa fecha
   ) {}
 
   onCorreo(handler: (correo: CorreoEntrante) => Promise<ResultadoIngestaCorreo | void>): void {
@@ -29,9 +30,13 @@ export class GraphCorreoAdapter implements CorreoEntrantePort {
     // Traer no-leidos con adjuntos, los MAS NUEVOS primero (asi no se atasca en
     // una cola vieja) y mas por vez para drenar backlog. Si el $orderby no lo
     // acepta Graph, se reintenta sin el.
+    // Filtro opcional por fecha: no arrastrar backlog viejo del buzon.
+    const desdeFiltro = this.desde
+      ? ` and receivedDateTime ge ${this.desde.includes("T") ? this.desde : `${this.desde}T00:00:00Z`}`
+      : "";
     const base =
       `${GRAPH}/users/${encodeURIComponent(this.mailboxUserId)}/messages` +
-      `?$filter=isRead eq false and hasAttachments eq true&$select=id,subject&$top=50`;
+      `?$filter=isRead eq false and hasAttachments eq true${desdeFiltro}&$select=id,subject&$top=50`;
     let listRes = await this.fetchImpl(base + `&$orderby=receivedDateTime desc`, { headers });
     if (!listRes.ok) listRes = await this.fetchImpl(base, { headers }); // fallback sin orderby
     if (!listRes.ok) throw new Error(`Graph list ${listRes.status}: ${await listRes.text().catch(() => "")}`);

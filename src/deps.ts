@@ -77,7 +77,7 @@ export function buildDeps(): Deps {
   // Correo entrante
   let correo: CorreoJob;
   if (tokens && config.graph.mailboxUserId) {
-    const g = new GraphCorreoAdapter(config.graph.mailboxUserId, tokens);
+    const g = new GraphCorreoAdapter(config.graph.mailboxUserId, tokens, undefined, config.correoDesde || undefined);
     g.onCorreo((c) => ingestarCorreo(c, { storage, repo: facturaRepo }));
     correo = g; modos.push("correo=graph");
   } else { correo = { poll: async () => ({ procesados: 0 }) }; modos.push("correo=FAKE"); }

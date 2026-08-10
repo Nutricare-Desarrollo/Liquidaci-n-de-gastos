@@ -21,6 +21,7 @@ export interface AppConfig {
   usuarios: { dominio: string; excluir: string[]; empresaDominios: Record<string, string>; aprobadoresGlobales: string[]; aprobadorGrupos: string[][] };
   permitirAutoaprobacion: boolean;
   correoPollMin: number; // minutos entre polls automaticos del buzon (0 = desactivado)
+  correoDesde: string;   // solo procesar correos recibidos desde esta fecha (ISO, ej. 2026-08-10); "" = sin limite
 }
 
 // "ntc:nutricare.co.cr;feh:farmacia.co.cr,otra.co.cr" -> { "nutricare.co.cr": "ntc", ... }
@@ -74,5 +75,6 @@ export function loadConfig(): AppConfig {
     },
     permitirAutoaprobacion: opt("ALLOW_SELF_APPROVAL") === "1",
     correoPollMin: Number(opt("CORREO_POLL_MIN", "0")),
+    correoDesde: opt("CORREO_DESDE", ""),
   };
 }
