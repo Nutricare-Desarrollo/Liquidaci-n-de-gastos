@@ -32,8 +32,10 @@ export async function ingestarCorreo(
   let ingestadas = 0;
   let ignoradas = 0;
 
-  const xmls = correo.adjuntos.filter((a) => a.nombre.toLowerCase().endsWith(".xml"));
+  // Acepta .xml por nombre o por content-type (algunos correos no traen la extension).
+  const xmls = correo.adjuntos.filter((a) => a.nombre.toLowerCase().endsWith(".xml") || (a.mimeType ?? "").toLowerCase().includes("xml"));
   const pdfs = correo.adjuntos.filter((a) => a.nombre.toLowerCase().endsWith(".pdf"));
+  console.log(`[ingesta] "${correo.asunto}" adjuntos=[${correo.adjuntos.map((a) => a.nombre).join(", ")}] -> ${xmls.length} xml`);
 
   for (const adjunto of xmls) {
     const xml = decodeBase64(adjunto.contenidoBase64).toString("utf-8");
@@ -43,14 +45,20 @@ export async function ingestarCorreo(
       factura = parseFactura(xml);
     } catch (e) {
       if (e instanceof FacturaIgnorableError) {
+        console.log(`[ingesta]   ${adjunto.nombre}: IGNORADA (${(e as Error).message})`);
         ignoradas++;
         continue;
       }
-      throw e;
+      console.log(`[ingesta]   ${adjunto.nombre}: ERROR parse: ${(e as Error).message}`);
+      ignoradas++;
+      continue; // no cortar el resto por un XML malo
     }
+
+    console.log(`[ingesta]   ${adjunto.nombre}: clave=${factura.clave} total=${factura.totalComprobante} receptor=${factura.receptorIdentificacion}`);
 
     // Dedup por clave.
     if (await deps.repo.existePorClave(factura.clave)) {
+      console.log(`[ingesta]   ${adjunto.nombre}: DUPLICADA (ya existe la clave)`);
       ignoradas++;
       continue;
     }
@@ -71,6 +79,7 @@ export async function ingestarCorreo(
       urlPdf,
       esDeLaEmpresa: factura.receptorIdentificacion === CEDULA_NUTRICARE,
     });
+    console.log(`[ingesta]   ${adjunto.nombre}: INGESTADA (esDeLaEmpresa=${factura.receptorIdentificacion === CEDULA_NUTRICARE})`);
     ingestadas++;
   }
 
