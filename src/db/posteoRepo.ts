@@ -7,6 +7,14 @@ import { situacionFromDb } from "./map.js";
 import { metodoPago } from "../domain/metodoPago.js";
 import { propositoDeClave } from "../domain/proposito.js";
 
+// Fecha del gasto para FO: mediodia UTC del DIA (en UTC) del gasto. Asi el dia no
+// se corre por zona horaria (coincide con lo que muestra el app y con la fecha ingresada).
+function transDateFO(f: unknown): string {
+  const d = f instanceof Date ? f : new Date(String(f));
+  if (Number.isNaN(d.getTime())) return String(f);
+  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 12, 0, 0)).toISOString();
+}
+
 /** Arma el InformeParaPostear leyendo la liquidacion con sus gastos. */
 export async function cargarInforme(db: Db, liquidacionId: string, usuarios?: UsuariosPort): Promise<InformeParaPostear | null> {
   const liq = (await db.liquidacion.findUnique({
@@ -51,7 +59,7 @@ export async function cargarInforme(db: Db, liquidacionId: string, usuarios?: Us
       amount: Number(g["montoTotal"]),
       currency: String(g["moneda"]) as Moneda,
       payMethod: metodoInforme,
-      transDate: (g["fecha"] as Date)?.toISOString?.() ?? String(g["fecha"]),
+      transDate: transDateFO(g["fecha"]),
       description: String(g["comerciante"] ?? ""),
       taxGroup: situacionFromDb(g["situacionFiscal"] as "IVA" | "EXENTO" | "NO_SUJETO" | "SIN_DEFINIR"),
       taxItemGroup: String(g["grupoImpuesto"] ?? ""),

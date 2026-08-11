@@ -443,7 +443,7 @@ function LiquidacionForm({ id, cat, onBack, onGasto, esConta }: { id: string; ca
             <tbody>
               {(liq.gastos ?? []).map((g) => (
                 <tr key={g.id} onClick={() => onGasto(g.id)}>
-                  <td>{fdate(g.fecha)}</td>
+                  <td>{fdateGasto(g.fecha)}</td>
                   <td className="pill-link">{g.comerciante}{g.gastoOrigenId ? " (division)" : ""}</td>
                   <td>{g.categoria?.nombre ?? "-"}</td>
                   <td>{cat.centrosCosto.find((c) => c.id === g.centroCostoId)?.name ?? "-"}</td>
@@ -1418,6 +1418,13 @@ function Field({ label, v }: { label: string; v?: string | number | null }) {
 }
 function fmt(n?: number): string { return (n ?? 0).toLocaleString("es-CR"); }
 function fdate(s?: string): string { return s ? new Date(s).toLocaleString("es-CR") : "-"; }
+// Fecha del gasto: solo dia, en UTC (la que se ingreso / la que va a Dynamics),
+// para que la tabla general y el detalle muestren SIEMPRE lo mismo.
+function fdateGasto(s?: string): string {
+  if (!s) return "-";
+  const d = new Date(s);
+  return `${String(d.getUTCDate()).padStart(2, "0")}/${String(d.getUTCMonth() + 1).padStart(2, "0")}/${d.getUTCFullYear()}`;
+}
 function monShow(m?: string): string { return (!m || m === "Otra") ? "CRC" : m; }
 function fileToB64(file: File): Promise<string> {
   return new Promise((res, rej) => {
