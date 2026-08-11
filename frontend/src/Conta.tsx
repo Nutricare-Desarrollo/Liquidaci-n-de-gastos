@@ -7,7 +7,7 @@ import { UsuarioPicker } from "./UsuarioPicker.js";
 import { AsyncButton } from "./AsyncButton.js";
 import { BrandLogo } from "./BrandLogo.js";
 
-type Seccion = "liquidaciones" | "gastos" | "capturas" | "facturas" | "reglas" | "tarifas" | "categorias" | "centros" | "aprobadores";
+type Seccion = "liquidaciones" | "gastos" | "capturas" | "facturas" | "reglas" | "tarifas" | "categorias" | "centros" | "aprobadores" | "usuarios";
 
 function rolLabel(rol?: string): string { return rol === "admin" ? "Administrador" : rol === "conta" ? "Contabilidad" : "Usuario"; }
 
@@ -17,6 +17,7 @@ export function Admin({ cat, initialLiqId, demo, vista, setVista, sesion, puedeC
   const [gastoId, setGastoId] = useState<string | null>(null);
   const [facturaPrefill, setFacturaPrefill] = useState<string | null>(null);
   const esConta = puedeConta === true; // estandar (empleado) ve una version acotada a lo suyo
+  const esAdmin = sesion?.rol === "admin";
   const nav = (s: Seccion) => { setSeccion(s); setLiqId(null); setGastoId(null); setFacturaPrefill(null); };
   return (
     <div className="admin">
@@ -38,6 +39,7 @@ export function Admin({ cat, initialLiqId, demo, vista, setVista, sesion, puedeC
             <a className={seccion === "categorias" ? "active" : ""} onClick={() => nav("categorias")}>Categorías</a>
             <a className={seccion === "centros" ? "active" : ""} onClick={() => nav("centros")}>Centros de costo</a>
             <a className={seccion === "aprobadores" ? "active" : ""} onClick={() => nav("aprobadores")}>Aprobadores</a>
+            {esAdmin && <a className={seccion === "usuarios" ? "active" : ""} onClick={() => nav("usuarios")}>Usuarios / Roles</a>}
           </>}
         </nav>
         <div className="side-foot">
@@ -66,6 +68,7 @@ export function Admin({ cat, initialLiqId, demo, vista, setVista, sesion, puedeC
         {seccion === "categorias" && <CategoriasView recargarCat={recargarCat} />}
         {seccion === "centros" && <CentrosView recargarCat={recargarCat} />}
         {seccion === "aprobadores" && <AprobadoresView cat={cat} />}
+        {seccion === "usuarios" && esAdmin && <RolesView cat={cat} />}
       </main>
     </div>
   );
@@ -1244,6 +1247,61 @@ function CentrosView({ recargarCat }: { recargarCat?: () => void }) {
           {visibles.length === 0 && <tr><td colSpan={7}>Sin centros.</td></tr>}
         </tbody>
       </table></div>
+    </>
+  );
+}
+
+function RolesView({ cat }: { cat: Catalogos }) {
+  const [roles, setRoles] = useState<Record<string, string>>({});
+  const [msg, setMsg] = useState<{ t: "ok" | "err"; x: string } | null>(null);
+  const [add, setAdd] = useState("");
+
+  useEffect(() => { api.getConfigRoles().then((r) => setRoles(r ?? {})).catch(() => {}); }, []);
+
+  const nombreDe = (email: string) => cat.usuarios.find((u) => (u.email ?? "").toLowerCase() === email.toLowerCase())?.nombre ?? email;
+  const opciones = cat.usuarios.filter((u) => u.email).map((u) => ({ value: (u.email ?? "").toLowerCase(), label: u.nombre ?? u.email, hint: u.email }));
+
+  const addUser = (email: string) => { const e = email.toLowerCase(); if (e && !roles[e]) setRoles({ ...roles, [e]: "conta" }); };
+  const setRol = (email: string, rol: string) => setRoles({ ...roles, [email]: rol });
+  const quitar = (email: string) => { const r = { ...roles }; delete r[email]; setRoles(r); };
+
+  async function guardar() {
+    setMsg(null);
+    try { await api.guardarConfigRoles(roles); setMsg({ t: "ok", x: "Roles guardados. Toman efecto de inmediato (sin re-loguear)." }); }
+    catch (e) { setMsg({ t: "err", x: describe(e) }); }
+  }
+
+  return (
+    <>
+      <div className="listbar"><h2>Usuarios / Roles</h2><span className="caret">v</span></div>
+      {msg && <div className={`msg ${msg.t}`}>{msg.x}</div>}
+      <div className="section">
+        <h3><span className="ico">*</span> Asignacion de roles</h3>
+        <p><small className="mono">Asigna Contabilidad o Admin a un usuario. Quien no esta en la lista es Empleado (estandar). El rol asignado aca se combina con el de Entra: se toma el mayor. Solo Admin puede editar esto.</small></p>
+        <div className="grid"><table>
+          <thead><tr><th>Usuario</th><th>Correo</th><th>Rol</th><th></th></tr></thead>
+          <tbody>
+            {Object.keys(roles).map((email) => (
+              <tr key={email}>
+                <td>{nombreDe(email)}</td>
+                <td><small className="mono">{email}</small></td>
+                <td>
+                  <select value={roles[email]} onChange={(e) => setRol(email, e.target.value)}>
+                    <option value="conta">Contabilidad</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </td>
+                <td><button className="ghost" onClick={() => quitar(email)}>Quitar</button></td>
+              </tr>
+            ))}
+            {Object.keys(roles).length === 0 && <tr><td colSpan={4}>Sin roles asignados (todos son Empleado).</td></tr>}
+          </tbody>
+        </table></div>
+        <div style={{ maxWidth: 360, marginTop: 8 }}>
+          <Combo options={opciones} value={add} onChange={(v) => { addUser(v); setAdd(""); }} placeholder="Agregar usuario..." />
+        </div>
+      </div>
+      <div className="actions"><AsyncButton className="primary" onClick={guardar} loadingText="Guardando...">Guardar cambios</AsyncButton></div>
     </>
   );
 }

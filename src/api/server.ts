@@ -10,7 +10,7 @@ import { CEDULA_NUTRICARE, type SituacionFiscal } from "../domain/types.js";
 import { procesarCruce } from "../services/procesarCruce.js";
 import * as liq from "../services/liquidaciones.js";
 import { crearFacturaManual, actualizarFactura, eliminarFactura, type FacturaManualInput } from "../services/facturas.js";
-import { leerAprobadores, guardarAprobadores, type ConfigAprobadores } from "../services/settings.js";
+import { leerAprobadores, guardarAprobadores, leerRolesUsuarios, guardarRolesUsuarios, type ConfigAprobadores } from "../services/settings.js";
 import { EntraTokenProvider } from "../adapters/azure/entraToken.js";
 import { dividirGasto, crearGastoSimplificado, subirAdjunto } from "../services/gastos.js";
 
@@ -44,6 +44,21 @@ export function buildServer(deps: Deps): FastifyInstance {
   const contaRole = deps.config?.auth.contaRole ?? "Contabilidad";
   const rolDe = (roles: string[]): "admin" | "conta" | "estandar" =>
     roles.includes(adminRole) ? "admin" : roles.includes(contaRole) ? "conta" : "estandar";
+  // Roles asignados desde el app (override), cacheados unos segundos.
+  const ORDEN_ROL: Record<string, number> = { estandar: 0, conta: 1, admin: 2 };
+  let rolesCache: { map: Record<string, string>; exp: number } | null = null;
+  const leerRolesMap = async (): Promise<Record<string, string>> => {
+    if (rolesCache && rolesCache.exp > Date.now()) return rolesCache.map;
+    const map = await leerRolesUsuarios(deps.db).catch(() => ({} as Record<string, string>));
+    rolesCache = { map, exp: Date.now() + 15_000 };
+    return map;
+  };
+  // Rol efectivo = el MAYOR entre el del token de Entra y el asignado en el app.
+  const rolEfectivo = async (email: string, base: "admin" | "conta" | "estandar"): Promise<"admin" | "conta" | "estandar"> => {
+    const asignado = (await leerRolesMap())[(email ?? "").toLowerCase()];
+    if ((asignado === "admin" || asignado === "conta") && (ORDEN_ROL[asignado] ?? 0) > (ORDEN_ROL[base] ?? 0)) return asignado;
+    return base;
+  };
   const publica = (url: string): boolean => {
     const path = url.split("?")[0] ?? url;
     // Endpoints publicos de la API.
@@ -61,7 +76,7 @@ export function buildServer(deps: Deps): FastifyInstance {
     const token = typeof hdr === "string" && hdr.startsWith("Bearer ") ? hdr.slice(7).trim() : "";
     const u = await deps.auth.usuarioActual(authOn ? token : (token || "dev"));
     if (!u) return reply.code(401).send({ ok: false, error: "No autenticado." });
-    req.sesion = { ...u, rol: rolDe(u.roles) };
+    req.sesion = { ...u, rol: await rolEfectivo(u.email, rolDe(u.roles)) };
   });
 
   // Exige uno de los roles (admin siempre pasa). Responde 403 y devuelve false si no.
@@ -563,6 +578,15 @@ export function buildServer(deps: Deps): FastifyInstance {
     if (!guard(req, reply, "conta")) return;
     const b = req.body ?? {};
     await guardarAprobadores(deps.db, { globales: b.globales ?? [], grupos: b.grupos ?? [] });
+    return reply.send({ ok: true });
+  });
+
+  // ---- Roles de usuarios (solo Admin). guard(req,reply) sin roles = solo admin. ----
+  app.get("/config/roles", async (req, reply) => guard(req, reply) ? leerRolesUsuarios(deps.db) : undefined);
+  app.put<{ Body: { roles?: Record<string, string> } }>("/config/roles", async (req, reply) => {
+    if (!guard(req, reply)) return;
+    await guardarRolesUsuarios(deps.db, req.body?.roles ?? {});
+    rolesCache = null; // que tome el cambio de inmediato
     return reply.send({ ok: true });
   });
 

@@ -48,6 +48,26 @@ export async function leerAprobadores(db: Db, fallback: ConfigAprobadores): Prom
   };
 }
 
+// --- Roles asignados desde el app (override de los App Roles de Entra) ---
+const K_ROLES = "rolesUsuarios";
+
+export async function leerRolesUsuarios(db: Db): Promise<Record<string, string>> {
+  const m = await leerJson<Record<string, string>>(db, K_ROLES);
+  const out: Record<string, string> = {};
+  for (const [e, r] of Object.entries(m ?? {})) out[e.toLowerCase()] = String(r).toLowerCase();
+  return out;
+}
+
+export async function guardarRolesUsuarios(db: Db, map: Record<string, string>): Promise<void> {
+  const clean: Record<string, string> = {};
+  for (const [e, r] of Object.entries(map ?? {})) {
+    const email = e.trim().toLowerCase();
+    const rol = String(r).trim().toLowerCase();
+    if (email && (rol === "conta" || rol === "admin")) clean[email] = rol; // solo se asignan roles superiores
+  }
+  await guardarJson(db, K_ROLES, clean);
+}
+
 export async function guardarAprobadores(db: Db, cfg: ConfigAprobadores): Promise<void> {
   const globales = (cfg.globales ?? []).map((e) => e.trim().toLowerCase()).filter(Boolean);
   const grupos = (cfg.grupos ?? []).map((g, i) => normGrupo(g, i)).filter((g) => g.miembros.length > 0);
