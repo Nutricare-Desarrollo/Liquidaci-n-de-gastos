@@ -205,9 +205,11 @@ export async function actualizarGasto(db: Db, id: string, patch: {
   centroCostoId?: string | null; grupoImpuesto?: string; informacionAdicional?: string;
   litros?: number | null; tipoGasolina?: string | null; categoriaId?: string; numeroFactura?: string;
   zona?: string | null; kilometros?: number | null; montoTotal?: number; situacionFiscal?: string;
+  fecha?: string; adjuntos?: Array<{ nombre: string; url: string; tipo: string }>; urlPdf?: string | null;
 }): Promise<{ gasto: Rec; errores: string[] }> {
   const data: Rec = { ...patch };
   if (patch.montoTotal !== undefined) data["montoTotal"] = Number(patch.montoTotal); // permitir editar el monto (items 4/9)
+  if (patch.fecha) data["fecha"] = new Date(patch.fecha); // permitir editar la fecha
   await db.gasto.update({ where: { id }, data });
   // Re-leer con la categoria incluida para validar con el codigo correcto.
   const gasto = (await db.gasto.findFirst({ where: { id }, include: { categoria: true } })) as Rec;

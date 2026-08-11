@@ -516,7 +516,7 @@ function GastoForm({ liqId, gastoId, cat, onBack, sesion }: { liqId: string; gas
   const [g, setG] = useState<Gasto | null>(null);
   const [estadoLiq, setEstadoLiq] = useState("");
   const [empresaLiq, setEmpresaLiq] = useState("");
-  const [grupo, setGrupo] = useState(""); const [ccId, setCcId] = useState(""); const [info, setInfo] = useState(""); const [catId, setCatId] = useState(""); const [numFactura, setNumFactura] = useState(""); const [montoEd, setMontoEd] = useState(""); const [sitEd, setSitEd] = useState("");
+  const [grupo, setGrupo] = useState(""); const [ccId, setCcId] = useState(""); const [info, setInfo] = useState(""); const [catId, setCatId] = useState(""); const [numFactura, setNumFactura] = useState(""); const [montoEd, setMontoEd] = useState(""); const [sitEd, setSitEd] = useState(""); const [fechaEd, setFechaEd] = useState("");
   const [subiendo, setSubiendo] = useState(false);
   const [dMonto, setDMonto] = useState(""); const [dCc, setDCc] = useState(""); const [dCat, setDCat] = useState("");
   const [dividir, setDividir] = useState(false);
@@ -530,7 +530,7 @@ function GastoForm({ liqId, gastoId, cat, onBack, sesion }: { liqId: string; gas
     setEstadoLiq(l.estado); setEmpresaLiq(l.empresa ?? "");
     const found = (l.gastos ?? []).find((x) => x.id === gastoId) ?? null;
     setG(found);
-    if (found) { setGrupo(found.grupoImpuesto); setCcId(found.centroCostoId ?? ""); setInfo(found.informacionAdicional ?? ""); setLitros(found.litros != null ? String(found.litros) : ""); setTipoGas(found.tipoGasolina ?? ""); setCatId((found as { categoriaId?: string }).categoriaId ?? found.categoria?.id ?? ""); setNumFactura(found.numeroFactura ?? ""); setZonaG(found.zona ?? ""); setKmG(found.kilometros != null ? String(found.kilometros) : ""); setMontoEd(String(found.montoTotal ?? "")); setSitEd(found.situacionFiscal ?? ""); }
+    if (found) { setGrupo(found.grupoImpuesto); setCcId(found.centroCostoId ?? ""); setInfo(found.informacionAdicional ?? ""); setLitros(found.litros != null ? String(found.litros) : ""); setTipoGas(found.tipoGasolina ?? ""); setCatId((found as { categoriaId?: string }).categoriaId ?? found.categoria?.id ?? ""); setNumFactura(found.numeroFactura ?? ""); setZonaG(found.zona ?? ""); setKmG(found.kilometros != null ? String(found.kilometros) : ""); setMontoEd(String(found.montoTotal ?? "")); setSitEd(found.situacionFiscal ?? ""); setFechaEd(found.fecha ? new Date(found.fecha).toISOString().slice(0, 10) : ""); }
   }).catch(() => {});
   useEffect(() => { cargar(); }, [liqId, gastoId]);
   if (!g) return <div className="section">Cargando...</div>;
@@ -543,7 +543,7 @@ function GastoForm({ liqId, gastoId, cat, onBack, sesion }: { liqId: string; gas
   async function guardar() {
     setMsg(null);
     try {
-      const r = await api.actualizarGasto(gastoId, { grupoImpuesto: grupo, centroCostoId: ccId || null, informacionAdicional: info, litros: litros === "" ? null : Number(litros), tipoGasolina: tipoGas || null, categoriaId: catId || undefined, numeroFactura: numFactura, zona: zonaG || null, kilometros: kmG === "" ? null : Number(kmG), montoTotal: puedeEditarMonto && montoEd !== "" ? Number(montoEd) : undefined, situacionFiscal: sitEd || undefined });
+      const r = await api.actualizarGasto(gastoId, { grupoImpuesto: grupo, centroCostoId: ccId || null, informacionAdicional: info, litros: litros === "" ? null : Number(litros), tipoGasolina: tipoGas || null, categoriaId: catId || undefined, numeroFactura: numFactura, zona: zonaG || null, kilometros: kmG === "" ? null : Number(kmG), montoTotal: puedeEditarMonto && montoEd !== "" ? Number(montoEd) : undefined, situacionFiscal: sitEd || undefined, fecha: fechaEd || undefined });
       setMsg(r.errores.length ? { t: "err", x: r.errores.join(" | ") } : { t: "ok", x: "Gasto guardado." });
       await cargar();
     } catch (e) { setMsg({ t: "err", x: describe(e) }); }
@@ -556,6 +556,17 @@ function GastoForm({ liqId, gastoId, cat, onBack, sesion }: { liqId: string; gas
       setMsg({ t: "ok", x: "Adjunto subido." });
       await cargar();
     } catch (e) { setMsg({ t: "err", x: describe(e) }); } finally { setSubiendo(false); }
+  }
+  async function quitarAdjunto(i: number) {
+    if (!window.confirm("¿Quitar este adjunto del gasto?")) return;
+    const nuevos = (g?.adjuntos ?? []).filter((_, k) => k !== i);
+    try { await api.actualizarGasto(gastoId, { adjuntos: nuevos }); setMsg({ t: "ok", x: "Adjunto quitado." }); await cargar(); }
+    catch (e) { setMsg({ t: "err", x: describe(e) }); }
+  }
+  async function quitarPdf() {
+    if (!window.confirm("¿Quitar el PDF de Hacienda de este gasto?")) return;
+    try { await api.actualizarGasto(gastoId, { urlPdf: null }); setMsg({ t: "ok", x: "PDF quitado." }); await cargar(); }
+    catch (e) { setMsg({ t: "err", x: describe(e) }); }
   }
   function fdesglose(total: number, sit: string) {
     if (sit === "IVA") { const imp = Math.round((total * 0.13) / 1.13); return { totalImpuesto: imp, totalGravado: total - imp, totalExento: 0, totalNoSujeto: 0 }; }
@@ -614,7 +625,8 @@ function GastoForm({ liqId, gastoId, cat, onBack, sesion }: { liqId: string; gas
           <div className="field"><label>Categoria</label>
             <Combo options={cat.categorias.filter((c) => c.empresa === (g.categoria?.empresa ?? "ntc")).map((c) => ({ value: c.id, label: c.nombre, hint: c.codigo }))}
               value={catId} onChange={setCatId} placeholder="Escribi la categoria..." /></div>
-          <Field label="Fecha gasto" v={fdate(g.fecha)} />
+          <div className="field"><label>Fecha gasto</label>
+            <input type="date" value={fechaEd} onChange={(e) => setFechaEd(e.target.value)} /></div>
           <div className="field"><label>Grupo impuesto (articulos)</label>
             <select value={grupo} onChange={(e) => setGrupo(e.target.value)}>
               {cat.gruposImpuesto.map((x) => <option key={x.id} value={x.name}>{x.name}</option>)}
@@ -733,8 +745,8 @@ function GastoForm({ liqId, gastoId, cat, onBack, sesion }: { liqId: string; gas
         <h3><span className="ico">@</span> Adjuntos</h3>
         <p><small className="mono">PDF de Hacienda (del correo) e imagenes/PDF cargados a mano. En produccion se guardan en SharePoint.</small></p>
         <ul style={{ margin: "6px 0", paddingLeft: 18, fontSize: 13 }}>
-          {g.urlPdf && <li><a className="pill-link" href={g.urlPdf} target="_blank" rel="noreferrer">PDF de Hacienda</a></li>}
-          {(g.adjuntos ?? []).map((a, i) => <li key={i}><a className="pill-link" href={a.url} target="_blank" rel="noreferrer">{a.nombre}</a> <small className="mono">({a.tipo})</small></li>)}
+          {g.urlPdf && <li><a className="pill-link" href={g.urlPdf} target="_blank" rel="noreferrer">PDF de Hacienda</a>{puedeEditarMonto && <> <a style={{ cursor: "pointer", color: "var(--danger, #c0392b)" }} onClick={quitarPdf}>✕ quitar</a></>}</li>}
+          {(g.adjuntos ?? []).map((a, i) => <li key={i}><a className="pill-link" href={a.url} target="_blank" rel="noreferrer">{a.nombre}</a> <small className="mono">({a.tipo})</small>{puedeEditarMonto && <> <a style={{ cursor: "pointer", color: "var(--danger, #c0392b)" }} onClick={() => quitarAdjunto(i)}>✕ quitar</a></>}</li>)}
           {!g.urlPdf && (g.adjuntos ?? []).length === 0 && <li><small className="mono">Sin adjuntos.</small></li>}
         </ul>
         <label className="mini-label">Subir imagen o PDF</label>
