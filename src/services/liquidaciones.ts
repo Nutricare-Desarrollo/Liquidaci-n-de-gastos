@@ -190,7 +190,8 @@ export async function listarGastosLibres(db: Db): Promise<Rec[]> {
 export async function listarLiquidaciones(db: Db, estado?: string, ownerId?: string): Promise<Rec[]> {
   const where: Record<string, unknown> = {};
   if (estado) where["estado"] = estado;
-  if (ownerId) where["empleadoId"] = ownerId;
+  // El estandar ve las SUYAS y las que le mandaron a aprobar (es aprobador).
+  if (ownerId) where["OR"] = [{ empleadoId: ownerId }, { aprobadorId: ownerId }];
   return db.liquidacion.findMany({ ...(Object.keys(where).length ? { where } : {}), orderBy: { createdAt: "desc" } }) as Promise<Rec[]>;
 }
 

@@ -259,8 +259,13 @@ export function buildServer(deps: Deps): FastifyInstance {
   app.get<{ Params: { id: string } }>("/liquidaciones/:id", async (req, reply) => {
     const l = await liq.obtenerConGastos(deps.db, req.params.id);
     if (!l) return reply.code(404).send({ error: "No encontrada" });
-    if (req.sesion?.rol === "estandar" && String((l as Record<string, unknown>)["empleadoId"] ?? "") !== req.sesion.id)
-      return reply.code(403).send({ error: "No autorizado." });
+    // Estandar: solo si es el dueño o el aprobador de esa liquidacion.
+    if (req.sesion?.rol === "estandar") {
+      const rec = l as Record<string, unknown>;
+      const esDueno = String(rec["empleadoId"] ?? "") === req.sesion.id;
+      const esAprobador = String(rec["aprobadorId"] ?? "") === req.sesion.id;
+      if (!esDueno && !esAprobador) return reply.code(403).send({ error: "No autorizado." });
+    }
     return l;
   });
 
@@ -341,6 +346,12 @@ export function buildServer(deps: Deps): FastifyInstance {
   });
   app.post<{ Params: { id: string }; Body: { comentario: string } }>("/liquidaciones/:id/devolver", async (req, reply) => {
     if (!req.body?.comentario) return reply.code(400).send({ error: "Falta comentario" });
+    // Puede devolver: conta/admin, o el aprobador asignado.
+    const rol = req.sesion?.rol ?? "estandar";
+    if (rol !== "admin" && rol !== "conta") {
+      const l = (await deps.db.liquidacion.findUnique({ where: { id: req.params.id } })) as Record<string, unknown> | null;
+      if (!l || String(l["aprobadorId"] ?? "") !== req.sesion?.id) return reply.code(403).send({ error: "Solo el aprobador o Contabilidad puede devolver." });
+    }
     const r = await liq.devolver(deps.db, req.params.id, req.body.comentario);
     return r.ok ? reply.send(r) : reply.code(422).send(r);
   });

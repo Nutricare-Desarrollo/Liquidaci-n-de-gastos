@@ -55,7 +55,7 @@ export function Admin({ cat, initialLiqId, demo, vista, setVista, sesion, puedeC
       <main className="content">
         {seccion === "liquidaciones" && !liqId && <LiquidacionesList cat={cat} onOpen={setLiqId} sesion={sesion} esConta={esConta} />}
         {seccion === "liquidaciones" && liqId && !gastoId && (
-          <LiquidacionForm id={liqId} cat={cat} onBack={() => setLiqId(null)} onGasto={setGastoId} esConta={esConta} />
+          <LiquidacionForm id={liqId} cat={cat} onBack={() => setLiqId(null)} onGasto={setGastoId} esConta={esConta} sesion={sesion} />
         )}
         {seccion === "liquidaciones" && liqId && gastoId && (
           <GastoForm liqId={liqId} gastoId={gastoId} cat={cat} onBack={() => setGastoId(null)} sesion={sesion} />
@@ -198,7 +198,7 @@ function LiquidacionesList({ cat, onOpen, sesion, esConta }: { cat: Catalogos; o
   );
 }
 
-function LiquidacionForm({ id, cat, onBack, onGasto, esConta }: { id: string; cat: Catalogos; onBack: () => void; onGasto: (gastoId: string) => void; esConta?: boolean; }) {
+function LiquidacionForm({ id, cat, onBack, onGasto, esConta, sesion }: { id: string; cat: Catalogos; onBack: () => void; onGasto: (gastoId: string) => void; esConta?: boolean; sesion?: Sesion | null; }) {
   const [liq, setLiq] = useState<Liquidacion | null>(null);
   const [comentario, setComentario] = useState("");
   const [numFO, setNumFO] = useState("");
@@ -486,10 +486,10 @@ function LiquidacionForm({ id, cat, onBack, onGasto, esConta }: { id: string; ca
         </div>
         <div className="actions">
           <AsyncButton className="primary" disabled={!editable} onClick={enviarInforme} loadingText="Enviando...">Enviar</AsyncButton>
+          {(esConta || sesion?.id === liq.aprobadorId) && <AsyncButton className="primary" disabled={liq.estado !== "ENVIADA"} onClick={() => accion(() => api.aprobar(id), "Aprobado por el aprobador.")} loadingText="Aprobando...">1. Aprobar (aprobador)</AsyncButton>}
+          {esConta && <AsyncButton className="primary" disabled={!["EN_REVISION_CONTA", "ERROR_POSTEO", "APROBADA"].includes(liq.estado)} onClick={() => accion(() => api.aprobarConta(id), "Posteado a FO.")} loadingText="Posteando...">{liq.estado === "ERROR_POSTEO" || liq.estado === "APROBADA" ? "2. Reintentar posteo FO" : "2. Aprobar conta -> postear"}</AsyncButton>}
+          {(esConta || sesion?.id === liq.aprobadorId) && <AsyncButton className="ghost" disabled={!(liq.estado === "ENVIADA" || liq.estado === "EN_REVISION_CONTA")} onClick={() => comentario && accion(() => api.devolver(id, comentario), "Devuelto.")} loadingText="Devolviendo...">Devolver</AsyncButton>}
           {esConta && <>
-          <AsyncButton className="primary" disabled={liq.estado !== "ENVIADA"} onClick={() => accion(() => api.aprobar(id), "Aprobado por el aprobador.")} loadingText="Aprobando...">1. Aprobar (aprobador)</AsyncButton>
-          <AsyncButton className="primary" disabled={!["EN_REVISION_CONTA", "ERROR_POSTEO", "APROBADA"].includes(liq.estado)} onClick={() => accion(() => api.aprobarConta(id), "Posteado a FO.")} loadingText="Posteando...">{liq.estado === "ERROR_POSTEO" || liq.estado === "APROBADA" ? "2. Reintentar posteo FO" : "2. Aprobar conta -> postear"}</AsyncButton>
-          <AsyncButton className="ghost" disabled={!(liq.estado === "ENVIADA" || liq.estado === "EN_REVISION_CONTA")} onClick={() => comentario && accion(() => api.devolver(id, comentario), "Devuelto.")} loadingText="Devolviendo...">Devolver</AsyncButton>
           <AsyncButton className="ghost" onClick={async () => { const r = await api.clonarLiquidacion(id); setMsg(r.ok ? { t: "ok", x: `Clonada como ${r.name} (borrador, sin adjuntos).` } : { t: "err", x: r.error ?? "No se pudo clonar." }); }} loadingText="Clonando...">Clonar</AsyncButton>
           <AsyncButton className="ghost" disabled={liq.estado !== "POSTEADA"} onClick={async () => { const r = await api.repostear(id); setMsg({ t: r.ok ? "ok" : "err", x: r.mensaje }); await cargar(); }} loadingText="Re-posteando...">Re-postear a FO (informe nuevo)</AsyncButton>
           </>}
