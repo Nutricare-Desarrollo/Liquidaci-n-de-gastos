@@ -8,7 +8,8 @@ import { validarEnvioInforme, validarGasto } from "../domain/validaciones.js";
 import { postearInforme } from "./posteoFO.js";
 import { cargarInforme, marcarPosteado } from "../db/posteoRepo.js";
 import { crearGastoDesdeFactura } from "./procesarCruce.js";
-import type { Empresa, TipoGasolina } from "../domain/types.js";
+import type { Empresa, Moneda, ReglaMonto, TipoGasolina } from "../domain/types.js";
+import { evaluarLimite } from "../domain/reglasMonto.js";
 
 type Rec = Record<string, unknown>;
 const CEDULA = "3101179050";
@@ -115,7 +116,7 @@ export async function duplicarGasto(db: Db, id: string): Promise<{ ok: boolean; 
       litros: (g["litros"] as number | null) ?? null, tipoGasolina: (g["tipoGasolina"] as string | null) ?? null,
       zona: (g["zona"] as string | null) ?? null, kilometros: (g["kilometros"] as number | null) ?? null,
       excedeLimite: Boolean(g["excedeLimite"]), informacionAdicional: (g["informacionAdicional"] as string | null) ?? null,
-      adjuntos: (g["adjuntos"] as unknown) ?? undefined, urlPdf: (g["urlPdf"] as string | null) ?? null,
+      adjuntos: undefined, urlPdf: null, // la copia NO hereda el adjunto: se sube el que corresponde
     },
   })) as Rec;
   if (liqId) await recalcularMonto(db, liqId);
@@ -216,6 +217,20 @@ export async function actualizarGasto(db: Db, id: string, patch: {
   const gasto = (await db.gasto.findFirst({ where: { id }, include: { categoria: true } })) as Rec;
   // Si cambio el monto, recalcular el total del informe.
   if (patch.montoTotal !== undefined) await recalcularMonto(db, String(gasto["liquidacionId"]));
+  // Si cambio monto o categoria, re-evaluar el limite (que el EXCEDE deje de aparecer si ya esta bien).
+  if (patch.montoTotal !== undefined || patch.categoriaId !== undefined) {
+    const liqRec = (await db.liquidacion.findUnique({ where: { id: String(gasto["liquidacionId"]) } })) as Rec | null;
+    const reglasDb = (await db.reglaMonto.findMany({ where: { activo: true } })) as Rec[];
+    const reglas: ReglaMonto[] = reglasDb.map((r) => ({ categoriaCodigo: String(r["categoriaCodigo"]), montoMaxCRC: Number(r["montoMaxCRC"]), montoMaxUSD: Number(r["montoMaxUSD"]), activo: Boolean(r["activo"]) }));
+    const limite = evaluarLimite({
+      categoriaCodigo: String((gasto["categoria"] as Rec | undefined)?.["codigo"] ?? ""),
+      monto: Number(gasto["montoTotal"] ?? 0),
+      monedaInforme: String(liqRec?.["moneda"] ?? gasto["moneda"]) as Moneda,
+      reglas,
+    });
+    await db.gasto.update({ where: { id }, data: { excedeLimite: limite.excede, alerta: limite.alerta } });
+    gasto["excedeLimite"] = limite.excede; gasto["alerta"] = limite.alerta;
+  }
   const errores = validarGasto({
     categoriaCodigo: String((gasto["categoria"] as Rec | undefined)?.["codigo"] ?? gasto["categoriaCodigo"] ?? ""),
     litros: gasto["litros"] as number | null, tipoGasolina: gasto["tipoGasolina"] as TipoGasolina | null,
@@ -225,13 +240,13 @@ export async function actualizarGasto(db: Db, id: string, patch: {
   return { gasto, errores };
 }
 
-export async function crearGastoManual(db: Db, liquidacionId: string, facturaId: string, categoriaId: string):
+export async function crearGastoManual(db: Db, liquidacionId: string, facturaId: string, categoriaId: string, informacionAdicional?: string):
   Promise<{ ok: boolean; error?: string }> {
   const factura = (await db.factura.findUnique({ where: { id: facturaId } })) as Rec | null;
   if (!factura) return { ok: false, error: "La factura no existe." };
   if (factura["estado"] === "CRUZADA") return { ok: false, error: "Esa factura ya fue cruzada." };
   if (factura["receptorIdentificacion"] !== CEDULA) return { ok: false, error: "La factura no es a nombre de Nutricare." };
-  const ok = await crearGastoDesdeFactura(db, { liquidacionId, factura, categoriaId });
+  const ok = await crearGastoDesdeFactura(db, { liquidacionId, factura, categoriaId, informacionAdicional });
   return ok ? { ok: true } : { ok: false, error: "Faltan datos (liquidación o categoría)." };
 }
 

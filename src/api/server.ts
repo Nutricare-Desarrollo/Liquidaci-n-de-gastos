@@ -387,11 +387,11 @@ export function buildServer(deps: Deps): FastifyInstance {
   });
 
   // Crear gasto manual desde una factura no cruzada.
-  app.post<{ Params: { id: string }; Body: { facturaId?: string; categoriaId?: string } }>("/liquidaciones/:id/gastos", async (req, reply) => {
+  app.post<{ Params: { id: string }; Body: { facturaId?: string; categoriaId?: string; informacionAdicional?: string } }>("/liquidaciones/:id/gastos", async (req, reply) => {
     if (!(await puedeGestionarLiq(req, req.params.id))) return den403(reply);
-    const { facturaId, categoriaId } = req.body ?? {};
+    const { facturaId, categoriaId, informacionAdicional } = req.body ?? {};
     if (!facturaId || !categoriaId) return reply.code(400).send({ error: "Faltan facturaId o categoriaId" });
-    const r = await liq.crearGastoManual(deps.db, req.params.id, facturaId, categoriaId);
+    const r = await liq.crearGastoManual(deps.db, req.params.id, facturaId, categoriaId, informacionAdicional);
     return r.ok ? reply.code(201).send(r) : reply.code(422).send(r);
   });
 
@@ -410,6 +410,7 @@ export function buildServer(deps: Deps): FastifyInstance {
       kilometros: b.kilometros != null ? Number(b.kilometros) : null,
       tipoComprobante: b.tipoComprobante,
       litros: b.litros != null ? Number(b.litros) : null, tipoGasolina: b.tipoGasolina ?? null,
+      informacionAdicional: b.informacionAdicional,
     });
     return r.ok ? reply.code(201).send(r) : reply.code(422).send(r);
   });
@@ -655,4 +656,4 @@ interface CrearCapturaBody { correoEmpleado: string; imagenBase64: string; mimeT
   monto?: number; fecha?: string; comerciante?: string; situacionFiscal?: string; centroCostoId?: string | null; numeroFactura?: string; }
 interface CrearLiqBody { empleadoId: string; correoEmpleado?: string; empresa: string; proposito: string; moneda: string; centroCostoId?: string; aprobadorId?: string; }
 interface GastoPatch { centroCostoId?: string | null; grupoImpuesto?: string; informacionAdicional?: string; litros?: number | null; tipoGasolina?: string | null; categoriaId?: string; numeroFactura?: string; zona?: string | null; kilometros?: number | null; montoTotal?: number; situacionFiscal?: string; fecha?: string; adjuntos?: Array<{ nombre: string; url: string; tipo: string }>; urlPdf?: string | null; }
-interface GastoSimpBody { monto?: number; fecha?: string; comerciante?: string; categoriaId?: string; situacionFiscal?: SituacionFiscal; centroCostoId?: string | null; numeroFactura?: string; zona?: string; kilometros?: number; tipoComprobante?: string; litros?: number; tipoGasolina?: string; }
+interface GastoSimpBody { monto?: number; fecha?: string; comerciante?: string; categoriaId?: string; situacionFiscal?: SituacionFiscal; centroCostoId?: string | null; numeroFactura?: string; zona?: string; kilometros?: number; tipoComprobante?: string; litros?: number; tipoGasolina?: string; informacionAdicional?: string; }

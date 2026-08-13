@@ -30,9 +30,9 @@ async function recalcularMonto(db: Db, liquidacionId: string): Promise<void> {
  * Devuelve true si lo creo, false si faltaban datos (liq/categoria).
  */
 export async function crearGastoDesdeFactura(db: Db, opts: {
-  liquidacionId: string; factura: Rec; categoriaId: string; capturaId?: string;
+  liquidacionId: string; factura: Rec; categoriaId: string; capturaId?: string; informacionAdicional?: string;
 }): Promise<boolean> {
-  const { liquidacionId, factura, categoriaId, capturaId } = opts;
+  const { liquidacionId, factura, categoriaId, capturaId, informacionAdicional } = opts;
 
   const liq = (await db.liquidacion.findUnique({ where: { id: liquidacionId } })) as Rec | null;
   const cat = (await db.categoria.findUnique({ where: { id: categoriaId } })) as Rec | null;
@@ -95,6 +95,7 @@ export async function crearGastoDesdeFactura(db: Db, opts: {
       grupoImpuesto: g.grupoImpuesto, litros: g.litros,
       tipoGasolina: g.tipoGasolina !== null ? TIPO_GAS_A_DB[g.tipoGasolina as TipoGasolina] : null,
       excedeLimite: g.excedeLimite, alerta: g.alerta,
+      informacionAdicional: informacionAdicional?.trim() || null,
       urlPdf: g.urlPdf ?? imagenCaptura, // factura PDF o, en su defecto, la foto
       adjuntos,
     },

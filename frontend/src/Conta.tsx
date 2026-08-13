@@ -217,8 +217,11 @@ function LiquidacionForm({ id, cat, onBack, onGasto, esConta, sesion }: { id: st
   const [sLitros, setSLitros] = useState(""); const [sTipoGas, setSTipoGas] = useState("");
   const [sFile, setSFile] = useState<File | null>(null);
   const [sNumFactura, setSNumFactura] = useState("");
+  const [sInfo, setSInfo] = useState(""); // justificacion / informacion adicional
+  const [fInfo, setFInfo] = useState(""); // justificacion en el flujo "desde factura"
   const [libres, setLibres] = useState<Gasto[]>([]);
   const [libreSel, setLibreSel] = useState("");
+  const [busqGasto, setBusqGasto] = useState(""); // buscador del detalle de gastos
 
   const cargar = () => api.detalle(id).then(setLiq).catch(() => setMsg({ t: "err", x: "No se pudo cargar." }));
   const cargarFacturas = () => api.facturasSinCruzar().then(setFacturas).catch(() => {});
@@ -244,8 +247,8 @@ function LiquidacionForm({ id, cat, onBack, onGasto, esConta, sesion }: { id: st
 
   async function agregarFactura() {
     if (!facturaId || !catId) return setMsg({ t: "err", x: "Elegi factura y categoria." });
-    await accion(() => api.crearGastoManual(id, facturaId, catId), "Gasto agregado desde la factura.");
-    setFacturaId(""); setCatId(""); setModo("");
+    await accion(() => api.crearGastoManual(id, facturaId, catId, fInfo || undefined), "Gasto agregado desde la factura.");
+    setFacturaId(""); setCatId(""); setFInfo(""); setModo("");
   }
   async function agregarSimple() {
     if (!sFecha || !catId) return setMsg({ t: "err", x: "Completa fecha y categoria." });
@@ -257,6 +260,7 @@ function LiquidacionForm({ id, cat, onBack, onGasto, esConta, sesion }: { id: st
       const r = await api.crearGastoSimplificado(id, {
         monto: Number(sMonto) || 0, fecha: sFecha, comerciante: sComer, categoriaId: catId,
         situacionFiscal: sSit, centroCostoId: sCc || null, numeroFactura: sNumFactura || undefined,
+        informacionAdicional: sInfo || undefined,
         ...(esKmCat ? { zona: sZona, kilometros: Number(sKm) || 0, tipoComprobante: "KILOMETRAJE" } : {}),
         ...(esCombSel ? { litros: Number(sLitros), tipoGasolina: sTipoGas } : {}),
       });
@@ -266,7 +270,7 @@ function LiquidacionForm({ id, cat, onBack, onGasto, esConta, sesion }: { id: st
         await api.subirAdjunto(gid, { nombre: sFile.name, contenidoBase64, mimeType: sFile.type || "application/octet-stream" });
       }
     }, esKmCat ? "Gasto de kilometraje agregado." : "Gasto agregado.");
-    setSMonto(""); setSFecha(""); setSComer(""); setSCc(""); setCatId(""); setSKm(""); setSLitros(""); setSTipoGas(""); setSFile(null); setSNumFactura(""); setModo("");
+    setSMonto(""); setSFecha(""); setSComer(""); setSCc(""); setCatId(""); setSKm(""); setSLitros(""); setSTipoGas(""); setSFile(null); setSNumFactura(""); setSInfo(""); setModo("");
   }
   async function subirDoc() {
     if (!docFile) return;
@@ -381,6 +385,7 @@ function LiquidacionForm({ id, cat, onBack, onGasto, esConta, sesion }: { id: st
               <div className="field"><label>Categoria</label>
                 <Combo options={cats.map((c) => ({ value: c.id, label: c.nombre, hint: c.codigo }))}
                   value={catId} onChange={setCatId} placeholder="-- elegir categoria --" /></div>
+              <div className="field"><label>Justificacion (opcional)</label><input value={fInfo} onChange={(e) => setFInfo(e.target.value)} placeholder="Justificacion u observaciones" /></div>
             </div>
             <div className="actions">
               <AsyncButton className="primary" onClick={agregarFactura} loadingText="Agregando...">Agregar gasto</AsyncButton>
@@ -427,6 +432,7 @@ function LiquidacionForm({ id, cat, onBack, onGasto, esConta, sesion }: { id: st
                     <option value="GAS_LP">Gas LP</option>
                   </select></div>
               </>)}
+              <div className="field"><label>Justificacion (opcional)</label><input value={sInfo} onChange={(e) => setSInfo(e.target.value)} placeholder="Justificacion u observaciones" /></div>
               <div className="field"><label>Adjunto (foto / PDF, opcional)</label>
                 <input type="file" accept="image/*,application/pdf" onChange={(e) => setSFile(e.target.files?.[0] ?? null)} /></div>
             </div>
@@ -437,30 +443,53 @@ function LiquidacionForm({ id, cat, onBack, onGasto, esConta, sesion }: { id: st
           </div>
         )}
 
-        <div className="grid">
-          <table>
-            <thead><tr><th>Fecha</th><th>Comerciante</th><th>Categoria</th><th>Centro costo</th><th>Tipo</th><th>Origen</th><th>Cruce</th><th>Nº factura</th><th>Justificacion</th><th>Situacion</th><th className="num">Monto</th><th>Alerta</th></tr></thead>
-            <tbody>
-              {(liq.gastos ?? []).map((g) => (
-                <tr key={g.id} onClick={() => onGasto(g.id)}>
-                  <td>{fdateGasto(g.fecha)}</td>
-                  <td className="pill-link">{g.comerciante}{g.gastoOrigenId ? " (division)" : ""}</td>
-                  <td>{g.categoria?.nombre ?? "-"}</td>
-                  <td>{cat.centrosCosto.find((c) => c.id === g.centroCostoId)?.name ?? "-"}</td>
-                  <td>{tipoComp(g.tipoComprobante)}</td>
-                  <td><span className="badge">{g.origen === "XML" ? "XML" : "Manual"}</span></td>
-                  <td>{g.facturaId ? <span className="badge estado-APROBADA">Cruzada</span> : <span className="badge">Manual</span>}</td>
-                  <td>{g.numeroFactura || "-"}</td>
-                  <td>{g.informacionAdicional || "-"}</td>
-                  <td>{g.situacionFiscal}</td>
-                  <td className="num">{fmt(g.montoTotal)} {g.moneda}</td>
-                  <td>{g.excedeLimite ? <span className="alerta">EXCEDE</span> : "OK"}</td>
-                </tr>
-              ))}
-              {(liq.gastos ?? []).length === 0 && <tr><td colSpan={12}>Sin gastos.</td></tr>}
-            </tbody>
-          </table>
-        </div>
+        {(() => {
+          const q = busqGasto.trim().toLowerCase();
+          const gastosAll = liq.gastos ?? [];
+          const gastos = !q ? gastosAll : gastosAll.filter((g) => {
+            const ccN = cat.centrosCosto.find((c) => c.id === g.centroCostoId)?.name ?? "";
+            return [g.comerciante, g.categoria?.nombre, ccN, tipoComp(g.tipoComprobante), g.numeroFactura, g.informacionAdicional, g.situacionFiscal, g.origen]
+              .filter(Boolean).some((s) => String(s).toLowerCase().includes(q));
+          });
+          const suma = gastos.reduce((s, g) => s + Number(g.montoTotal ?? 0), 0);
+          return (
+            <>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, margin: "0 0 8px", flexWrap: "wrap" }}>
+                <input value={busqGasto} onChange={(e) => setBusqGasto(e.target.value)} placeholder="Buscar por comerciante, categoria, centro, factura, justificacion..." style={{ flex: "1 1 260px", minWidth: 220 }} />
+                {q && <button className="ghost" onClick={() => setBusqGasto("")}>Limpiar</button>}
+              </div>
+              <div className="grid">
+                <table>
+                  <thead><tr><th>Fecha</th><th>Comerciante</th><th>Categoria</th><th>Centro costo</th><th>Tipo</th><th>Origen</th><th>Cruce</th><th>Nº factura</th><th>Justificacion</th><th>Situacion</th><th className="num">Monto</th><th>Alerta</th></tr></thead>
+                  <tbody>
+                    {gastos.map((g) => (
+                      <tr key={g.id} onClick={() => onGasto(g.id)}>
+                        <td>{fdateGasto(g.fecha)}</td>
+                        <td className="pill-link">{g.comerciante}{g.gastoOrigenId ? " (division)" : ""}</td>
+                        <td>{g.categoria?.nombre ?? "-"}</td>
+                        <td>{cat.centrosCosto.find((c) => c.id === g.centroCostoId)?.name ?? "-"}</td>
+                        <td>{tipoComp(g.tipoComprobante)}</td>
+                        <td><span className="badge">{g.origen === "XML" ? "XML" : "Manual"}</span></td>
+                        <td>{g.facturaId ? <span className="badge estado-APROBADA">Cruzada</span> : <span className="badge">Manual</span>}</td>
+                        <td>{g.numeroFactura || "-"}</td>
+                        <td>{g.informacionAdicional || "-"}</td>
+                        <td>{g.situacionFiscal}</td>
+                        <td className="num">{fmt(g.montoTotal)} {g.moneda}</td>
+                        <td>{g.excedeLimite ? <span className="alerta">EXCEDE</span> : "OK"}</td>
+                      </tr>
+                    ))}
+                    {gastos.length === 0 && <tr><td colSpan={12}>{q ? "Sin resultados para la busqueda." : "Sin gastos."}</td></tr>}
+                  </tbody>
+                  <tfoot><tr>
+                    <td colSpan={10} className="num"><b>{q ? `Suma filtrada (${gastos.length} de ${gastosAll.length})` : `Suma (${gastos.length})`}</b></td>
+                    <td className="num"><b>{fmt(suma)} {liq.moneda}</b></td>
+                    <td></td>
+                  </tr></tfoot>
+                </table>
+              </div>
+            </>
+          );
+        })()}
         {libres.filter((g) => g.moneda === liq.moneda).length > 0 && (
           <div style={{ marginTop: 8, display: "flex", gap: 6, alignItems: "flex-end", flexWrap: "wrap" }}>
             <div className="field" style={{ margin: 0, minWidth: 260 }}>

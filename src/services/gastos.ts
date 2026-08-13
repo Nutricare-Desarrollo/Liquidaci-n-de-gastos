@@ -81,7 +81,7 @@ export async function crearGastoSimplificado(db: Db, liquidacionId: string, opts
   situacionFiscal: SituacionFiscal; centroCostoId?: string | null;
   capturaId?: string; adjunto?: { nombre: string; url: string; tipo: string }; numeroFactura?: string;
   zona?: string | null; kilometros?: number | null; tipoComprobante?: string;
-  litros?: number | null; tipoGasolina?: string | null;
+  litros?: number | null; tipoGasolina?: string | null; informacionAdicional?: string;
 }): Promise<{ ok: boolean; error?: string; gastoId?: string }> {
   const liq = (await db.liquidacion.findUnique({ where: { id: liquidacionId } })) as Rec | null;
   const cat = (await db.categoria.findUnique({ where: { id: opts.categoriaId } })) as Rec | null;
@@ -128,6 +128,7 @@ export async function crearGastoSimplificado(db: Db, liquidacionId: string, opts
       grupoImpuesto: grupo.grupo, litros: opts.litros ?? null, tipoGasolina: opts.tipoGasolina ?? null,
       zona: opts.zona ?? null, kilometros: opts.kilometros ?? null,
       excedeLimite: limite.excede, alerta: limite.alerta, urlPdf: null,
+      informacionAdicional: opts.informacionAdicional?.trim() || null,
       tipoComprobante: (opts.tipoComprobante ?? "REGIMEN_SIMPLIFICADO"),
     },
   })) as Rec;
